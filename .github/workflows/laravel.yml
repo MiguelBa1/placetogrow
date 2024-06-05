@@ -1,0 +1,61 @@
+name: Laravel CI
+
+on:
+  push:
+    branches:
+      - main
+      - develop
+      - feature/add-github-actions-sonarcloud
+  pull_request:
+    branches:
+      - main
+      - develop
+      - feature/add-github-actions-sonarcloud
+
+jobs:
+  laravel-tests:
+    runs-on: ubuntu-latest
+
+    services:
+      mysql:
+        image: mysql:8
+        env:
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_DATABASE: laravel
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping --silent"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=3
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Set up PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: 8.3
+
+      - name: Install dependencies
+        run: composer install
+
+      - name: Copy .env.example to .env
+        run: cp .env.example .env
+
+      - name: Generate key
+        run: php artisan key:generate
+
+      - name: Run migrations
+        run: php artisan migrate
+
+      - name: Run tests with coverage
+        run: |
+          mkdir -p tests/_output
+          php artisan test --log-junit tests/_output/test-results.xml --coverage-clover tests/_output/coverage.xml
+
+      - name: SonarCloud Scan
+        uses: SonarSource/sonarcloud-github-action@v1
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
