@@ -13,11 +13,30 @@ return new class extends Migration
     {
         Schema::create('users', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->string('email')->unique();
-            $table->timestamp('email_verified_at')->nullable();
-            $table->string('password');
-            $table->rememberToken();
+            $table->string('email')->nullable();
+            $table->string('nombre')->nullable();
+            $table->string('apellido')->nullable();
+            $table->string('tipo_de_documento')->nullable();
+            $table->string('numero_de_documento')->nullable();
+            $table->string('telefono')->nullable();
+            $table->string('moneda')->nullable();
+            $table->integer('valor')->nullable();
+
+            $table->string('payment_reference')->nullable();
+            $table->string('request_id')->nullable();
+            $table->string('process_url')->nullable();
+            $table->dateTime('expires_in')->nullable();
+            $table->string('internal_reference')->nullable();
+            $table->string('franchise')->nullable();
+            $table->string('payment_method')->nullable();
+            $table->string('payment_method_name')->nullable();
+            $table->string('issuer_name')->nullable();
+            $table->string('receipt')->nullable();
+            $table->string('authorization')->nullable();
+            $table->string('status')->nullable();
+            $table->string('status_message')->nullable();
+            $table->dateTime('payment_date')->nullable();
+
             $table->timestamps();
         });
 
