@@ -5,12 +5,10 @@ on:
     branches:
       - main
       - develop
-      - feature/add-github-actions-sonarcloud
   pull_request:
     branches:
       - main
       - develop
-      - feature/add-github-actions-sonarcloud
 
 jobs:
   laravel-tests:
