@@ -1,16 +1,16 @@
 <?php
 
-namespace App;
+namespace App\Contracts;
 
 use Illuminate\Http\Request;
 
-interface PaymentService
+interface PaymentServiceInterface
 {
     public function createPayment(Request $request);
 
     public function checkPayment(string $reference);
 
-    public function createUser($request, $paymentReference, $response);
+    public function createPaymentRecord($request, $paymentReference, $response);
 
     public function updatePayment($paymentReference, $response);
 }
