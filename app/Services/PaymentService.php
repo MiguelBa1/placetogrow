@@ -1,7 +1,9 @@
 <?php
 
-namespace App;
+namespace App\Services;
 
+use App\Contracts\PaymentServiceInterface;
+use App\Models\Payment;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
@@ -10,11 +12,11 @@ use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Str;
 use Inertia\Inertia;
 
-class PaymentServiceImp implements PaymentService
+class PaymentService implements PaymentServiceInterface
 {
     public function createPayment(Request $request)
     {
-        $referenciaDePago = Str::random();
+        $paymentReference = Str::random();
 
         $login = env('P2P_LOGIN');
         $secretKey = env('P2P_SECRET_KEY');
@@ -24,7 +26,7 @@ class PaymentServiceImp implements PaymentService
         $tranKey = base64_encode(hash('sha256', $rawNonce . $seed . $secretKey, true));
         $nonce = base64_encode($rawNonce);
 
-        $datos = [
+        $data = [
             'auth' => [
                 'login' => $login,
                 'tranKey' => $tranKey,
@@ -40,7 +42,7 @@ class PaymentServiceImp implements PaymentService
                 'mobile' => '+57' . $request->input('phone'),
             ],
             'payment' => [
-                'reference' => $referenciaDePago,
+                'reference' => $paymentReference,
                 'description' => 'Payment test',
                 'amount' => [
                     'currency' => $request->input('currency'),
@@ -48,21 +50,21 @@ class PaymentServiceImp implements PaymentService
                 ],
             ],
             'expiration' => Carbon::now()->addMinutes(10)->toIso8601String(),
-            'returnUrl' => route('site1.return', $referenciaDePago),
+            'returnUrl' => route('site1.return', $paymentReference),
             'ipAddress' => $request->ip(),
             'userAgent' => $request->userAgent(),
         ];
 
-        $resultado = Http::post(env('P2P_URL') . '/api/session', $datos);
+        $result = Http::post(env('P2P_URL') . '/api/session', $data);
 
-        if ($resultado->ok()) {
-            $this->createUser($request, $referenciaDePago, $resultado->json());
+        if ($result->ok()) {
+            $this->createPaymentRecord($request, $paymentReference, $result->json());
 
-            return Inertia::location($resultado['processUrl']);
+            return Inertia::location($result['processUrl']);
         } else {
             return Redirect::to('/site1')
                 ->withErrors(
-                    $resultado['status']['message'] ?? 'Ha ocurrido un error al procesar el pago, por favor intente nuevamente.'
+                    $result['status']['message'] ?? 'An error occurred while processing the payment, please try again.'
                 );
         }
     }
@@ -77,7 +79,7 @@ class PaymentServiceImp implements PaymentService
         $tranKey = base64_encode(hash('sha256', $rawNonce . $seed . $secretKey, true));
         $nonce = base64_encode($rawNonce);
 
-        $datos = [
+        $data = [
             'auth' => [
                 'login' => $login,
                 'tranKey' => $tranKey,
@@ -86,54 +88,58 @@ class PaymentServiceImp implements PaymentService
             ],
         ];
 
-        $pago = User::query()->where('payment_reference', $reference)->latest()->first();
+        $payment = Payment::query()->where('payment_reference', $reference)->latest()->first();
 
-        if (!$pago) {
-            return Redirect::to('/site1')->withErrors('No se encontró el pago solicitado.');
+        if (!$payment) {
+            return Redirect::to('/site1')->withErrors('Payment not found.');
         }
 
-        $resultado = Http::post(env('P2P_URL') . '/api/session/' . $pago->request_id, $datos);
+        $result = Http::post(env('P2P_URL') . '/api/session/' . $payment->request_id, $data);
 
-        if ($resultado->ok()) {
-            $this->updatePayment($reference, $resultado->json());
+        if ($result->ok()) {
+            $this->updatePayment($reference, $result->json());
 
             return Inertia::render('Site1/Return', [
-                'payment' => $pago->refresh(),
+                'payment' => $payment->refresh(),
             ]);
         } else {
             return Redirect::to('/site1')
                 ->withErrors(
-                    $resultado['status']['message'] ?? 'Ha ocurrido un error al finalizar el pago'
+                    $result['status']['message'] ?? 'An error occurred while completing the payment.'
                 );
         }
     }
 
-    public function createUser($request, $paymentReference, $response)
+    public function createPaymentRecord($request, $paymentReference, $response)
     {
-        User::query()->create([
+        $user = User::query()->create([
+            'name' => $request->input('name'),
+            'last_name' => $request->input('lastName'),
+            'document_type' => $request->input('documentType'),
+            'document_number' => $request->input('documentNumber'),
+            'phone' => $request->input('phone'),
             'email' => $request->input('email'),
-            'nombre' => $request->input('name'),
-            'apellido' => $request->input('lastName'),
-            'tipo_de_documento' => $request->input('documentType'),
-            'numero_de_documento' => $request->input('documentNumber'),
-            'telefono' => $request->input('phone'),
-            'moneda' => $request->input('currency'),
-            'valor' => $request->input('amount'),
+        ]);
+
+        Payment::query()->create([
+            'user_id' => $user->id,
             'payment_reference' => $paymentReference,
             'request_id' => $response['requestId'],
             'process_url' => $response['processUrl'],
             'status' => $response['status']['status'],
             'status_message' => $response['status']['message'],
             'expires_in' => Carbon::create($response['status']['date'])->addMinutes(10),
-        ])->save();
+            'currency' => $request->input('currency'),
+            'amount' => $request->input('amount'),
+        ]);
     }
 
     public function updatePayment($paymentReference, $response)
     {
-        $pago = User::query()->where('payment_reference', $paymentReference)->latest()->first();
+        $payment = Payment::query()->where('payment_reference', $paymentReference)->latest()->first();
 
         if ($response['status']['status'] === 'APPROVED') {
-            $pago->update([
+            $payment->update([
                 'internal_reference' => $response['payment'][0]['internalReference'],
                 'franchise' => $response['payment'][0]['franchise'],
                 'payment_method' => $response['payment'][0]['paymentMethod'],
@@ -147,13 +153,13 @@ class PaymentServiceImp implements PaymentService
             ]);
         } else {
             if (isset($response['payment'][0])) {
-                $pago->update([
+                $payment->update([
                     'status_message' => $response['payment'][0]['status']['message'],
                     'payment_date' => $response['payment'][0]['status']['date'],
                     'status' => $response['status']['status'],
                 ]);
             } else {
-                $pago->update([
+                $payment->update([
                     'status_message' => $response['status']['message'],
                     'payment_date' => $response['status']['date'],
                     'status' => $response['status']['status'],

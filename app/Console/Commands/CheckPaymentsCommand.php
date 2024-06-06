@@ -2,7 +2,7 @@
 
 namespace App\Console\Commands;
 
-use App\Models\User;
+use App\Models\Payment;
 use Illuminate\Console\Command;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Http;
@@ -33,7 +33,7 @@ class CheckPaymentsCommand extends Command
             ],
         ];
 
-        $payments = User::query()->whereIn('status', ['PENDING', 'OK'])->where('expires_in', '<', Carbon::now())->get();
+        $payments = Payment::query()->whereIn('status', ['PENDING', 'OK'])->where('expires_in', '<', Carbon::now())->get();
 
         foreach ($payments as $payment) {
             $this->info('Checking payment ' . $payment->request_id);

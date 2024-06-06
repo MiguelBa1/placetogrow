@@ -38,7 +38,7 @@ jobs:
         with:
           php-version: 8.3
 
-      - name: Install dependencies
+      - name: Install Composer dependencies
         run: composer install
 
       - name: Copy .env.example to .env
@@ -46,6 +46,17 @@ jobs:
 
       - name: Generate key
         run: php artisan key:generate
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4.0.2
+        with:
+          node-version: '20'
+
+      - name: Install Node.js dependencies
+        run: npm install
+
+      - name: Build assets
+        run: npm run build
 
       - name: Run migrations
         run: php artisan migrate
