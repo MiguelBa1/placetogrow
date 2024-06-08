@@ -14,6 +14,8 @@ use Inertia\Inertia;
 
 class PaymentService implements PaymentServiceInterface
 {
+    private const SITE1_ROUTE = '/site1';
+
     public function createPayment(Request $request)
     {
         $paymentReference = Str::random();
@@ -62,7 +64,7 @@ class PaymentService implements PaymentServiceInterface
 
             return Inertia::location($result['processUrl']);
         } else {
-            return Redirect::to('/site1')
+            return Redirect::to(self::SITE1_ROUTE)
                 ->withErrors(
                     $result['status']['message'] ?? 'An error occurred while processing the payment, please try again.'
                 );
@@ -91,7 +93,7 @@ class PaymentService implements PaymentServiceInterface
         $payment = Payment::query()->where('payment_reference', $reference)->latest()->first();
 
         if (!$payment) {
-            return Redirect::to('/site1')->withErrors('Payment not found.');
+            return Redirect::to(self::SITE1_ROUTE)->withErrors('Payment not found.');
         }
 
         $result = Http::post(env('P2P_URL') . '/api/session/' . $payment->request_id, $data);
@@ -103,7 +105,7 @@ class PaymentService implements PaymentServiceInterface
                 'payment' => $payment->refresh(),
             ]);
         } else {
-            return Redirect::to('/site1')
+            return Redirect::to(self::SITE1_ROUTE)
                 ->withErrors(
                     $result['status']['message'] ?? 'An error occurred while completing the payment.'
                 );

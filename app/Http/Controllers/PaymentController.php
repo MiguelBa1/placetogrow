@@ -18,19 +18,19 @@ class PaymentController extends Controller
     {
         if (! preg_match("/[a-zA-Z ]/", $request->input('name'))) {
             throw ValidationException::withMessages(['name' => 'El nombre debe ser una cadena de texto']);
-        } else if (! preg_match("/[a-zA-Z ]/", $request->input('name'))) {
+        } elseif (! preg_match("/[a-zA-Z ]/", $request->input('lastName'))) {
             throw ValidationException::withMessages(['lastName' => 'El apellido debe ser una cadena de texto']);
-        } else if (! filter_var($request->input('email'), FILTER_VALIDATE_EMAIL)) {
+        } elseif (! filter_var($request->input('email'), FILTER_VALIDATE_EMAIL)) {
             throw ValidationException::withMessages(['email' => 'El correo electrónico no es válido']);
-        } else if (! in_array($request->input('documentType'), ['CC', 'PPN'])) {
+        } elseif (! in_array($request->input('documentType'), ['CC', 'PPN'])) {
             throw ValidationException::withMessages(['documentType' => 'El tipo de documento no es válido']);
-        } else if (! filter_var($request->input('documentNumber'), FILTER_VALIDATE_INT)) {
+        } elseif (! filter_var($request->input('documentNumber'), FILTER_VALIDATE_INT)) {
             throw ValidationException::withMessages(['documentNumber' => 'El número de documento no es válido']);
-        } else if (! filter_var($request->input('phone'), FILTER_VALIDATE_INT)) {
+        } elseif (! filter_var($request->input('phone'), FILTER_VALIDATE_INT)) {
             throw ValidationException::withMessages(['documentNumber' => 'El teléfono no es válido']);
-        } else if (! in_array($request->input('currency'), ['COP', 'USD'])) {
+        } elseif (! in_array($request->input('currency'), ['COP', 'USD'])) {
             throw ValidationException::withMessages(['currency' => 'La moneda no es válida']);
-        } else if (! filter_var($request->input('amount'), FILTER_VALIDATE_INT)) {
+        } elseif (! filter_var($request->input('amount'), FILTER_VALIDATE_INT)) {
             throw ValidationException::withMessages(['amount' => 'El valor a pagar no es válido']);
         }
 

@@ -1,23 +1,23 @@
 <script setup>
-import {Link} from "@inertiajs/vue3";
+import { Link } from "@inertiajs/vue3";
 
 defineProps({
     payment: Object
-})
+});
 </script>
 
 <template>
     <div class="max-w-xl bg-white w-full m-auto rounded-xl p-10 shadow-md mt-10">
         <div>
             <div class="flex justify-between items-center p-5 border-b-2 text-center">
-                <div>
+                <dl>
                     <dt class="text-xl font-semibold text-gray-500">
                         Detalles del Pago
                     </dt>
                     <dd class="text-xl font-semibold text-gray-700">
                         {{ payment.status_message }}
                     </dd>
-                </div>
+                </dl>
                 <div
                     :class="{'bg-red-200': payment.status === 'REJECTED', 'bg-orange-200': payment.status === 'PENDING' || payment.status === 'OK', 'bg-green-200': payment.status === 'APPROVED'}"
                     class="ml-10 text-xl font-bold text-gray-700 px-7 py-2 rounded-2xl"
@@ -28,7 +28,7 @@ defineProps({
                 </div>
             </div>
 
-            <div class="mt-14 grid grid-cols-2 gap-y-10 text-center">
+            <dl class="mt-14 grid grid-cols-2 gap-y-10 text-center">
                 <div>
                     <dt class="text-md font-medium text-gray-500">
                         Referencia de pago
@@ -43,7 +43,7 @@ defineProps({
                         Total
                     </dt>
                     <dd class="mt-1 text-sm text-gray-900 font-semibold">
-                        {{ new Intl.NumberFormat().format(payment.valor) }} {{ payment.moneda }}
+                        {{ new Intl.NumberFormat().format(payment.amount) }} {{ payment.currency }}
                     </dd>
                 </div>
 
@@ -82,7 +82,7 @@ defineProps({
                         {{ new Date(payment.payment_date).toLocaleString() }}
                     </dd>
                 </div>
-            </div>
+            </dl>
         </div>
 
         <div class="mt-32 text-center">

@@ -6,8 +6,8 @@ import TextInput from '@/Components/TextInput.vue';
 import { Link, useForm, usePage } from '@inertiajs/vue3';
 
 defineProps<{
-    mustVerifyEmail?: Boolean;
-    status?: String;
+    mustVerifyEmail?: boolean;
+    status?: string;
 }>();
 
 const user = usePage().props.auth.user;
@@ -30,7 +30,7 @@ const form = useForm({
 
         <form @submit.prevent="form.patch(route('profile.update'))" class="mt-6 space-y-6">
             <div>
-                <InputLabel for="name" value="Name" />
+                <InputLabel forId="name" value="Name" />
 
                 <TextInput
                     id="name"
@@ -46,7 +46,7 @@ const form = useForm({
             </div>
 
             <div>
-                <InputLabel for="email" value="Email" />
+                <InputLabel forId="email" value="Email" />
 
                 <TextInput
                     id="email"
