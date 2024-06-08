@@ -29,7 +29,9 @@ const submit = () => {
 
 <template>
     <GuestLayout>
-        <Head title="Log in" />
+        <Head>
+            <title>Login</title>
+        </Head>
 
         <div v-if="status" class="mb-4 font-medium text-sm text-green-600">
             {{ status }}
@@ -37,7 +39,7 @@ const submit = () => {
 
         <form @submit.prevent="submit">
             <div>
-                <InputLabel for="email" value="Email" />
+                <InputLabel forId="email" value="Email" />
 
                 <TextInput
                     id="email"
@@ -53,7 +55,7 @@ const submit = () => {
             </div>
 
             <div class="mt-4">
-                <InputLabel for="password" value="Password" />
+                <InputLabel forId="password" value="Password" />
 
                 <TextInput
                     id="password"
@@ -68,7 +70,7 @@ const submit = () => {
             </div>
 
             <div class="block mt-4">
-                <label class="flex items-center">
+                <label for="remember" class="flex items-center">
                     <Checkbox name="remember" v-model:checked="form.remember" />
                     <span class="ms-2 text-sm text-gray-600">Remember me</span>
                 </label>
