@@ -16,7 +16,7 @@ class PaymentService implements PaymentServiceInterface
 {
     private const SITE1_ROUTE = '/site1';
 
-    public function createPayment(Request $request)
+    public function createPayment(Request $request): \Illuminate\Http\RedirectResponse|\Symfony\Component\HttpFoundation\Response
     {
         $paymentReference = Str::random();
 
@@ -71,7 +71,7 @@ class PaymentService implements PaymentServiceInterface
         }
     }
 
-    public function checkPayment(string $reference)
+    public function checkPayment(string $reference): \Inertia\Response|\Illuminate\Http\RedirectResponse
     {
         $login = env('P2P_LOGIN');
         $secretKey = env('P2P_SECRET_KEY');
@@ -112,7 +112,7 @@ class PaymentService implements PaymentServiceInterface
         }
     }
 
-    public function createPaymentRecord($request, $paymentReference, $response)
+    public function createPaymentRecord($request, $paymentReference, $response): void
     {
         $user = User::query()->create([
             'name' => $request->input('name'),
@@ -136,7 +136,7 @@ class PaymentService implements PaymentServiceInterface
         ]);
     }
 
-    public function updatePayment($paymentReference, $response)
+    public function updatePayment($paymentReference, $response): void
     {
         $payment = Payment::query()->where('payment_reference', $paymentReference)->latest()->first();
 

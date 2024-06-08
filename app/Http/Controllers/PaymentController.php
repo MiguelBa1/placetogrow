@@ -2,43 +2,26 @@
 
 namespace App\Http\Controllers;
 
-use App\PaymentServiceImp;
-use Illuminate\Http\Request;
-use Illuminate\Validation\ValidationException;
+use App\Http\Requests\CreatePaymentRequest;
+use App\Services\PaymentService;
+use Illuminate\Http\RedirectResponse;
 use Inertia\Inertia;
+use Symfony\Component\HttpFoundation\Response;
 
 class PaymentController extends Controller
 {
-    public function index()
+    public function index(): \Inertia\Response
     {
         return Inertia::render('Site1/Index');
     }
 
-    public function store(Request $request)
+    public function store(CreatePaymentRequest $request): RedirectResponse|Response
     {
-        if (! preg_match("/[a-zA-Z ]/", $request->input('name'))) {
-            throw ValidationException::withMessages(['name' => 'El nombre debe ser una cadena de texto']);
-        } elseif (! preg_match("/[a-zA-Z ]/", $request->input('lastName'))) {
-            throw ValidationException::withMessages(['lastName' => 'El apellido debe ser una cadena de texto']);
-        } elseif (! filter_var($request->input('email'), FILTER_VALIDATE_EMAIL)) {
-            throw ValidationException::withMessages(['email' => 'El correo electrónico no es válido']);
-        } elseif (! in_array($request->input('documentType'), ['CC', 'PPN'])) {
-            throw ValidationException::withMessages(['documentType' => 'El tipo de documento no es válido']);
-        } elseif (! filter_var($request->input('documentNumber'), FILTER_VALIDATE_INT)) {
-            throw ValidationException::withMessages(['documentNumber' => 'El número de documento no es válido']);
-        } elseif (! filter_var($request->input('phone'), FILTER_VALIDATE_INT)) {
-            throw ValidationException::withMessages(['documentNumber' => 'El teléfono no es válido']);
-        } elseif (! in_array($request->input('currency'), ['COP', 'USD'])) {
-            throw ValidationException::withMessages(['currency' => 'La moneda no es válida']);
-        } elseif (! filter_var($request->input('amount'), FILTER_VALIDATE_INT)) {
-            throw ValidationException::withMessages(['amount' => 'El valor a pagar no es válido']);
-        }
-
-        return (new PaymentServiceImp)->createPayment($request);
+        return (new PaymentService)->createPayment($request);
     }
 
-    public function return($reference)
+    public function return($reference): \Inertia\Response|RedirectResponse
     {
-        return (new PaymentServiceImp)->checkPayment($reference);
+        return (new PaymentService)->checkPayment($reference);
     }
 }
