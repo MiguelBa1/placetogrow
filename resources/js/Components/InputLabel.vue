@@ -3,7 +3,6 @@ defineProps<{
     forId: string;
     value?: string;
 }>();
-
 </script>
 
 <template>
