@@ -1,9 +1,9 @@
 <script setup>
-import {useForm} from "@inertiajs/vue3";
+import { useForm } from '@inertiajs/vue3';
 
 defineProps({
     messageError: String,
-})
+});
 
 const form = useForm({
     name: '',
@@ -14,13 +14,17 @@ const form = useForm({
     phone: '',
     currency: 'COP',
     amount: 0,
-})
-
+});
 </script>
 
 <template>
-    <div class="max-w-7xl bg-white w-full m-auto rounded-xl p-10 shadow-md mt-10">
-        <form class="grid sm:grid-cols-2 gap-y-5 gap-x-20" @submit.prevent="form.post('/site1')">
+    <div
+        class="max-w-7xl bg-white w-full m-auto rounded-xl p-10 shadow-md mt-10"
+    >
+        <form
+            class="grid sm:grid-cols-2 gap-y-5 gap-x-20"
+            @submit.prevent="form.post('/site1')"
+        >
             <div>
                 <label class="font-medium text-md text-gray-700" for="name">
                     <span>Nombre</span>
@@ -52,7 +56,10 @@ const form = useForm({
                     required
                 />
 
-                <p v-show="form.errors.lastName" class="text-sm text-red-600 mt-2">
+                <p
+                    v-show="form.errors.lastName"
+                    class="text-sm text-red-600 mt-2"
+                >
                     {{ form.errors.lastName }}
                 </p>
             </div>
@@ -76,7 +83,10 @@ const form = useForm({
             </div>
 
             <div>
-                <label class="font-medium text-md text-gray-700" for="documentType">
+                <label
+                    class="font-medium text-md text-gray-700"
+                    for="documentType"
+                >
                     <span>Tipo de documento</span>
                 </label>
 
@@ -91,13 +101,19 @@ const form = useForm({
                     <option value="PPN">Pasaporte</option>
                 </select>
 
-                <p v-show="form.errors.documentType" class="text-sm text-red-600 mt-2">
+                <p
+                    v-show="form.errors.documentType"
+                    class="text-sm text-red-600 mt-2"
+                >
                     {{ form.errors.documentType }}
                 </p>
             </div>
 
             <div>
-                <label class="font-medium text-md text-gray-700" for="documentNumber">
+                <label
+                    class="font-medium text-md text-gray-700"
+                    for="documentNumber"
+                >
                     <span>Número de documento</span>
                 </label>
 
@@ -109,7 +125,10 @@ const form = useForm({
                     required
                 />
 
-                <p v-show="form.errors.documentNumber" class="text-sm text-red-600 mt-2">
+                <p
+                    v-show="form.errors.documentNumber"
+                    class="text-sm text-red-600 mt-2"
+                >
                     {{ form.errors.documentNumber }}
                 </p>
             </div>
@@ -148,7 +167,10 @@ const form = useForm({
                     <option value="USD">USD</option>
                 </select>
 
-                <p v-show="form.errors.currency" class="text-sm text-red-600 mt-2">
+                <p
+                    v-show="form.errors.currency"
+                    class="text-sm text-red-600 mt-2"
+                >
                     {{ form.errors.currency }}
                 </p>
             </div>
@@ -167,18 +189,25 @@ const form = useForm({
                     type="number"
                 />
 
-                <p v-show="form.errors.amount" class="text-sm text-red-600 mt-2">
+                <p
+                    v-show="form.errors.amount"
+                    class="text-sm text-red-600 mt-2"
+                >
                     {{ form.errors.amount }}
                 </p>
             </div>
 
             <div class="sm:col-span-2 mt-5">
                 <button
-                    class="w-full sm:w-auto items-center p-3 bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 focus:bg-gray-700 active:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150">
+                    class="w-full sm:w-auto items-center p-3 bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 focus:bg-gray-700 active:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150"
+                >
                     Pagar
                 </button>
 
-                <span v-if="$page.props.errors[0]" class="mt-4 block text-sm text-red-600">
+                <span
+                    v-if="$page.props.errors[0]"
+                    class="mt-4 block text-sm text-red-600"
+                >
                     {{ $page.props.errors[0] }}
                 </span>
             </div>
