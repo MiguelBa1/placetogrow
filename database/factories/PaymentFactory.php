@@ -3,7 +3,7 @@
 namespace Database\Factories;
 
 use App\Models\Payment;
-use App\Models\User;
+use App\Models\Guest;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
 
@@ -13,6 +13,13 @@ use Illuminate\Support\Str;
 class PaymentFactory extends Factory
 {
     /**
+     * The name of the factory's corresponding model.
+     *
+     * @var string
+     */
+    protected $model = Payment::class;
+
+    /**
      * Define the model's default state.
      *
      * @return array<string, mixed>
@@ -20,7 +27,7 @@ class PaymentFactory extends Factory
     public function definition(): array
     {
         return [
-            'user_id' => User::factory(),
+            'guest_id' => Guest::factory(),
             'payment_reference' => Str::random(),
             'request_id' => Str::random(),
             'process_url' => $this->faker->url,

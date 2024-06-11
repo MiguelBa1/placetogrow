@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('payments', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
+            $table->foreignId('guest_id')->constrained('guests')->onDelete('cascade');
             $table->string('payment_reference');
             $table->string('request_id');
             $table->string('process_url');
