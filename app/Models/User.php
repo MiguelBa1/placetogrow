@@ -2,26 +2,33 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
-class User extends Model
+class User extends Authenticatable
 {
     use Notifiable, HasFactory;
 
     protected $fillable = [
         'name',
-        'last_name',
-        'document_type',
-        'document_number',
-        'phone',
         'email',
+        'password',
     ];
 
-    public function payments(): HasMany
+    protected $hidden = [
+        'password',
+        'remember_token',
+    ];
+
+    protected $casts = [
+        'email_verified_at' => 'datetime',
+        'password' => 'hashed',
+    ];
+
+    public function guests(): HasMany
     {
-        return $this->hasMany(Payment::class);
+        return $this->hasMany(Guest::class);
     }
 }
