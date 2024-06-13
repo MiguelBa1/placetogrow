@@ -1,10 +1,13 @@
 <script setup lang="ts">
+import { useI18n } from 'vue-i18n';
 import GuestLayout from '@/Layouts/GuestLayout.vue';
 import InputError from '@/Components/InputError.vue';
 import InputLabel from '@/Components/InputLabel.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import TextInput from '@/Components/TextInput.vue';
 import { Head, useForm } from '@inertiajs/vue3';
+
+const { t } = useI18n();
 
 const props = defineProps<{
     email: string;
@@ -30,12 +33,14 @@ const submit = () => {
 <template>
     <GuestLayout>
         <Head>
-            <title>Reset Password</title>
+            <title>{{ t('auth.resetPassword.title') }}</title>
         </Head>
 
-        <form @submit.prevent="submit">
+        <form @submit.prevent="submit"
+              class="w-full sm:max-w-md mt-6 px-6 py-4 bg-white shadow-md overflow-hidden sm:rounded-lg"
+        >
             <div>
-                <InputLabel forId="email" value="Email" />
+                <InputLabel forId="email" :value="t('auth.resetPassword.emailLabel')" />
 
                 <TextInput
                     id="email"
@@ -51,7 +56,7 @@ const submit = () => {
             </div>
 
             <div class="mt-4">
-                <InputLabel forId="password" value="Password" />
+                <InputLabel forId="password" :value="t('auth.resetPassword.passwordLabel')" />
 
                 <TextInput
                     id="password"
@@ -66,10 +71,7 @@ const submit = () => {
             </div>
 
             <div class="mt-4">
-                <InputLabel
-                    forId="password_confirmation"
-                    value="Confirm Password"
-                />
+                <InputLabel forId="password_confirmation" :value="t('auth.resetPassword.confirmPasswordLabel')" />
 
                 <TextInput
                     id="password_confirmation"
@@ -80,10 +82,7 @@ const submit = () => {
                     autocomplete="new-password"
                 />
 
-                <InputError
-                    class="mt-2"
-                    :message="form.errors.password_confirmation"
-                />
+                <InputError class="mt-2" :message="form.errors.password_confirmation" />
             </div>
 
             <div class="flex items-center justify-end mt-4">
@@ -91,7 +90,7 @@ const submit = () => {
                     :class="{ 'opacity-25': form.processing }"
                     :disabled="form.processing"
                 >
-                    Reset Password
+                    {{ t('auth.resetPassword.resetButton') }}
                 </PrimaryButton>
             </div>
         </form>
