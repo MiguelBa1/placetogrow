@@ -31,7 +31,9 @@ const submit = () => {
             <title>{{ t('auth.register.title') }}</title>
         </Head>
 
-        <form @submit.prevent="submit">
+        <form @submit.prevent="submit"
+              class="w-full sm:max-w-md px-6 py-4 bg-white shadow-md overflow-hidden sm:rounded-lg"
+        >
             <div>
                 <InputLabel forId="name" :value="t('auth.register.nameLabel')" />
 

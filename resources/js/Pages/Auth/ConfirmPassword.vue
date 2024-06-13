@@ -28,11 +28,13 @@ const submit = () => {
             <title>{{ t('auth.confirmPassword.title') }}</title>
         </Head>
 
-        <div class="mb-4 text-sm text-gray-600">
-            {{ t('auth.confirmPassword.description') }}
-        </div>
+        <form @submit.prevent="submit"
+              class="w-full sm:max-w-md mt-6 px-6 py-4 bg-white shadow-md overflow-hidden sm:rounded-lg"
+        >
+            <div class="mb-4 text-sm text-gray-600">
+                {{ t('auth.confirmPassword.description') }}
+            </div>
 
-        <form @submit.prevent="submit">
             <div>
                 <InputLabel forId="password" :value="t('auth.confirmPassword.passwordLabel')" />
                 <TextInput

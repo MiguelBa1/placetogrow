@@ -8,8 +8,6 @@ const messages = {
     es,
 };
 
-console.log(messages);
-
 export const createI18nInstance = (locale: string) => {
     return createI18n({
         locale,

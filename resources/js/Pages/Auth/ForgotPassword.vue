@@ -28,15 +28,17 @@ const submit = () => {
             <title>{{ t('auth.forgotPassword.title') }}</title>
         </Head>
 
-        <div class="mb-4 text-sm text-gray-600">
-            {{ t('auth.forgotPassword.description') }}
-        </div>
+        <form @submit.prevent="submit"
+              class="w-full sm:max-w-md mt-6 px-6 py-4 bg-white shadow-md overflow-hidden sm:rounded-lg"
+        >
+            <div class="mb-4 text-sm text-gray-600">
+                {{ t('auth.forgotPassword.description') }}
+            </div>
 
-        <div v-if="status" class="mb-4 font-medium text-sm text-green-600">
-            {{ status }}
-        </div>
+            <div v-if="status" class="mb-4 font-medium text-sm text-green-600">
+                {{ status }}
+            </div>
 
-        <form @submit.prevent="submit">
             <div>
                 <InputLabel forId="email" :value="t('auth.forgotPassword.emailLabel')" />
 

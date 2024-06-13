@@ -36,7 +36,9 @@ const submit = () => {
             <title>{{ t('auth.resetPassword.title') }}</title>
         </Head>
 
-        <form @submit.prevent="submit">
+        <form @submit.prevent="submit"
+              class="w-full sm:max-w-md mt-6 px-6 py-4 bg-white shadow-md overflow-hidden sm:rounded-lg"
+        >
             <div>
                 <InputLabel forId="email" :value="t('auth.resetPassword.emailLabel')" />
 
