@@ -1,10 +1,13 @@
 <script setup lang="ts">
+import { useI18n } from 'vue-i18n';
 import GuestLayout from '@/Layouts/GuestLayout.vue';
 import InputError from '@/Components/InputError.vue';
 import InputLabel from '@/Components/InputLabel.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import TextInput from '@/Components/TextInput.vue';
 import { Head, Link, useForm } from '@inertiajs/vue3';
+
+const { t } = useI18n();
 
 const form = useForm({
     name: '',
@@ -25,12 +28,12 @@ const submit = () => {
 <template>
     <GuestLayout>
         <Head>
-            <title>Register</title>
+            <title>{{ t('auth.register.title') }}</title>
         </Head>
 
         <form @submit.prevent="submit">
             <div>
-                <InputLabel forId="name" value="Name" />
+                <InputLabel forId="name" :value="t('auth.register.nameLabel')" />
 
                 <TextInput
                     id="name"
@@ -39,14 +42,14 @@ const submit = () => {
                     v-model="form.name"
                     required
                     autofocus
-                    autocomplete="name"
+                    autocomplete="on"
                 />
 
                 <InputError class="mt-2" :message="form.errors.name" />
             </div>
 
             <div class="mt-4">
-                <InputLabel forId="email" value="Email" />
+                <InputLabel forId="email" :value="t('auth.register.emailLabel')" />
 
                 <TextInput
                     id="email"
@@ -61,7 +64,7 @@ const submit = () => {
             </div>
 
             <div class="mt-4">
-                <InputLabel forId="password" value="Password" />
+                <InputLabel forId="password" :value="t('auth.register.passwordLabel')" />
 
                 <TextInput
                     id="password"
@@ -76,10 +79,7 @@ const submit = () => {
             </div>
 
             <div class="mt-4">
-                <InputLabel
-                    forId="password_confirmation"
-                    value="Confirm Password"
-                />
+                <InputLabel forId="password_confirmation" :value="t('auth.register.confirmPasswordLabel')" />
 
                 <TextInput
                     id="password_confirmation"
@@ -90,10 +90,7 @@ const submit = () => {
                     autocomplete="new-password"
                 />
 
-                <InputError
-                    class="mt-2"
-                    :message="form.errors.password_confirmation"
-                />
+                <InputError class="mt-2" :message="form.errors.password_confirmation" />
             </div>
 
             <div class="flex items-center justify-end mt-4">
@@ -101,7 +98,7 @@ const submit = () => {
                     :href="route('login')"
                     class="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                 >
-                    Already registered?
+                    {{ t('auth.register.alreadyRegistered') }}
                 </Link>
 
                 <PrimaryButton
@@ -109,7 +106,7 @@ const submit = () => {
                     :class="{ 'opacity-25': form.processing }"
                     :disabled="form.processing"
                 >
-                    Register
+                    {{ t('auth.register.registerButton') }}
                 </PrimaryButton>
             </div>
         </form>

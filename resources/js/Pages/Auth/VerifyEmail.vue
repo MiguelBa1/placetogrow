@@ -1,8 +1,11 @@
 <script setup lang="ts">
 import { computed } from 'vue';
+import { useI18n } from 'vue-i18n';
 import GuestLayout from '@/Layouts/GuestLayout.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import { Head, Link, useForm } from '@inertiajs/vue3';
+
+const { t } = useI18n();
 
 const props = defineProps<{
     status?: string;
@@ -22,21 +25,18 @@ const verificationLinkSent = computed(
 <template>
     <GuestLayout>
         <Head>
-            <title>Verify Email</title>
+            <title>{{ t('auth.verifyEmail.title') }}</title>
         </Head>
 
         <div class="mb-4 text-sm text-gray-600">
-            Thanks for signing up! Before getting started, could you verify your
-            email address by clicking on the link we just emailed to you? If you
-            didn't receive the email, we will gladly send you another.
+            {{ t('auth.verifyEmail.description') }}
         </div>
 
         <div
             class="mb-4 font-medium text-sm text-green-600"
             v-if="verificationLinkSent"
         >
-            A new verification link has been sent to the email address you
-            provided during registration.
+            {{ t('auth.verifyEmail.verificationLinkSent') }}
         </div>
 
         <form @submit.prevent="submit">
@@ -45,7 +45,7 @@ const verificationLinkSent = computed(
                     :class="{ 'opacity-25': form.processing }"
                     :disabled="form.processing"
                 >
-                    Resend Verification Email
+                    {{ t('auth.verifyEmail.resendButton') }}
                 </PrimaryButton>
 
                 <Link
@@ -53,8 +53,9 @@ const verificationLinkSent = computed(
                     method="post"
                     as="button"
                     class="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-                    >Log Out</Link
                 >
+                    {{ t('auth.verifyEmail.logoutButton') }}
+                </Link>
             </div>
         </form>
     </GuestLayout>
