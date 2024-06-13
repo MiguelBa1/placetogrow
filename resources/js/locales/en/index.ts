@@ -1,7 +1,9 @@
 import { enCommon } from './common';
 import enAuth from './auth';
+import enProfile from './profile';
 
 export default {
-    ...enCommon,
-    auth: enAuth
+    common: enCommon,
+    auth: enAuth,
+    profile: enProfile,
 };
