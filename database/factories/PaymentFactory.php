@@ -2,8 +2,8 @@
 
 namespace Database\Factories;
 
-use App\Models\Payment;
 use App\Models\Guest;
+use App\Models\Payment;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
 
