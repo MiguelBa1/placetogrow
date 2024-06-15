@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { useI18n } from 'vue-i18n';
 import { computed } from 'vue';
 import {
     Dialog,
@@ -7,7 +8,9 @@ import {
     TransitionChild,
     TransitionRoot,
 } from '@headlessui/vue';
-import Button from './Button.vue';
+import { Button } from './index';
+
+const { t } = useI18n();
 
 const props = withDefaults(
     defineProps<{
@@ -101,7 +104,7 @@ const maxWidthClass = computed(() => {
                                         @click="onClose"
                                         class="bg-gray-600 hover:bg-gray-700 focus-visible:ring-gray-500"
                                     >
-                                        Cerrar
+                                        {{ t('components.ui.modal.close') }}
                                     </Button>
                                 </slot>
                             </div>

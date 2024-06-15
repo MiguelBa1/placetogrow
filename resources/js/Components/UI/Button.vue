@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, defineProps, withDefaults } from 'vue';
+import { computed, withDefaults } from 'vue';
 
 type ButtonProps = {
     id?: string;
