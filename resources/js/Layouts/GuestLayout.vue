@@ -34,7 +34,7 @@ const { t } = useI18n();
                 </template>
             </nav>
         </header>
-        <div class="w-full flex flex-col items-center pt-6 sm:pt-0">
+        <div class="w-full max-w-7xl m-auto flex flex-col items-center pt-6 sm:pt-0">
             <slot />
         </div>
     </div>
