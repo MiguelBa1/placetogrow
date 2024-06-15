@@ -22,8 +22,6 @@
 </template>
 
 <script setup lang="ts">
-import { defineProps } from 'vue';
-
 interface Column {
     key: string;
     label: string;

@@ -1,10 +1,5 @@
 <script setup lang="ts">
-import {
-    computed,
-    defineProps,
-    defineEmits,
-    watch,
-} from 'vue';
+import { computed } from 'vue';
 import {
     Dialog,
     DialogTitle,

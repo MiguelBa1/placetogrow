@@ -6,6 +6,9 @@ import { createInertiaApp } from '@inertiajs/vue3';
 import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
 import { ZiggyVue } from '../../vendor/tightenco/ziggy';
 import { createI18nInstance } from '@/locales';
+import Toast from 'vue-toastification';
+import 'vue-toastification/dist/index.css';
+import { toastOptions } from '@/Lib/toast';
 
 const appName = import.meta.env.VITE_APP_NAME || 'Laravel';
 
@@ -23,6 +26,7 @@ createInertiaApp({
             .use(plugin)
             .use(ZiggyVue)
             .use(i18n)
+            .use(Toast, toastOptions)
             .mount(el);
     },
     progress: {
