@@ -10,7 +10,7 @@ class RoleSeeder extends Seeder
 {
     public function run(): void
     {
-        foreach (Role::getRoles() as $role) {
+        foreach (Role::cases() as $role) {
             SpatieRole::create(['name' => $role]);
         }
     }
