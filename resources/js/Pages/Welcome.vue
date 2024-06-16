@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { Head } from '@inertiajs/vue3';
-import GuestLayout from '@/Layouts/GuestLayout.vue';
+import { MainLayout } from '@/Layouts';
 
 </script>
 
@@ -8,9 +8,9 @@ import GuestLayout from '@/Layouts/GuestLayout.vue';
     <Head>
         <title>Welcome</title>
     </Head>
-    <GuestLayout>
+    <MainLayout>
         <div>
             <h1>Welcome Page</h1>
         </div>
-    </GuestLayout>
+    </MainLayout>
 </template>

@@ -15,7 +15,7 @@ import { Navbar } from '@/Components';
             </header>
 
             <!-- Page Content -->
-            <main>
+            <main class="w-full max-w-7xl mx-auto mt-6 flex flex-col items-center pt-6 sm:pt-0">
                 <slot />
             </main>
         </div>

@@ -1,10 +1,8 @@
 <script setup lang="ts">
 import { useI18n } from 'vue-i18n';
-import GuestLayout from '@/Layouts/GuestLayout.vue';
-import InputError from '@/Components/InputError.vue';
-import InputLabel from '@/Components/InputLabel.vue';
-import PrimaryButton from '@/Components/PrimaryButton.vue';
-import TextInput from '@/Components/TextInput.vue';
+import { InputError, InputLabel, PrimaryButton, TextInput } from '@/Components';
+import { MainLayout } from '@/Layouts';
+
 import { Head, Link, useForm } from '@inertiajs/vue3';
 
 const { t } = useI18n();
@@ -26,7 +24,7 @@ const submit = () => {
 </script>
 
 <template>
-    <GuestLayout>
+    <MainLayout>
         <Head>
             <title>{{ t('auth.register.title') }}</title>
         </Head>
@@ -112,5 +110,5 @@ const submit = () => {
                 </PrimaryButton>
             </div>
         </form>
-    </GuestLayout>
+    </MainLayout>
 </template>
