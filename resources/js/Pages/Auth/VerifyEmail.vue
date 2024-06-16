@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
-import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
-import PrimaryButton from '@/Components/PrimaryButton.vue';
+import { MainLayout } from '@/Layouts';
+import { PrimaryButton } from '@/Components';
 import { Head, Link, useForm } from '@inertiajs/vue3';
 
 const { t } = useI18n();
@@ -23,7 +23,7 @@ const verificationLinkSent = computed(
 </script>
 
 <template>
-    <AuthenticatedLayout>
+    <MainLayout>
         <Head>
             <title>{{ t('auth.verifyEmail.title') }}</title>
         </Head>
@@ -63,5 +63,5 @@ const verificationLinkSent = computed(
 
             </form>
         </div>
-    </AuthenticatedLayout>
+    </MainLayout>
 </template>
