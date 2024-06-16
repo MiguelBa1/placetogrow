@@ -6,5 +6,5 @@ enum MicrositeType: string
 {
     case INVOICE = 'invoice';
     case SUBSCRIPTION = 'subscription';
-    case DONATION = 'donation';
+    case BASIC = 'basic';
 }
