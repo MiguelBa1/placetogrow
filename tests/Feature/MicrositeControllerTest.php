@@ -36,9 +36,9 @@ class MicrositeControllerTest extends TestCase
         $response->assertOk()
             ->assertInertia(
                 fn (AssertableInertia $page) => $page
-                ->component('Microsites/Index')
-                ->has('microsites', 1)
-                ->where('microsites.0.name', $microsite->name)
+                    ->component('Microsites/Index')
+                    ->has('microsites', 1)
+                    ->where('microsites.0.name', $microsite->name)
             );
     }
 
@@ -51,9 +51,9 @@ class MicrositeControllerTest extends TestCase
         $response->assertOk()
             ->assertInertia(
                 fn (AssertableInertia $page) => $page
-                ->component('Microsites/Show')
-                ->has('microsite')
-                ->where('microsite.name', $microsite->name)
+                    ->component('Microsites/Show')
+                    ->has('microsite')
+                    ->where('microsite.name', $microsite->name)
             );
     }
 
@@ -113,6 +113,49 @@ class MicrositeControllerTest extends TestCase
             'payment_expiration' => 30,
             'type' => 'invoice',
         ]);
+
+        $response->assertForbidden();
+    }
+
+    public function test_admin_can_view_create_page()
+    {
+        $response = $this->actingAs($this->adminUser)->get(route('microsites.create'));
+
+        $response->assertOk()
+            ->assertInertia(
+                fn (AssertableInertia $page) => $page
+                    ->component('Microsites/Create')
+                    ->has('categories')
+            );
+    }
+
+    public function test_admin_can_view_edit_page()
+    {
+        $microsite = Microsite::factory()->create();
+
+        $response = $this->actingAs($this->adminUser)->get(route('microsites.edit', $microsite));
+
+        $response->assertOk()
+            ->assertInertia(
+                fn (AssertableInertia $page) => $page
+                    ->component('Microsites/Edit')
+                    ->has('microsite')
+                    ->has('categories')
+            );
+    }
+
+    public function test_guest_cannot_view_create_page()
+    {
+        $response = $this->actingAs($this->guestUser)->get(route('microsites.create'));
+
+        $response->assertForbidden();
+    }
+
+    public function test_guest_cannot_view_edit_page()
+    {
+        $microsite = Microsite::factory()->create();
+
+        $response = $this->actingAs($this->guestUser)->get(route('microsites.edit', $microsite));
 
         $response->assertForbidden();
     }

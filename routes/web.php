@@ -24,9 +24,6 @@ Route::middleware('auth')->group(function () {
     Route::delete($profileRoute, [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-Route::get('microsites', [MicrositeController::class, 'index'])->name('microsites.index');
-Route::get('microsites/{microsite}', [MicrositeController::class, 'show'])->name('microsites.show');
-
 Route::middleware(['auth', 'role:' . Role::ADMIN->value])->group(function () {
     Route::get('microsites/create', [MicrositeController::class, 'create'])->name('microsites.create');
     Route::post('microsites', [MicrositeController::class, 'store'])->name('microsites.store');
@@ -34,5 +31,8 @@ Route::middleware(['auth', 'role:' . Role::ADMIN->value])->group(function () {
     Route::put('microsites/{microsite}', [MicrositeController::class, 'update'])->name('microsites.update');
     Route::delete('microsites/{microsite}', [MicrositeController::class, 'destroy'])->name('microsites.destroy');
 });
+
+Route::get('microsites', [MicrositeController::class, 'index'])->name('microsites.index');
+Route::get('microsites/{microsite}', [MicrositeController::class, 'show'])->name('microsites.show');
 
 require __DIR__.'/auth.php';
