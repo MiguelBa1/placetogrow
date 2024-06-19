@@ -50,7 +50,9 @@ Route::prefix('categories')->name('categories.')->middleware(['auth', 'role:' . 
 
 Route::post('payments/', [PaymentController::class, 'store'])->name('payment.store');
 
-Route::get('/site1', [PaymentController::class, 'index'])->name('site1');
+Route::get('/site1', function () {
+    return Inertia::render('Site1/Index');
+})->name('site1');
 
 Route::get('/site1/return/{reference}', [PaymentController::class, 'return'])->name('site1.return');
 
