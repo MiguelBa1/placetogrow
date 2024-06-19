@@ -2,6 +2,9 @@
 
 namespace Tests\Feature;
 
+use App\Constants\CurrencyType;
+use App\Constants\DocumentType;
+use App\Constants\MicrositeType;
 use App\Constants\Role;
 use App\Models\Category;
 use App\Models\Microsite;
@@ -65,13 +68,20 @@ class MicrositeControllerTest extends TestCase
             'name' => 'Test Microsite',
             'logo' => 'https://example.com/logo.png',
             'category_id' => $category->id,
-            'payment_currency' => 'USD',
+            'payment_currency' => CurrencyType::USD->value,
             'payment_expiration' => 30,
-            'type' => 'invoice',
+            'type' => MicrositeType::INVOICE->value,
+            'slug' => 'test-microsite',
+            'responsible_name' => 'John Doe',
+            'responsible_document_number' => '1234567890',
+            'responsible_document_type' => DocumentType::CC->value,
         ]);
 
         $response->assertFound();
-        $this->assertDatabaseHas('microsites', ['name' => 'Test Microsite']);
+        $this->assertDatabaseHas('microsites', [
+            'slug' => 'test-microsite',
+            'name' => 'Test Microsite'
+        ]);
     }
 
     public function test_admin_can_update_microsite()
@@ -82,13 +92,21 @@ class MicrositeControllerTest extends TestCase
             'name' => 'Updated Microsite',
             'logo' => 'https://example.com/new-logo.png',
             'category_id' => $microsite->category_id,
-            'payment_currency' => 'COP',
+            'payment_currency' => CurrencyType::COP->value,
             'payment_expiration' => 60,
-            'type' => 'subscription',
+            'type' => MicrositeType::SUBSCRIPTION->value,
+            'slug' => $microsite->slug,
+            'responsible_name' => 'Jane Doe',
+            'responsible_document_number' => '0987654321',
+            'responsible_document_type' => DocumentType::CE->value,
         ]);
 
         $response->assertFound();
-        $this->assertDatabaseHas('microsites', ['name' => 'Updated Microsite']);
+        $this->assertDatabaseHas('microsites', [
+            'id' => $microsite->id,
+            'name' => 'Updated Microsite',
+            'responsible_name' => 'Jane Doe'
+        ]);
     }
 
     public function test_admin_can_delete_microsite()
@@ -109,9 +127,13 @@ class MicrositeControllerTest extends TestCase
             'name' => 'Test Microsite',
             'logo' => 'https://example.com/logo.png',
             'category_id' => $category->id,
-            'payment_currency' => 'USD',
+            'payment_currency' => CurrencyType::USD->value,
             'payment_expiration' => 30,
-            'type' => 'invoice',
+            'type' => MicrositeType::INVOICE->value,
+            'slug' => 'test-microsite',
+            'responsible_name' => 'John Doe',
+            'responsible_document_number' => '1234567890',
+            'responsible_document_type' => DocumentType::CC->value,
         ]);
 
         $response->assertForbidden();

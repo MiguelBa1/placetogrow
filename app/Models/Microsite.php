@@ -18,7 +18,11 @@ class Microsite extends Model
         'category_id',
         'payment_currency',
         'payment_expiration',
-        'type'
+        'type',
+        'slug',
+        'responsible_name',
+        'responsible_document_number',
+        'responsible_document_type',
     ];
 
     protected $casts = [
