@@ -20,8 +20,8 @@ class PaymentService implements PaymentServiceInterface
     {
         $paymentReference = Str::random();
 
-        $login = env('P2P_LOGIN');
-        $secretKey = env('P2P_SECRET_KEY');
+        $login = config('placetopay.login');
+        $secretKey = config('placetopay.tranKey');
         $seed = Carbon::now()->toIso8601String();
         $rawNonce = Str::random();
 
@@ -73,8 +73,8 @@ class PaymentService implements PaymentServiceInterface
 
     public function checkPayment(string $reference): \Inertia\Response|RedirectResponse
     {
-        $login = env('P2P_LOGIN');
-        $secretKey = env('P2P_SECRET_KEY');
+        $login = config('placetopay.login');
+        $secretKey = config('placetopay.tranKey');
         $seed = Carbon::now()->toIso8601String();
         $rawNonce = Str::random();
 

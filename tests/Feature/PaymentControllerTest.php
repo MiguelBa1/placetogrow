@@ -15,7 +15,7 @@ class PaymentControllerTest extends TestCase
     public function test_store_payment(): void
     {
         Http::fake([
-            env('P2P_URL') . '/*' => Http::response([
+            config('placetopay.url') . '/*' => Http::response([
                 'processUrl' => '/success',
                 'requestId' => 'test_request_id',
                 'status' => [
@@ -57,7 +57,7 @@ class PaymentControllerTest extends TestCase
     public function test_store_payment_error(): void
     {
         Http::fake([
-            env('P2P_URL') . '/*' => Http::response([
+            config('placetopay.url') . '/*' => Http::response([
                 'status' => [
                     'status' => 'ERROR',
                     'message' => 'An error occurred while processing the payment',
@@ -88,7 +88,7 @@ class PaymentControllerTest extends TestCase
         ]);
 
         Http::fake([
-            env('P2P_URL') . '/*' => Http::response([
+            config('placetopay.url') . '/*' => Http::response([
                 'status' => [
                     'status' => 'APPROVED',
                     'message' => 'Payment approved',
@@ -130,7 +130,7 @@ class PaymentControllerTest extends TestCase
         ]);
 
         Http::fake([
-            env('P2P_URL') . '/*' => Http::response([
+            config('placetopay.url') . '/*' => Http::response([
                 'status' => [
                     'status' => 'ERROR',
                     'message' => 'An error occurred while completing the payment',
@@ -160,7 +160,7 @@ class PaymentControllerTest extends TestCase
         ]);
 
         Http::fake([
-            env('P2P_URL') . '/*' => Http::response([
+            config('placetopay.url') . '/*' => Http::response([
                 'status' => [
                     'status' => 'REJECTED',
                     'message' => 'Payment rejected',
