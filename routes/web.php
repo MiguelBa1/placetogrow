@@ -4,13 +4,14 @@ use App\Constants\Role;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\LanguageController;
 use App\Http\Controllers\MicrositeController;
+use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
 Route::get('/', function () {
     return Inertia::render('Welcome');
-});
+})->name('welcome');
 
 Route::get('/dashboard', function () {
     return Inertia::render('Dashboard');
@@ -46,5 +47,11 @@ Route::prefix('categories')->name('categories.')->middleware(['auth', 'role:' . 
     Route::delete('/{category}', [CategoryController::class, 'destroy'])->name('destroy');
     Route::get('/', [CategoryController::class, 'index'])->name('index');
 });
+
+Route::post('payments/', [PaymentController::class, 'store'])->name('payment.store');
+
+Route::get('/site1', [PaymentController::class, 'index'])->name('site1');
+
+Route::get('/site1/return/{reference}', [PaymentController::class, 'return'])->name('site1.return');
 
 require __DIR__.'/auth.php';

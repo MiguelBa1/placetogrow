@@ -17,7 +17,8 @@ class PaymentController extends Controller
 
     public function store(CreatePaymentRequest $request): RedirectResponse|Response
     {
-        return (new PaymentService)->createPayment($request);
+        $paymentData = $request->validated();
+        return (new PaymentService)->createPayment($paymentData, $request->ip(), $request->userAgent());
     }
 
     public function return($reference): \Inertia\Response|RedirectResponse
