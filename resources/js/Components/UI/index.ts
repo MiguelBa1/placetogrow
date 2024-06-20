@@ -1,4 +1,6 @@
 export { default as Button } from './Button.vue'
 export { default as Modal } from './Modal.vue'
 export { default as DataTable } from './DataTable.vue'
+export { default as Pagination } from './Pagination.vue'
+export * from './types'
 export * from './Navbar'

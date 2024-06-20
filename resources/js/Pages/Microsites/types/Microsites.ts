@@ -1,4 +1,6 @@
-export type Microsites = {
+import { type PaginatedResponse } from '@/Components';
+
+export type Microsite = {
     id: number;
     name: string;
     responsible_name: string;
@@ -11,22 +13,6 @@ export type Microsites = {
     payment_expiration: string;
 };
 
-export type PaginatedMicrosites = {
-    data: Microsites[];
-    current_page: number;
-    first_page_url: string;
-    from: number;
-    last_page: number;
-    last_page_url: string;
-    links: {
-        url: string | null;
-        label: string;
-        active: boolean;
-    }[];
-    next_page_url: string | null;
-    path: string;
-    per_page: number;
-    prev_page_url: string | null;
-    to: number;
-    total: number;
+export type MicrositesPaginatedResponse = PaginatedResponse & {
+    data: Microsite[];
 };

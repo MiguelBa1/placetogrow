@@ -78,6 +78,6 @@ class MicrositeController extends Controller
     {
         $microsite->delete();
 
-        return to_route('microsites.index');
+        return back();
     }
 }
