@@ -24,10 +24,12 @@ class MicrositeFactory extends Factory
     {
         $name = 'Microsite ' . $this->faker->unique()->randomNumber(5);
 
+        $category = Category::first() ?? Category::factory()->create();
+
         return [
             'name' => $name,
             'logo' => $this->faker->imageUrl,
-            'category_id' => Category::factory(),
+            'category_id' => $category->id,
             'payment_currency' => $this->faker->randomElement(array_column(CurrencyType::cases(), 'value')),
             'payment_expiration' => $this->faker->numberBetween(1, 365),
             'type' => $this->faker->randomElement(array_column(MicrositeType::cases(), 'value')),

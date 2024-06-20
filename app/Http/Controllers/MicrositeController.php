@@ -14,11 +14,18 @@ class MicrositeController extends Controller
     public function index(): Response
     {
         $microsites = Microsite::with('category:id,name,logo')
-            ->select('id', 'name', 'logo', 'category_id', 'type', 'payment_currency', 'payment_expiration')
-            ->get();
+            ->select(
+                'id',
+                'name',
+                'category_id',
+                'type',
+                'responsible_name',
+                'payment_currency',
+                'payment_expiration'
+            )->paginate(10);
 
         return Inertia::render('Microsites/Index', [
-            'microsites' => $microsites,
+            'microsites' => fn () => $microsites,
         ]);
     }
 
@@ -36,7 +43,7 @@ class MicrositeController extends Controller
 
     public function create(): Response
     {
-        $categories = Category::select('id', 'name')->get();
+        $categories = Category::query()->select('id', 'name')->get();
 
         return Inertia::render('Microsites/Create', [
             'categories' => $categories,
@@ -45,14 +52,14 @@ class MicrositeController extends Controller
 
     public function store(CreateMicrositeRequest $request): HttpFoundationResponse
     {
-        Microsite::create($request->validated());
+        Microsite::query()->create($request->validated());
 
-        return Inertia::location(route('microsites.index'));
+        return to_route('microsites.index');
     }
 
     public function edit(Microsite $microsite): Response
     {
-        $categories = Category::select('id', 'name')->get();
+        $categories = Category::query()->select('id', 'name')->get();
 
         return Inertia::render('Microsites/Edit', [
             'microsite' => $microsite,
@@ -64,13 +71,13 @@ class MicrositeController extends Controller
     {
         $microsite->update($request->validated());
 
-        return Inertia::location(route('microsites.index'));
+        return to_route('microsites.index');
     }
 
     public function destroy(Microsite $microsite): HttpFoundationResponse
     {
         $microsite->delete();
 
-        return Inertia::location(route('microsites.index'));
+        return to_route('microsites.index');
     }
 }

@@ -30,36 +30,6 @@ class MicrositeControllerTest extends TestCase
         $this->guestUser = User::factory()->create()->assignRole(Role::GUEST);
     }
 
-    public function test_guest_can_view_microsites()
-    {
-        $microsite = Microsite::factory()->create();
-
-        $response = $this->actingAs($this->guestUser)->get(route('microsites.index'));
-
-        $response->assertOk()
-            ->assertInertia(
-                fn (AssertableInertia $page) => $page
-                    ->component('Microsites/Index')
-                    ->has('microsites', 1)
-                    ->where('microsites.0.name', $microsite->name)
-            );
-    }
-
-    public function test_guest_can_view_a_single_microsite()
-    {
-        $microsite = Microsite::factory()->create();
-
-        $response = $this->actingAs($this->guestUser)->get(route('microsites.show', $microsite));
-
-        $response->assertOk()
-            ->assertInertia(
-                fn (AssertableInertia $page) => $page
-                    ->component('Microsites/Show')
-                    ->has('microsite')
-                    ->where('microsite.name', $microsite->name)
-            );
-    }
-
     public function test_admin_can_create_microsite()
     {
         $category = Category::factory()->create();
@@ -107,6 +77,7 @@ class MicrositeControllerTest extends TestCase
             'name' => 'Updated Microsite',
             'responsible_name' => 'Jane Doe'
         ]);
+        $response->assertRedirect(route('microsites.index'));
     }
 
     public function test_admin_can_delete_microsite()
@@ -117,6 +88,7 @@ class MicrositeControllerTest extends TestCase
 
         $response->assertFound();
         $this->assertDatabaseMissing('microsites', ['id' => $microsite->id]);
+        $response->assertRedirect(route('microsites.index'));
     }
 
     public function test_guest_cannot_create_microsite()

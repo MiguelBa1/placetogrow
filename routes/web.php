@@ -25,20 +25,17 @@ Route::prefix('profile')->middleware('auth')->name('profile.')->group(function (
     Route::delete('/', [ProfileController::class, 'destroy'])->name('destroy');
 });
 
-Route::prefix('microsites')->name('microsites.')->group(function () {
-    Route::middleware(['auth', 'role:' . Role::ADMIN->value])->group(function () {
-        Route::get('/create', [MicrositeController::class, 'create'])->name('create');
-        Route::post('/', [MicrositeController::class, 'store'])->name('store');
-        Route::prefix('{microsite}')->group(function () {
-            Route::get('/edit', [MicrositeController::class, 'edit'])->name('edit');
-            Route::put('/', [MicrositeController::class, 'update'])->name('update');
-            Route::delete('/', [MicrositeController::class, 'destroy'])->name('destroy');
-        });
+Route::prefix('microsites')->name('microsites.')->middleware(['auth', 'role:' . Role::ADMIN->value])->group(function () {
+    Route::get('/create', [MicrositeController::class, 'create'])->name('create');
+    Route::post('/', [MicrositeController::class, 'store'])->name('store');
+    Route::prefix('{microsite}')->group(function () {
+        Route::get('/edit', [MicrositeController::class, 'edit'])->name('edit');
+        Route::put('/', [MicrositeController::class, 'update'])->name('update');
+        Route::delete('/', [MicrositeController::class, 'destroy'])->name('destroy');
+        Route::get('/', [MicrositeController::class, 'show'])->name('show');
     });
 
     Route::get('/', [MicrositeController::class, 'index'])->name('index');
-    Route::get('/{microsite}', [MicrositeController::class, 'show'])->name('show');
-
 });
 
 Route::prefix('categories')->name('categories.')->middleware(['auth', 'role:' . Role::ADMIN->value])->group(function () {
