@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Constants\CurrencyType;
+use App\Constants\DocumentType;
+use App\Constants\MicrositeType;
 use App\Http\Requests\CreateMicrositeRequest;
 use App\Models\Category;
 use App\Models\Microsite;
@@ -44,15 +47,21 @@ class MicrositeController extends Controller
     public function create(): Response
     {
         $categories = Category::query()->select('id', 'name')->get();
+        $documentTypes = DocumentType::cases();
+        $micrositeTypes = MicrositeType::cases();
+        $currencyTypes = CurrencyType::cases();
 
         return Inertia::render('Microsites/Create', [
             'categories' => $categories,
+            'documentTypes' => $documentTypes,
+            'micrositeTypes' => $micrositeTypes,
+            'currencyTypes' => $currencyTypes,
         ]);
     }
 
     public function store(CreateMicrositeRequest $request): HttpFoundationResponse
     {
-        Microsite::query()->create($request->validated());
+        Microsite::query()->create($request->all());
 
         return to_route('microsites.index');
     }

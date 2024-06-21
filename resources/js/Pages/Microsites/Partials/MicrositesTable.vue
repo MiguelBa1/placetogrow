@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref } from 'vue';
+import dayjs from 'dayjs';
 import { PencilSquareIcon, TrashIcon } from '@heroicons/vue/16/solid';
 import { Link } from '@inertiajs/vue3';
 import { Button, DataTable, Pagination } from '@/Components';
@@ -26,7 +27,7 @@ const closeDeleteModal = () => {
 
 <template>
     <div class="w-full space-y-4">
-        <DataTable :columns="micrositesColumns" :rows="microsites.data">
+        <DataTable :columns="micrositesColumns" :rows="microsites.data" class="rounded-lg">
             <template #cell-category="{ row }">
                 {{ row.category.name }}
             </template>
@@ -48,6 +49,9 @@ const closeDeleteModal = () => {
             </template>
             <template #cell-type="{ row }">
                 {{ micrositeTypesTranslations[row.type as MicrositeType] }}
+            </template>
+            <template #cell-payment_expiration="{ row }">
+                {{ dayjs(row.payment_expiration as Date).format('DD/MM/YYYY') }}
             </template>
         </DataTable>
         <Pagination

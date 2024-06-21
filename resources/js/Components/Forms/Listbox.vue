@@ -12,6 +12,7 @@
             <div class="relative">
                 <ListboxButton
                     :id="id"
+                    :aria-required="required"
                     :class="[
                         baseClasses,
                         error ? errorClasses : normalClasses,
@@ -78,7 +79,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref } from 'vue';
+import { computed, withDefaults } from 'vue';
 import {
     Listbox,
     ListboxButton,
@@ -93,7 +94,7 @@ type Option = {
     value: string | number;
 };
 
-const props = defineProps<{
+const props = withDefaults(defineProps<{
     id: string;
     modelValue: string | number | null;
     options: Option[];
@@ -103,7 +104,14 @@ const props = defineProps<{
     error?: string;
     disabled?: boolean;
     required?: boolean;
-}>();
+}>(), {
+    placeholder: 'Seleccionar',
+    className: '',
+    disabled: false,
+    label: '',
+    required: false,
+    id: '',
+});
 
 const emit = defineEmits(['update:modelValue']);
 
@@ -126,10 +134,4 @@ const selectedOption = computed(() => {
     return props.options.find((option) => option.value === selectedValue.value);
 });
 
-const placeholder = ref(props.placeholder || 'Seleccionar');
-const className = ref(props.className || '');
-const disabled = ref(props.disabled || false);
-const error = ref(props.error || '');
-const label = ref(props.label || '');
-const id = ref(props.id);
 </script>

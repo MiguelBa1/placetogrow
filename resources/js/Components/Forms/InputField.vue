@@ -3,7 +3,7 @@ import { computed } from 'vue';
 
 interface InputProps {
     id: string;
-    type: 'text' | 'email' | 'password' | 'number';
+    type: 'text' | 'email' | 'password' | 'number' | 'date';
     name?: string;
     label?: string;
     placeholder?: string;
@@ -45,7 +45,7 @@ const updateValue = (event: Event) => {
 </script>
 
 <template>
-    <div :class="`w-full ${className}`">
+    <div :class="`w-full ${className ?? ''}`">
         <label v-if="label" :for="id" class="block text-sm font-medium text-gray-700 mb-1">{{ label }}</label>
         <input
             v-bind="inputAttrs"

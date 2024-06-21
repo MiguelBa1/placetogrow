@@ -12,13 +12,12 @@ return new class extends Migration {
     {
         Schema::create('microsites', function (Blueprint $table) {
             $table->id();
-            $table->string('name', 100);
+            $table->string('name', 150)->unique();
             $table->string('logo', 255)->nullable();
             $table->foreignId('category_id')->constrained('categories');
             $table->enum('payment_currency', array_column(CurrencyType::cases(), 'value'));
-            $table->integer('payment_expiration');
+            $table->date('payment_expiration');
             $table->enum('type', array_column(MicrositeType::cases(), 'value'));
-            $table->string('slug', 150)->unique();
             $table->string('responsible_name', 100);
             $table->string('responsible_document_number', 20);
             $table->enum('responsible_document_type', array_column(DocumentType::cases(), 'value'));

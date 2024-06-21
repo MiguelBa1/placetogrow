@@ -19,7 +19,6 @@ class Microsite extends Model
         'payment_currency',
         'payment_expiration',
         'type',
-        'slug',
         'responsible_name',
         'responsible_document_number',
         'responsible_document_type',
@@ -28,6 +27,7 @@ class Microsite extends Model
     protected $casts = [
         'payment_currency' => CurrencyType::class,
         'type' => MicrositeType::class,
+        'payment_expiration' => 'date',
     ];
 
     public function category(): BelongsTo

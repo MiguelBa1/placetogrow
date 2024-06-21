@@ -271,5 +271,11 @@ return [
         'username'                 => 'usuario',
         'value'                    => 'valor',
         'year'                     => 'año',
+        'payment_currency'         => 'moneda de pago',
+        'category_id'              => 'categoría',
+        'payment_expiration'       => 'vencimiento de pago',
+        'responsible_name'         => 'nombre del responsable',
+        'responsible_document_number' => 'número de documento del responsable',
+        'responsible_document_type' => 'tipo de documento del responsable',
     ],
 ];
