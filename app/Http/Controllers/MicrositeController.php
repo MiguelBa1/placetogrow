@@ -10,6 +10,8 @@ use App\Models\Category;
 use App\Models\Microsite;
 use Inertia\Inertia;
 use Inertia\Response;
+use Spatie\MediaLibrary\MediaCollections\Exceptions\FileDoesNotExist;
+use Spatie\MediaLibrary\MediaCollections\Exceptions\FileIsTooBig;
 use Symfony\Component\HttpFoundation\Response as HttpFoundationResponse;
 
 class MicrositeController extends Controller
@@ -25,7 +27,7 @@ class MicrositeController extends Controller
                 'responsible_name',
                 'payment_currency',
                 'payment_expiration'
-            )->paginate(10);
+            )->paginate(10)->onEachSide(1);
 
         return Inertia::render('Microsites/Index', [
             'microsites' => fn () => $microsites,
@@ -36,8 +38,9 @@ class MicrositeController extends Controller
     {
         $microsite->load('category:id,name');
 
-        $micrositeData = $microsite->only(['id', 'name', 'logo', 'category_id', 'type', 'payment_currency', 'payment_expiration']);
+        $micrositeData = $microsite->only(['id', 'name', 'category_id', 'type', 'payment_currency', 'payment_expiration']);
         $micrositeData['category'] = $microsite->category;
+        $micrositeData['logo'] = $microsite->getFirstMediaUrl('logos');
 
         return Inertia::render('Microsites/Show', [
             'microsite' => $micrositeData,
@@ -61,7 +64,13 @@ class MicrositeController extends Controller
 
     public function store(CreateMicrositeRequest $request): HttpFoundationResponse
     {
-        Microsite::query()->create($request->all());
+        $microsite = Microsite::create($request->except('logo'));
+
+        if ($request->hasFile('logo')) {
+            $microsite
+                ->addMediaFromRequest('logo')
+                ->toMediaCollection('logos');
+        }
 
         return to_route('microsites.index');
     }
@@ -78,7 +87,17 @@ class MicrositeController extends Controller
 
     public function update(CreateMicrositeRequest $request, Microsite $microsite): HttpFoundationResponse
     {
-        $microsite->update($request->validated());
+        $microsite->update($request->except('logo'));
+
+        if ($request->hasFile('logo')) {
+            try {
+                $microsite
+                    ->addMediaFromRequest('logo')
+                    ->toMediaCollection('logos');
+            } catch (FileDoesNotExist | FileIsTooBig $e) {
+                return back()->withErrors(trans('messages.error.uploading_logo', ['message' => $e->getMessage()]));
+            }
+        }
 
         return to_route('microsites.index');
     }

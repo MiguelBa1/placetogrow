@@ -14,6 +14,8 @@ use Illuminate\Database\Eloquent\Factories\Factory;
  */
 class MicrositeFactory extends Factory
 {
+    protected $model = Microsite::class;
+
     /**
      * Define the model's default state.
      *
@@ -27,7 +29,6 @@ class MicrositeFactory extends Factory
 
         return [
             'name' => $name,
-            'logo' => $this->faker->imageUrl(),
             'category_id' => $category->id,
             'payment_currency' => $this->faker->randomElement(array_column(CurrencyType::cases(), 'value')),
             'payment_expiration' => $this->faker->dateTimeBetween('now', '+1 year'),
@@ -36,5 +37,13 @@ class MicrositeFactory extends Factory
             'responsible_document_number' => $this->faker->unique()->numerify('##########'),
             'responsible_document_type' => $this->faker->randomElement(array_column(DocumentType::cases(), 'value')),
         ];
+    }
+
+    public function configure(): Factory|MicrositeFactory
+    {
+        return $this->afterCreating(function (Microsite $microsite) {
+            $microsite->addMediaFromUrl($this->faker->imageUrl())
+                ->toMediaCollection('logos');
+        });
     }
 }
