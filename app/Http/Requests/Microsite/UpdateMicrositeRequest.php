@@ -2,13 +2,7 @@
 
 namespace App\Http\Requests\Microsite;
 
-use App\Constants\CurrencyType;
-use App\Constants\DocumentType;
-use App\Constants\MicrositeType;
-use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Validation\Rule;
-
-class UpdateMicrositeRequest extends FormRequest
+class UpdateMicrositeRequest extends BaseMicrositeRequest
 {
     public function authorize(): bool
     {
@@ -19,21 +13,18 @@ class UpdateMicrositeRequest extends FormRequest
     {
         $micrositeId = $this->route('microsite')->id ?? null;
 
-        return [
-            'name' => [
-                'sometimes',
-                'string',
-                'max:150',
-                Rule::unique('microsites')->ignore($micrositeId),
-            ],
-            'logo' => ['nullable', 'image', 'max:2048', 'mimes:jpeg,png,jpg'],
-            'category_id' => ['sometimes', 'exists:categories,id'],
-            'payment_currency' => ['sometimes', Rule::in(array_column(CurrencyType::cases(), 'value'))],
-            'payment_expiration' => ['sometimes', 'date'],
-            'type' => ['sometimes', Rule::in(array_column(MicrositeType::cases(), 'value'))],
-            'responsible_name' => ['sometimes', 'string', 'max:100'],
-            'responsible_document_number' => ['sometimes', 'string', 'max:20'],
-            'responsible_document_type' => ['sometimes', Rule::in(array_column(DocumentType::cases(), 'value'))],
-        ];
+        $rules = $this->commonRules($micrositeId);
+
+        return array_merge($rules, [
+            'name' => array_merge(['sometimes'], $rules['name']),
+            'logo' => array_merge(['nullable'], $rules['logo']),
+            'category_id' => array_merge(['sometimes'], $rules['category_id']),
+            'payment_currency' => array_merge(['sometimes'], $rules['payment_currency']),
+            'payment_expiration' => array_merge(['sometimes'], $rules['payment_expiration']),
+            'type' => array_merge(['sometimes'], $rules['type']),
+            'responsible_name' => array_merge(['sometimes'], $rules['responsible_name']),
+            'responsible_document_number' => array_merge(['sometimes'], $rules['responsible_document_number']),
+            'responsible_document_type' => array_merge(['sometimes'], $rules['responsible_document_type']),
+        ]);
     }
 }

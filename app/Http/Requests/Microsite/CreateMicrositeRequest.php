@@ -2,13 +2,7 @@
 
 namespace App\Http\Requests\Microsite;
 
-use App\Constants\CurrencyType;
-use App\Constants\DocumentType;
-use App\Constants\MicrositeType;
-use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Validation\Rule;
-
-class CreateMicrositeRequest extends FormRequest
+class CreateMicrositeRequest extends BaseMicrositeRequest
 {
     public function authorize(): bool
     {
@@ -17,23 +11,18 @@ class CreateMicrositeRequest extends FormRequest
 
     public function rules(): array
     {
-        $micrositeId = $this->route('microsite')->id ?? null;
+        $rules = $this->commonRules(null);
 
-        return [
-            'name' => [
-                'required',
-                'string',
-                'max:150',
-                Rule::unique('microsites')->ignore($micrositeId),
-            ],
-            'logo' => ['required', 'image', 'max:2048', 'mimes:jpeg,png,jpg'],
-            'category_id' => ['required', 'exists:categories,id'],
-            'payment_currency' => ['required', Rule::in(array_column(CurrencyType::cases(), 'value'))],
-            'payment_expiration' => ['required', 'date'],
-            'type' => ['required', Rule::in(array_column(MicrositeType::cases(), 'value'))],
-            'responsible_name' => ['required', 'string', 'max:100'],
-            'responsible_document_number' => ['required', 'string', 'max:20'],
-            'responsible_document_type' => ['required', Rule::in(array_column(DocumentType::cases(), 'value'))],
-        ];
+        return array_merge($rules, [
+            'name' => array_merge(['required'], $rules['name']),
+            'logo' => array_merge(['required'], $rules['logo']),
+            'category_id' => array_merge(['required'], $rules['category_id']),
+            'payment_currency' => array_merge(['required'], $rules['payment_currency']),
+            'payment_expiration' => array_merge(['required'], $rules['payment_expiration']),
+            'type' => array_merge(['required'], $rules['type']),
+            'responsible_name' => array_merge(['required'], $rules['responsible_name']),
+            'responsible_document_number' => array_merge(['required'], $rules['responsible_document_number']),
+            'responsible_document_type' => array_merge(['required'], $rules['responsible_document_type']),
+        ]);
     }
 }
