@@ -8,6 +8,7 @@ use App\Constants\MicrositeType;
 use App\Models\Category;
 use App\Models\Microsite;
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Support\Facades\Storage;
 
 /**
  * @extends Factory<Microsite>
@@ -42,8 +43,16 @@ class MicrositeFactory extends Factory
     public function configure(): Factory|MicrositeFactory
     {
         return $this->afterCreating(function (Microsite $microsite) {
-            $microsite->addMediaFromUrl($this->faker->imageUrl())
-                ->toMediaCollection('logos');
+            $testImages = Storage::disk('test_images')->files();
+
+            if (!empty($testImages)) {
+                $randomImage = $this->faker->randomElement($testImages);
+                $tempPath = Storage::disk('test_images')->path($randomImage);
+
+                $microsite->addMedia($tempPath)
+                    ->preservingOriginal()
+                    ->toMediaCollection('logos');
+            }
         });
     }
 }
