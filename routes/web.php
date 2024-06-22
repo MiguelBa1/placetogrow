@@ -32,11 +32,12 @@ Route::prefix('microsites')->name('microsites.')->middleware(['auth', 'role:' . 
         Route::get('/edit', [MicrositeController::class, 'edit'])->name('edit');
         Route::put('/', [MicrositeController::class, 'update'])->name('update');
         Route::delete('/', [MicrositeController::class, 'destroy'])->name('destroy');
-        Route::get('/', [MicrositeController::class, 'show'])->name('show');
     });
 
     Route::get('/', [MicrositeController::class, 'index'])->name('index');
 });
+
+Route::get('/', [MicrositeController::class, 'show'])->name('show');
 
 Route::prefix('categories')->name('categories.')->middleware(['auth', 'role:' . Role::ADMIN->value])->group(function () {
     Route::post('/', [CategoryController::class, 'store'])->name('store');

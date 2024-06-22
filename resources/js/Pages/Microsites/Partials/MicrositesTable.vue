@@ -6,9 +6,11 @@ import { Link } from '@inertiajs/vue3';
 import { Button, DataTable, Pagination } from '@/Components';
 import { DeleteMicrositeModal, micrositesColumns, MicrositesPaginatedResponse, micrositeTypesTranslations, MicrositeType } from '../index';
 
-defineProps<{
+const { microsites } = defineProps<{
     microsites: MicrositesPaginatedResponse;
 }>();
+
+const currentPage = microsites.current_page;
 
 const selectedMicrositeId = ref<number | null>(null);
 
@@ -34,7 +36,7 @@ const closeDeleteModal = () => {
             <template #cell-actions="{ row }">
                 <div class="flex justify-center gap-2">
                     <Link
-                        :href="route('microsites.edit', row.id)"
+                        :href="route('microsites.edit', { microsite: row.id, page: currentPage })"
                         class="text-blue-600 hover:text-blue-900"
                     >
                         <PencilSquareIcon class="w-5 h-5" />
@@ -54,9 +56,7 @@ const closeDeleteModal = () => {
                 {{ dayjs(row.payment_expiration as Date).format('DD/MM/YYYY') }}
             </template>
         </DataTable>
-        <Pagination
-            :links="microsites.links"
-        />
+        <Pagination :links="microsites.links" />
     </div>
     <DeleteMicrositeModal
         :isOpen="isDeleteModalOpen"

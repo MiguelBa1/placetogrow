@@ -9,6 +9,7 @@ interface FileInputProps {
     error?: string;
     disabled?: boolean;
     required?: boolean;
+    accept?: string;
 }
 
 const props = defineProps<FileInputProps>();
@@ -42,6 +43,7 @@ const handleFileChange = (event: Event) => {
                 :disabled="disabled"
                 :class="inputClasses"
                 :required="required"
+                :accept="accept"
                 class="file-input-custom"
             />
         </div>

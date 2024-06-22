@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue';
-import { Head, useForm } from '@inertiajs/vue3';
+import {Head, router, useForm} from '@inertiajs/vue3';
 import { MainLayout } from '@/Layouts';
 import {
     Category,
@@ -80,12 +80,21 @@ const submit = () => {
         onSuccess: () => {
             createForm.reset();
             toast.success('Microsite created successfully.');
+            const currentPage = route().params.page || 1;
+            router.visit(route('microsites.index', { page: currentPage }), {
+                only: ['microsites'],
+            });
         },
         onError: () => {
             toast.error('Please check the form for errors.');
         },
     });
 };
+
+const goBack = () => {
+    history.back();
+};
+
 </script>
 
 <template>
@@ -95,9 +104,18 @@ const submit = () => {
 
     <MainLayout>
         <template #header>
-            <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-                Create Microsite
-            </h2>
+            <div class="flex justify-between">
+                <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+                    Edit Microsite
+                </h2>
+                <Button
+                    variant="secondary"
+                    color="gray"
+                    @click="goBack"
+                >
+                    Back
+                </Button>
+            </div>
         </template>
 
         <form
@@ -179,9 +197,10 @@ const submit = () => {
             <div class="col-span-2 grid grid-cols-2 gap-4">
                 <FileInput
                     id="logo"
-                    label="Logo"
+                    label="Logo (jpg, png, jpeg)"
                     v-model="createForm.logo"
                     :error="createForm.errors.logo"
+                    accept="image/*"
                     required
                 />
                 <div v-if="previewUrl" class="mt-1">
