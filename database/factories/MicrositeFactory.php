@@ -26,7 +26,13 @@ class MicrositeFactory extends Factory
     {
         $name = 'Microsite ' . $this->faker->unique()->randomNumber(5);
 
-        $category = Category::all()->random(1)->first() ?? Category::factory()->create();
+        $categories = Category::all();
+
+        if ($categories->isEmpty()) {
+            $category = Category::factory()->create();
+        } else {
+            $category = $categories->random();
+        }
 
         return [
             'name' => $name,

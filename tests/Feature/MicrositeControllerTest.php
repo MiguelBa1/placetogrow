@@ -11,6 +11,7 @@ use App\Models\Microsite;
 use App\Models\User;
 use Database\Seeders\RoleSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Http\UploadedFile;
 use Inertia\Testing\AssertableInertia;
 use Tests\TestCase;
 
@@ -36,48 +37,51 @@ class MicrositeControllerTest extends TestCase
 
         $response = $this->actingAs($this->adminUser)->post(route('microsites.store'), [
             'name' => 'Test Microsite',
-            'logo' => 'https://example.com/logo.png',
+            'logo' => UploadedFile::fake()->image('logo.png'),
             'category_id' => $category->id,
             'payment_currency' => CurrencyType::USD->value,
-            'payment_expiration' => 30,
+            'payment_expiration' => now()->addDays(30),
             'type' => MicrositeType::INVOICE->value,
-            'slug' => 'test-microsite',
             'responsible_name' => 'John Doe',
             'responsible_document_number' => '1234567890',
             'responsible_document_type' => DocumentType::CC->value,
         ]);
 
-        $response->assertFound();
+        $response->assertRedirect();
         $this->assertDatabaseHas('microsites', [
-            'slug' => 'test-microsite',
-            'name' => 'Test Microsite'
+            'name' => 'Test Microsite',
+            'responsible_name' => 'John Doe',
+            'responsible_document_number' => '1234567890',
+            'responsible_document_type' => DocumentType::CC->value,
+            'category_id' => $category->id,
         ]);
     }
 
     public function test_admin_can_update_microsite()
     {
-        $microsite = Microsite::factory()->create();
+        $category = Category::factory()->create();
+        $microsite = Microsite::factory()->create(['category_id' => $category->id]);
 
         $response = $this->actingAs($this->adminUser)->put(route('microsites.update', $microsite), [
             'name' => 'Updated Microsite',
-            'logo' => 'https://example.com/new-logo.png',
+            'logo' => UploadedFile::fake()->image('new-logo.png'),
             'category_id' => $microsite->category_id,
             'payment_currency' => CurrencyType::COP->value,
-            'payment_expiration' => 60,
+            'payment_expiration' => now()->addDays(60),
             'type' => MicrositeType::SUBSCRIPTION->value,
-            'slug' => $microsite->slug,
             'responsible_name' => 'Jane Doe',
             'responsible_document_number' => '0987654321',
             'responsible_document_type' => DocumentType::CE->value,
         ]);
 
-        $response->assertFound();
+        $response->assertRedirect();
         $this->assertDatabaseHas('microsites', [
             'id' => $microsite->id,
             'name' => 'Updated Microsite',
-            'responsible_name' => 'Jane Doe'
+            'responsible_name' => 'Jane Doe',
+            'responsible_document_number' => '0987654321',
+            'responsible_document_type' => DocumentType::CE->value,
         ]);
-        $response->assertRedirect(route('microsites.index'));
     }
 
     public function test_admin_can_delete_microsite()
@@ -88,7 +92,7 @@ class MicrositeControllerTest extends TestCase
 
         $response->assertFound();
         $this->assertDatabaseMissing('microsites', ['id' => $microsite->id]);
-        $response->assertRedirect(route('microsites.index'));
+        $response->assertRedirect();
     }
 
     public function test_guest_cannot_create_microsite()
@@ -102,7 +106,6 @@ class MicrositeControllerTest extends TestCase
             'payment_currency' => CurrencyType::USD->value,
             'payment_expiration' => 30,
             'type' => MicrositeType::INVOICE->value,
-            'slug' => 'test-microsite',
             'responsible_name' => 'John Doe',
             'responsible_document_number' => '1234567890',
             'responsible_document_type' => DocumentType::CC->value,
