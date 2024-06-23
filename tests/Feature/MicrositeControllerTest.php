@@ -30,6 +30,20 @@ class MicrositeControllerTest extends TestCase
         $this->adminUser = User::factory()->create()->assignRole(Role::ADMIN);
         $this->guestUser = User::factory()->create()->assignRole(Role::GUEST);
     }
+    
+    public function test_admin_can_view_microsites_index()
+    {
+        Microsite::factory()->count(15)->create();
+
+        $response = $this->actingAs($this->adminUser)->get(route('microsites.index'));
+
+        $response->assertOk()
+            ->assertInertia(
+                fn (AssertableInertia $page) => $page
+                    ->component('Microsites/Index')
+                    ->has('microsites.data', 10)
+            );
+    }
 
     public function test_admin_can_create_microsite()
     {
@@ -124,6 +138,27 @@ class MicrositeControllerTest extends TestCase
                     ->component('Microsites/Create')
                     ->has('categories')
             );
+    }
+
+    public function test_admin_cannot_upload_too_big_logo()
+    {
+        $microsite = Microsite::factory()->create();
+
+        $file = UploadedFile::fake()->create('logo.png', 12000);
+
+        $response = $this->actingAs($this->adminUser)->put(route('microsites.update', $microsite), [
+            'name' => 'Updated Microsite',
+            'logo' => $file,
+            'category_id' => $microsite->category_id,
+            'payment_currency' => CurrencyType::COP->value,
+            'payment_expiration' => now()->addDays(60),
+            'type' => MicrositeType::SUBSCRIPTION->value,
+            'responsible_name' => 'Jane Doe',
+            'responsible_document_number' => '0987654321',
+            'responsible_document_type' => DocumentType::CE->value,
+        ]);
+
+        $response->assertSessionHasErrors(['logo']);
     }
 
     public function test_admin_can_view_edit_page()
