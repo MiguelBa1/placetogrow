@@ -2,6 +2,7 @@ export const esAuthenticatedLayout = {
     dashboard: "Panel",
     profile: "Perfil",
     logOut: "Cerrar Sesión",
+    microsites: "Micrositios",
     userDropdown: {
         profile: "Perfil",
         logOut: "Cerrar Sesión"

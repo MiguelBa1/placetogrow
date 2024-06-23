@@ -44,6 +44,22 @@ return [
             'throw' => false,
         ],
 
+        'microsites' => [
+            'driver' => 'local',
+            'root' => storage_path('app/public/microsites'),
+            'url' => env('APP_URL').'/storage/microsites',
+            'visibility' => 'public',
+            'throw' => false,
+        ],
+
+        'test_images' => [
+            'driver' => 'local',
+            'root' => storage_path('app/public/test-images'),
+            'url' => env('APP_URL').'/storage/test-images',
+            'visibility' => 'public',
+            'throw' => false,
+        ],
+
         's3' => [
             'driver' => 's3',
             'key' => env('AWS_ACCESS_KEY_ID'),
