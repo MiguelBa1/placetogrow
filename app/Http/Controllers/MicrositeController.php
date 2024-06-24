@@ -19,7 +19,7 @@ class MicrositeController extends Controller
 {
     public function index(): Response
     {
-        $microsites = Microsite::with('category:id,name,logo')
+        $microsites = Microsite::with('category:id,name')
             ->select(
                 'id',
                 'name',

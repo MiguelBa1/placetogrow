@@ -44,10 +44,18 @@ return [
             'throw' => false,
         ],
 
-        'microsites' => [
+        'category_icons' => [
             'driver' => 'local',
-            'root' => storage_path('app/public/microsites'),
-            'url' => env('APP_URL').'/storage/microsites',
+            'root' => storage_path('app/public/category-icons'),
+            'url' => env('APP_URL').'/storage/category-icons',
+            'visibility' => 'public',
+            'throw' => false,
+        ],
+
+        'microsites_logos' => [
+            'driver' => 'local',
+            'root' => storage_path('app/public/microsites-logos'),
+            'url' => env('APP_URL').'/storage/microsites-logos',
             'visibility' => 'public',
             'throw' => false,
         ],

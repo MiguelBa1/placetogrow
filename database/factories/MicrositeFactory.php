@@ -49,7 +49,7 @@ class MicrositeFactory extends Factory
     public function configure(): Factory|MicrositeFactory
     {
         return $this->afterCreating(function (Microsite $microsite) {
-            $testImages = Storage::disk('test_images')->files();
+            $testImages = Storage::disk('test_images')->files('microsite-logos');
 
             if (!empty($testImages)) {
                 $randomImage = $this->faker->randomElement($testImages);

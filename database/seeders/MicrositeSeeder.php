@@ -9,6 +9,6 @@ class MicrositeSeeder extends Seeder
 {
     public function run(): void
     {
-        Microsite::factory()->count(20)->create();
+        Microsite::factory()->count(10)->create();
     }
 }

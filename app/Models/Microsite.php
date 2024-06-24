@@ -39,7 +39,7 @@ class Microsite extends Model implements HasMedia
     public function registerMediaCollections(): void
     {
         $this->addMediaCollection('logos')
-            ->useDisk('microsites')
+            ->useDisk('microsites_logos')
             ->singleFile();
     }
 }
