@@ -1,6 +1,10 @@
 <script setup lang="ts">
-import { Head } from '@inertiajs/vue3';
+import { Head, usePage } from '@inertiajs/vue3';
 import { MainLayout } from '@/Layouts';
+
+const { props } = usePage();
+
+console.log(props)
 
 </script>
 
