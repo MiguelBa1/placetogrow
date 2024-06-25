@@ -7,6 +7,7 @@ import {
     DesktopNav,
     MobileNav,
     UserDropdown,
+    HamburgerIcon,
 } from '@/Components';
 import { getNavigationLinks, getGuestLinks } from '@/Data';
 
@@ -40,19 +41,18 @@ const guestLinks = getGuestLinks(t);
                 </div>
                 <!-- Auth Links -->
                 <div class="hidden sm:flex sm:items-center sm:ms-6">
-                    <template v-if="isAuthenticated">
-                        <UserDropdown />
-                    </template>
-                    <template v-else>
-                        <Link
-                            v-for="link in guestLinks"
-                            :key="link.name"
-                            :href="route(link.route)"
-                            class="rounded-md px-3 py-2 text-black ring-1 ring-transparent transition hover:text-black/70 focus:outline-none focus-visible:ring-[#FF2D20]"
-                        >
-                            {{ link.label }}
-                        </Link>
-                    </template>
+                    <UserDropdown
+                        v-if="isAuthenticated"
+                    />
+                    <Link
+                        v-else
+                        v-for="link in guestLinks"
+                        :key="link.name"
+                        :href="route(link.route)"
+                        class="rounded-md px-3 py-2 text-black ring-1 ring-transparent transition hover:text-black/70 focus:outline-none focus-visible:ring-[#FF2D20]"
+                    >
+                        {{ link.label }}
+                    </Link>
                 </div>
                 <!-- Hamburger for mobile -->
                 <div class="-me-2 flex items-center sm:hidden">
@@ -61,33 +61,10 @@ const guestLinks = getGuestLinks(t);
                         class="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500
                          hover:bg-gray-100 focus:outline-none focus:bg-gray-100 focus:text-gray-500 transition duration-150 ease-in-out"
                     >
-                        <svg
+                        <HamburgerIcon
                             class="h-6 w-6"
-                            stroke="currentColor"
-                            fill="none"
-                            viewBox="0 0 24 24"
-                        >
-                            <path
-                                :class="{
-                                    hidden: showingNavigationDropdown,
-                                    'inline-flex': !showingNavigationDropdown,
-                                }"
-                                stroke-linecap="round"
-                                stroke-linejoin="round"
-                                stroke-width="2"
-                                d="M4 6h16M4 12h16M4 18h16"
-                            />
-                            <path
-                                :class="{
-                                    hidden: !showingNavigationDropdown,
-                                    'inline-flex': showingNavigationDropdown,
-                                }"
-                                stroke-linecap="round"
-                                stroke-linejoin="round"
-                                stroke-width="2"
-                                d="M6 18L18 6M6 6l12 12"
-                            />
-                        </svg>
+                            :aria-expanded="showingNavigationDropdown"
+                        />
                     </button>
                 </div>
             </div>
