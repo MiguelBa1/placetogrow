@@ -101,7 +101,7 @@ class PaymentService implements PaymentServiceInterface
         if ($result->ok()) {
             $this->updatePayment($reference, $result->json());
 
-            return Inertia::render('Site1/Return', [
+            return Inertia::render('Payment/Return', [
                 'payment' => $payment->refresh(),
             ]);
         } else {

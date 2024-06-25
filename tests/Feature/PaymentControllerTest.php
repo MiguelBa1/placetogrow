@@ -118,7 +118,7 @@ class PaymentControllerTest extends TestCase
         $response->assertOk();
         $response->assertInertia(
             fn (Assert $page) => $page
-            ->component('Site1/Return')
+            ->component('Payment/Return')
         );
     }
 
