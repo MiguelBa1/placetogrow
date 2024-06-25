@@ -30,7 +30,7 @@ const verificationLinkSent = computed(
 
         <div class="flex justify-center">
             <form @submit.prevent="submit"
-                  class="w-full sm:max-w-md mt-6 px-6 py-4 bg-white shadow-md overflow-hidden sm:rounded-lg"
+                  class="w-full mx-auto sm:max-w-md mt-6 px-6 py-4 bg-white shadow-md overflow-hidden sm:rounded-lg"
             >
                 <div class="mb-4 text-sm text-gray-600">
                     {{ t('auth.verifyEmail.description') }}
