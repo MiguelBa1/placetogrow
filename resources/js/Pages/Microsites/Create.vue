@@ -207,7 +207,7 @@ const goBack = () => {
                     <img :src="previewUrl" alt="Preview" class="w-48 h-48 object-cover rounded-md border" />
                 </div>
                 <div v-else class="mt-1">
-                    <img src="/images/placeholder-image.png" alt="Placeholder"
+                    <img src="/images/placeholder.png" alt="Placeholder"
                          class="w-48 h-48 object-cover rounded-md border" />
                 </div>
             </div>

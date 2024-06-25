@@ -26,7 +26,7 @@ const guestLinks = getGuestLinks(t);
                 <div class="flex">
                     <!-- Logo -->
                     <div class="shrink-0 flex items-center">
-                        <Link :href="isAuthenticated ? route('dashboard') : '/'">
+                        <Link :href="route('home')">
                             <ApplicationLogo
                                 class="block h-9 w-auto text-gray-800"
                             />

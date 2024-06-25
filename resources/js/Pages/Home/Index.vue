@@ -1,20 +1,37 @@
 <script setup lang="ts">
-import { Head, usePage } from '@inertiajs/vue3';
+import { Head } from '@inertiajs/vue3';
+import { Pagination } from '@/Components';
 import { MainLayout } from '@/Layouts';
+import {
+    HomeHeader,
+    CategoryList,
+    MicrositeList,
+    type MicrositesPaginatedResponse,
+    type Categories
+} from './index';
 
-const { props } = usePage();
-
-console.log(props)
+defineProps<{
+    microsites: MicrositesPaginatedResponse;
+    categories: Categories;
+}>();
 
 </script>
 
 <template>
     <Head>
-        <title>Welcome</title>
+        <title>Home</title>
     </Head>
     <MainLayout>
-        <div>
-            <h1>Welcome Page</h1>
+        <template #header>
+            <HomeHeader />
+        </template>
+
+        <div class="space-y-6">
+            <CategoryList :categories="categories" />
+            <MicrositeList :microsites="microsites.data" />
+            <Pagination
+                :links="microsites.links"
+            />
         </div>
     </MainLayout>
 </template>

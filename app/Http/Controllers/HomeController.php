@@ -35,7 +35,7 @@ class HomeController extends Controller
                 return $query->where('name', 'like', '%' . $searchFilter . '%');
             });
 
-        $microsites = $micrositesQuery->paginate(10);
+        $microsites = $micrositesQuery->paginate(10)->withQueryString();
 
         $microsites->getCollection()->transform(function ($microsite) {
             return [
@@ -46,9 +46,9 @@ class HomeController extends Controller
         });
 
         return Inertia::render('Home/Index', [
-            'categories' => $categories,
-            'microsites' => $microsites,
-            'filters' => [
+            'categories' => fn () => $categories,
+            'microsites' => fn () => $microsites,
+            'filters' => fn () => [
                 'category' => $categoryFilter,
                 'search' => $searchFilter,
             ],

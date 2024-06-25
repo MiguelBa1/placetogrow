@@ -4,7 +4,8 @@ export type PaginationLink = {
     active: boolean;
 };
 
-export type PaginatedResponse = {
+export type PaginatedResponse<T> = {
+    data: T[];
     current_page: number;
     first_page_url: string;
     from: number;
