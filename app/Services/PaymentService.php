@@ -37,10 +37,10 @@ class PaymentService implements PaymentServiceInterface
             ],
             'buyer' => [
                 'name' => $paymentData['name'],
-                'surname' => $paymentData['lastName'],
+                'surname' => $paymentData['last_name'],
                 'email' => $paymentData['email'],
-                'document' => $paymentData['documentNumber'],
-                'documentType' => $paymentData['documentType'],
+                'document' => $paymentData['document_number'],
+                'documentType' => $paymentData['document_type'],
                 'mobile' => '+57' . $paymentData['phone'],
             ],
             'payment' => [
@@ -116,9 +116,9 @@ class PaymentService implements PaymentServiceInterface
     {
         $guestUser = Guest::query()->create([
             'name' => $paymentData['name'],
-            'last_name' => $paymentData['lastName'],
-            'document_type' => $paymentData['documentType'],
-            'document_number' => $paymentData['documentNumber'],
+            'last_name' => $paymentData['last_name'],
+            'document_type' => $paymentData['document_type'],
+            'document_number' => $paymentData['document_number'],
             'phone' => $paymentData['phone'],
             'email' => $paymentData['email'],
         ]);

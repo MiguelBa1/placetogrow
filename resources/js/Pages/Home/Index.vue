@@ -28,10 +28,20 @@ defineProps<{
 
         <div class="space-y-6">
             <CategoryList :categories="categories" />
-            <MicrositeList :microsites="microsites.data" />
-            <Pagination
-                :links="microsites.links"
-            />
+            <div
+                v-if="microsites.data.length > 0"
+            >
+                <MicrositeList :microsites="microsites.data" />
+                <Pagination
+                    :links="microsites.links"
+                />
+            </div>
+            <div
+                v-else
+                class="text-center text-gray-500"
+            >
+                No microsites found
+            </div>
         </div>
     </MainLayout>
 </template>

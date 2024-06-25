@@ -1,216 +1,154 @@
-<script setup>
-import { useForm } from '@inertiajs/vue3';
+<script setup lang="ts">
+import { useForm, Head } from '@inertiajs/vue3';
+import { MainLayout } from '@/Layouts';
+import { InputField, Listbox, Button } from '@/Components';
+import { computed } from 'vue';
 
-defineProps({
-    messageError: String,
-});
+const { microsite, documentTypes } = defineProps<{
+    microsite: {
+        id: string;
+        name: string;
+        logo: string;
+        payment_currency: string;
+    };
+    documentTypes: string[];
+}>();
 
-const form = useForm({
+const paymentForm = useForm({
     name: '',
-    lastName: '',
+    last_name: '',
     email: '',
-    documentType: 'CC',
-    documentNumber: '',
+    document_type: '',
+    document_number: '',
     phone: '',
-    currency: 'COP',
-    amount: 0,
+    currency: microsite.payment_currency,
+    amount: '',
 });
+
+const documentTypeOptions = computed(() => {
+    return documentTypes.map((type) => ({
+        label: type,
+        value: type,
+    }));
+});
+
+const currencyOption = [
+    { label: microsite.payment_currency, value: microsite.payment_currency },
+]
+
+const onSubmit = () => {
+    paymentForm.post(route('payment.store'));
+};
+
 </script>
 
 <template>
-    <div
-        class="max-w-7xl bg-white w-full m-auto rounded-xl p-10 shadow-md mt-10"
-    >
+    <Head>
+        <title>
+            {{ microsite.name }}
+        </title>
+    </Head>
+
+    <MainLayout>
+        <template #header>
+            <div class="flex gap-4 items-center">
+                <img
+                    class="h-20 w-auto"
+                    :src="microsite.logo"
+                    :alt="microsite.name"
+                />
+                <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+                    {{ microsite.name }}
+                </h2>
+            </div>
+        </template>
+
         <form
-            class="grid sm:grid-cols-2 gap-y-5 gap-x-20"
-            @submit.prevent="form.post('/site1')"
+            class="bg-white p-10 rounded-xl shadow-sm grid sm:grid-cols-2 gap-4"
+            @submit.prevent="onSubmit"
         >
-            <div>
-                <label class="font-medium text-md text-gray-700" for="name">
-                    <span>Nombre</span>
-                </label>
+            <InputField
+                id="name"
+                type="text"
+                label="Nombre"
+                v-model="paymentForm.name"
+                required
+                :error="paymentForm.errors.name"
+            />
 
-                <input
-                    id="name"
-                    v-model="form.name"
-                    class="rounded-md shadow-sm p-1.5 border-2 border-gray-300 focus:outline-none focus:border-gray-800 focus:ring-1 w-full"
-                    name="name"
-                    required
-                />
+            <InputField
+                id="lastName"
+                type="text"
+                label="Apellido"
+                v-model="paymentForm.last_name"
+                required
+                :error="paymentForm.errors.last_name"
+            />
 
-                <p v-show="form.errors.name" class="text-sm text-red-600 mt-2">
-                    {{ form.errors.name }}
-                </p>
-            </div>
+            <InputField
+                id="email"
+                type="text"
+                label="Email"
+                v-model="paymentForm.email"
+                :error="paymentForm.errors.email"
+                required
+            />
 
-            <div>
-                <label class="font-medium text-md text-gray-700" for="lastName">
-                    <span>Apellido</span>
-                </label>
+            <Listbox
+                id="document-type"
+                label="Tipo de documento"
+                :options="documentTypeOptions"
+                v-model="paymentForm.document_type"
+                required
+                :error="paymentForm.errors.document_type"
+            />
 
-                <input
-                    id="lastName"
-                    v-model="form.lastName"
-                    class="rounded-md shadow-sm p-1.5 border-2 border-gray-300 focus:outline-none focus:border-gray-800 focus:ring-1 w-full"
-                    name="lastName"
-                    required
-                />
+            <InputField
+                id="document-number"
+                type="text"
+                label="Número de documento"
+                v-model="paymentForm.document_number"
+                required
+                :error="paymentForm.errors.document_number"
+            />
 
-                <p
-                    v-show="form.errors.lastName"
-                    class="text-sm text-red-600 mt-2"
-                >
-                    {{ form.errors.lastName }}
-                </p>
-            </div>
+            <InputField
+                id="phone"
+                type="text"
+                label="Teléfono"
+                v-model="paymentForm.phone"
+                required
+                :error="paymentForm.errors.phone"
+            />
 
-            <div>
-                <label class="font-medium text-md text-gray-700" for="email">
-                    <span>Email</span>
-                </label>
+            <Listbox
+                id="currency"
+                label="Moneda"
+                :options="currencyOption"
+                v-model="paymentForm.currency"
+                required
+                :error="paymentForm.errors.currency"
+                disabled
+            />
 
-                <input
-                    id="email"
-                    v-model="form.email"
-                    class="rounded-md shadow-sm p-1.5 border-2 border-gray-300 focus:outline-none focus:border-gray-800 focus:ring-1 w-full"
-                    name="email"
-                    required
-                />
-
-                <p v-show="form.errors.email" class="text-sm text-red-600 mt-2">
-                    {{ form.errors.email }}
-                </p>
-            </div>
-
-            <div>
-                <label
-                    class="font-medium text-md text-gray-700"
-                    for="documentType"
-                >
-                    <span>Tipo de documento</span>
-                </label>
-
-                <select
-                    id="documentType"
-                    v-model="form.documentType"
-                    class="rounded-md shadow-sm p-2 border-2 border-gray-300 bg-white focus:outline-none focus:border-gray-800 focus:ring-1 w-full"
-                    name="documentType"
-                    required
-                >
-                    <option value="CC">Cédula de ciudadanía</option>
-                    <option value="PPN">Pasaporte</option>
-                </select>
-
-                <p
-                    v-show="form.errors.documentType"
-                    class="text-sm text-red-600 mt-2"
-                >
-                    {{ form.errors.documentType }}
-                </p>
-            </div>
+            <InputField
+                id="amount"
+                type="number"
+                label="Valor"
+                v-model="paymentForm.amount"
+                required
+                :error="paymentForm.errors.amount"
+            />
 
             <div>
-                <label
-                    class="font-medium text-md text-gray-700"
-                    for="documentNumber"
-                >
-                    <span>Número de documento</span>
-                </label>
-
-                <input
-                    id="documentNumber"
-                    v-model="form.documentNumber"
-                    class="rounded-md shadow-sm p-1.5 border-2 border-gray-300 focus:outline-none focus:border-gray-800 focus:ring-1 w-full"
-                    name="documentNumber"
-                    required
-                />
-
-                <p
-                    v-show="form.errors.documentNumber"
-                    class="text-sm text-red-600 mt-2"
-                >
-                    {{ form.errors.documentNumber }}
-                </p>
-            </div>
-
-            <div>
-                <label class="font-medium text-md text-gray-700" for="phone">
-                    <span>Teléfono</span>
-                </label>
-
-                <input
-                    id="phone"
-                    v-model="form.phone"
-                    class="rounded-md shadow-sm p-1.5 border-2 border-gray-300 focus:outline-none focus:border-gray-800 focus:ring-1 w-full"
-                    name="phone"
-                    required
-                />
-
-                <p v-show="form.errors.phone" class="text-sm text-red-600 mt-2">
-                    {{ form.errors.phone }}
-                </p>
-            </div>
-
-            <div>
-                <label class="font-medium text-md text-gray-700" for="currency">
-                    <span>Moneda</span>
-                </label>
-
-                <select
-                    id="currency"
-                    v-model="form.currency"
-                    class="rounded-md shadow-sm p-2 border-2 border-gray-300 bg-white focus:outline-none focus:border-gray-800 focus:ring-1 w-full"
-                    name="currency"
-                    required
-                >
-                    <option value="COP">COP</option>
-                    <option value="USD">USD</option>
-                </select>
-
-                <p
-                    v-show="form.errors.currency"
-                    class="text-sm text-red-600 mt-2"
-                >
-                    {{ form.errors.currency }}
-                </p>
-            </div>
-
-            <div>
-                <label class="font-medium text-md text-gray-700" for="amount">
-                    <span>Valor</span>
-                </label>
-
-                <input
-                    id="amount"
-                    v-model="form.amount"
-                    class="rounded-md shadow-sm p-1.5 border-2 border-gray-300 focus:outline-none focus:border-gray-800 focus:ring-1 w-full"
-                    name="amount"
-                    required
-                    type="number"
-                />
-
-                <p
-                    v-show="form.errors.amount"
-                    class="text-sm text-red-600 mt-2"
-                >
-                    {{ form.errors.amount }}
-                </p>
-            </div>
-
-            <div class="sm:col-span-2 mt-5">
-                <button
-                    class="w-full sm:w-auto items-center p-3 bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 focus:bg-gray-700 active:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150"
+                <Button
+                    class="sm:col-span-2 mt-5"
+                    type="submit"
+                    :disabled="paymentForm.processing"
                 >
                     Pagar
-                </button>
-
-                <span
-                    v-if="$page.props.errors[0]"
-                    class="mt-4 block text-sm text-red-600"
-                >
-                    {{ $page.props.errors[0] }}
-                </span>
+                </Button>
             </div>
         </form>
-    </div>
+    </MainLayout>
 </template>
