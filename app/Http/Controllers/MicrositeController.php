@@ -19,7 +19,7 @@ class MicrositeController extends Controller
 {
     public function index(): Response
     {
-        $microsites = Microsite::with('category:id,name,logo')
+        $microsites = Microsite::with('category:id,name')
             ->select(
                 'id',
                 'name',
@@ -37,14 +37,14 @@ class MicrositeController extends Controller
 
     public function show(Microsite $microsite): Response
     {
-        $microsite->load('category:id,name');
+        $documentTypes = DocumentType::cases();
 
-        $micrositeData = $microsite->only(['id', 'name', 'category_id', 'type', 'payment_currency', 'payment_expiration']);
-        $micrositeData['category'] = $microsite->category;
+        $micrositeData = $microsite->only(['id', 'name', 'payment_currency']);
         $micrositeData['logo'] = $microsite->getFirstMediaUrl('logos');
 
         return Inertia::render('Microsites/Show', [
             'microsite' => $micrositeData,
+            'documentTypes' => $documentTypes,
         ]);
     }
 

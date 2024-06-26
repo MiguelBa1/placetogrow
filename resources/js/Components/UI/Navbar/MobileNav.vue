@@ -1,10 +1,19 @@
 <script setup lang="ts">
-import { getNavigationLinks, getUserDropdownLinks } from '@/Data';
+import { getUserDropdownLinks } from '@/Data';
 import { ResponsiveNavLink } from '@/Components';
 import { useI18n } from 'vue-i18n';
 
+const { links } = defineProps<{
+    links: {
+        name: string;
+        label: string;
+        route: string;
+        method?: string;
+        as?: string;
+    }[]
+}>();
+
 const { t } = useI18n();
-const navigationLinks = getNavigationLinks(t);
 const userDropdownLinks = getUserDropdownLinks(t);
 </script>
 
@@ -12,7 +21,7 @@ const userDropdownLinks = getUserDropdownLinks(t);
     <div class="sm:hidden">
         <div class="pt-2 pb-3 space-y-1">
             <ResponsiveNavLink
-                v-for="link in navigationLinks"
+                v-for="link in links"
                 :key="link.name"
                 :href="route(link.route)"
                 :active="route().current(link.route)"
@@ -20,7 +29,10 @@ const userDropdownLinks = getUserDropdownLinks(t);
                 {{ link.label }}
             </ResponsiveNavLink>
         </div>
-        <div class="pt-4 pb-1 border-t border-gray-200">
+        <div
+            v-if="$page.props.auth.user"
+            class="pt-4 pb-1 border-t border-gray-200"
+        >
             <div class="px-4">
                 <div class="font-medium text-base text-gray-800">{{ $page.props.auth.user.name }}</div>
                 <div class="font-medium text-sm text-gray-500">{{ $page.props.auth.user.email }}</div>

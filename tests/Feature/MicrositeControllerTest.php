@@ -30,7 +30,7 @@ class MicrositeControllerTest extends TestCase
         $this->adminUser = User::factory()->create()->assignRole(Role::ADMIN);
         $this->guestUser = User::factory()->create()->assignRole(Role::GUEST);
     }
-    
+
     public function test_admin_can_view_microsites_index()
     {
         Microsite::factory()->count(15)->create();
@@ -174,6 +174,21 @@ class MicrositeControllerTest extends TestCase
                     ->has('microsite')
                     ->has('categories')
             );
+    }
+
+    public function test_admin_can_view_microsite_details()
+    {
+        $microsite = Microsite::factory()->create();
+
+        $response = $this->actingAs($this->adminUser)->get(route('microsites.show', $microsite));
+
+        $response->assertOk();
+        $response->assertInertia(
+            fn (AssertableInertia $page) => $page
+            ->component('Microsites/Show')
+            ->has('microsite')
+            ->has('documentTypes')
+        );
     }
 
     public function test_guest_cannot_view_create_page()

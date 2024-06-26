@@ -15,11 +15,8 @@ use Symfony\Component\HttpFoundation\Response;
 
 class PaymentService implements PaymentServiceInterface
 {
-
-    public function createPayment(array $paymentData, string $ipAddress, string $userAgent): RedirectResponse|Response
+    private function generateAuthData(): array
     {
-        $paymentReference = Str::random();
-
         $login = config('placetopay.login');
         $secretKey = config('placetopay.tranKey');
         $seed = Carbon::now()->toIso8601String();
@@ -28,19 +25,28 @@ class PaymentService implements PaymentServiceInterface
         $tranKey = base64_encode(hash('sha256', $rawNonce . $seed . $secretKey, true));
         $nonce = base64_encode($rawNonce);
 
+        return [
+            'login' => $login,
+            'tranKey' => $tranKey,
+            'seed' => $seed,
+            'nonce' => $nonce,
+        ];
+    }
+
+    public function createPayment(array $paymentData, string $ipAddress, string $userAgent, int $micrositeId): RedirectResponse|Response
+    {
+        $paymentReference = Str::random();
+
+        $authData = $this->generateAuthData();
+
         $data = [
-            'auth' => [
-                'login' => $login,
-                'tranKey' => $tranKey,
-                'seed' => $seed,
-                'nonce' => $nonce,
-            ],
+            'auth' => $authData,
             'buyer' => [
                 'name' => $paymentData['name'],
-                'surname' => $paymentData['lastName'],
+                'surname' => $paymentData['last_name'],
                 'email' => $paymentData['email'],
-                'document' => $paymentData['documentNumber'],
-                'documentType' => $paymentData['documentType'],
+                'document' => $paymentData['document_number'],
+                'documentType' => $paymentData['document_type'],
                 'mobile' => '+57' . $paymentData['phone'],
             ],
             'payment' => [
@@ -52,7 +58,10 @@ class PaymentService implements PaymentServiceInterface
                 ],
             ],
             'expiration' => Carbon::now()->addMinutes(10)->toIso8601String(),
-            'returnUrl' => route('site1.return', $paymentReference),
+            'returnUrl' => route('microsites.payment.return', [
+                'reference' => $paymentReference,
+                'microsite' => $micrositeId,
+            ]),
             'ipAddress' => $ipAddress,
             'userAgent' => $userAgent,
         ];
@@ -64,36 +73,26 @@ class PaymentService implements PaymentServiceInterface
 
             return Inertia::location($result['processUrl']);
         } else {
-            return Redirect::to(route('site1'))
+            return Redirect::to(route('microsites.show', $micrositeId))
                 ->withErrors(
                     $result['status']['message'] ?? 'An error occurred while processing the payment, please try again.'
                 );
         }
     }
 
-    public function checkPayment(string $reference): \Inertia\Response|RedirectResponse
+    public function checkPayment(string $reference, int $micrositeId): \Inertia\Response|RedirectResponse
     {
-        $login = config('placetopay.login');
-        $secretKey = config('placetopay.tranKey');
-        $seed = Carbon::now()->toIso8601String();
-        $rawNonce = Str::random();
-
-        $tranKey = base64_encode(hash('sha256', $rawNonce . $seed . $secretKey, true));
-        $nonce = base64_encode($rawNonce);
+        $authData = $this->generateAuthData();
 
         $data = [
-            'auth' => [
-                'login' => $login,
-                'tranKey' => $tranKey,
-                'seed' => $seed,
-                'nonce' => $nonce,
-            ],
+            'auth' => $authData
         ];
 
         $payment = Payment::query()->where('payment_reference', $reference)->latest()->first();
 
         if (!$payment) {
-            return Redirect::to(route('site1'))->withErrors('Payment not found.');
+            return Redirect::to(route('microsites.show', $micrositeId))
+                ->withErrors('Payment not found.');
         }
 
         $result = Http::post(env('P2P_URL') . '/api/session/' . $payment->request_id, $data);
@@ -101,11 +100,11 @@ class PaymentService implements PaymentServiceInterface
         if ($result->ok()) {
             $this->updatePayment($reference, $result->json());
 
-            return Inertia::render('Site1/Return', [
+            return Inertia::render('Payment/Return', [
                 'payment' => $payment->refresh(),
             ]);
         } else {
-            return Redirect::to(route('site1'))
+            return Redirect::to(route('microsites.show', $micrositeId))
                 ->withErrors(
                     $result['status']['message'] ?? 'An error occurred while completing the payment.'
                 );
@@ -116,9 +115,9 @@ class PaymentService implements PaymentServiceInterface
     {
         $guestUser = Guest::query()->create([
             'name' => $paymentData['name'],
-            'last_name' => $paymentData['lastName'],
-            'document_type' => $paymentData['documentType'],
-            'document_number' => $paymentData['documentNumber'],
+            'last_name' => $paymentData['last_name'],
+            'document_type' => $paymentData['document_type'],
+            'document_number' => $paymentData['document_number'],
             'phone' => $paymentData['phone'],
             'email' => $paymentData['email'],
         ]);

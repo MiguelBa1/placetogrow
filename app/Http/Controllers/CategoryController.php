@@ -12,7 +12,7 @@ class CategoryController extends Controller
 {
     public function index(): Response
     {
-        $categories = Category::select('id', 'name', 'logo')->get();
+        $categories = Category::select('id', 'name')->get();
 
         return Inertia::render('Categories/Index', [
             'categories' => $categories,

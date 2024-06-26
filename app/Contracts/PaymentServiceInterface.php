@@ -4,9 +4,9 @@ namespace App\Contracts;
 
 interface PaymentServiceInterface
 {
-    public function createPayment(array $paymentData, string $ipAddress, string $userAgent);
+    public function createPayment(array $paymentData, string $ipAddress, string $userAgent, int $micrositeId);
 
-    public function checkPayment(string $reference);
+    public function checkPayment(string $reference, int $micrositeId);
 
     public function createPaymentRecord(array $paymentData, string $paymentReference, array $response);
 

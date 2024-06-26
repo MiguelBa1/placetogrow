@@ -13,6 +13,4 @@ export type Microsite = {
     payment_expiration: string;
 };
 
-export type MicrositesPaginatedResponse = PaginatedResponse & {
-    data: Microsite[];
-};
+export type MicrositesPaginatedResponse = PaginatedResponse<Microsite>;
