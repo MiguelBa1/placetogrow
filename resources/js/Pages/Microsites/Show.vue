@@ -37,7 +37,9 @@ const currencyOption = [
 ]
 
 const onSubmit = () => {
-    paymentForm.post(route('payment.store'));
+    paymentForm.post(route('microsites.payment.store', {
+        microsite: microsite.id,
+    }));
 };
 
 </script>
