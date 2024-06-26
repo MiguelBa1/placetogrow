@@ -78,7 +78,7 @@ watch(() => editForm.logo, (newFile) => {
 });
 
 const submit = () => {
-    editForm.put(route('microsites.update', microsite.id), {
+    editForm.put(route('microsites.update', microsite.slug), {
         onSuccess: () => {
             toast.success('Microsite updated successfully.');
             const currentPage = route().params.page || 1;

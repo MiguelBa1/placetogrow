@@ -9,6 +9,7 @@ const { microsite, documentTypes } = defineProps<{
         id: string;
         name: string;
         logo: string;
+        slug: string;
         payment_currency: string;
     };
     documentTypes: string[];
@@ -38,7 +39,7 @@ const currencyOption = [
 
 const onSubmit = () => {
     paymentForm.post(route('microsites.payment.store', {
-        microsite: microsite.id,
+        microsite: microsite.slug,
     }));
 };
 

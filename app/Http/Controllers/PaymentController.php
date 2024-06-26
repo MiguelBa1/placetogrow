@@ -13,11 +13,11 @@ class PaymentController extends Controller
     public function store(CreatePaymentRequest $request, Microsite $microsite): RedirectResponse|Response
     {
         $paymentData = $request->validated();
-        return (new PaymentService)->createPayment($paymentData, $request->ip(), $request->userAgent(), $microsite->id);
+        return (new PaymentService)->createPayment($paymentData, $request->ip(), $request->userAgent(), $microsite->slug);
     }
 
     public function return(Microsite $microsite, string $reference): \Inertia\Response|RedirectResponse
     {
-        return (new PaymentService)->checkPayment($reference, $microsite->id);
+        return (new PaymentService)->checkPayment($reference, $microsite->slug);
     }
 }

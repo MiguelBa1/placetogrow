@@ -9,6 +9,7 @@ export type Microsite = {
         name: string;
     };
     type: string;
+    slug: string;
     payment_currency: string;
     payment_expiration: string;
 };

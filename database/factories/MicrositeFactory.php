@@ -9,6 +9,7 @@ use App\Models\Category;
 use App\Models\Microsite;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 /**
  * @extends Factory<Microsite>
@@ -36,6 +37,7 @@ class MicrositeFactory extends Factory
 
         return [
             'name' => $name,
+            'slug' => Str::slug($name),
             'category_id' => $category->id,
             'payment_currency' => $this->faker->randomElement(array_column(CurrencyType::cases(), 'value')),
             'payment_expiration' => $this->faker->dateTimeBetween('now', '+1 year'),

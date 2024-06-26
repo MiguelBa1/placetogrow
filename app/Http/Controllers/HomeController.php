@@ -26,7 +26,7 @@ class HomeController extends Controller
         $categoryFilter = $request->input('category');
         $searchFilter = $request->input('search');
 
-        $micrositesQuery = Microsite::query()->select('id', 'name', 'category_id')
+        $micrositesQuery = Microsite::query()->select('id', 'name', 'slug', 'category_id')
             ->with('media')
             ->when($categoryFilter, function ($query, $categoryFilter) {
                 return $query->where('category_id', $categoryFilter);
@@ -41,6 +41,7 @@ class HomeController extends Controller
             return [
                 'id' => $microsite->id,
                 'name' => $microsite->name,
+                'slug' => $microsite->slug,
                 'logo' => $microsite->getFirstMediaUrl('logos')
             ];
         });

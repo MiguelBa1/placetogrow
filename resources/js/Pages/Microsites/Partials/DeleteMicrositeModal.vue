@@ -5,7 +5,7 @@ import { useToast } from 'vue-toastification';
 
 const props = defineProps<{
     isOpen: boolean;
-    micrositeId: number | null;
+    micrositeSlug: string | null;
 }>();
 
 const emit = defineEmits(['closeModal']);
@@ -18,12 +18,12 @@ const closeModal = () => {
 const deleteForm = useForm({});
 
 const deleteMicrosite = () => {
-    if (!props?.micrositeId) {
+    if (!props?.micrositeSlug) {
         console.log('Microsite ID is required');
         return;
     }
 
-    deleteForm.delete(route('microsites.destroy', props.micrositeId), {
+    deleteForm.delete(route('microsites.destroy', props.micrositeSlug), {
         onSuccess: () => {
             toast.success('Microsite deleted successfully.');
         },

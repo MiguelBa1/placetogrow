@@ -38,9 +38,7 @@ class PaymentControllerTest extends TestCase
             ])
         ]);
 
-        $response = $this->post(route('microsites.payment.store', [
-            'microsite' => $this->microsite->id,
-        ]), [
+        $response = $this->post(route('microsites.payment.store', $this->microsite), [
             'name' => 'John',
             'last_name' => 'Doe',
             'email' => 'john@example.com',
@@ -79,9 +77,7 @@ class PaymentControllerTest extends TestCase
             ], 500)
         ]);
 
-        $response = $this->post(route('microsites.payment.store', [
-            'microsite' => $this->microsite->id,
-        ]), [
+        $response = $this->post(route('microsites.payment.store', $this->microsite), [
             'name' => 'John',
             'last_name' => 'Doe',
             'email' => 'john@example.com',
@@ -92,7 +88,7 @@ class PaymentControllerTest extends TestCase
             'amount' => 10000,
         ]);
 
-        $response->assertRedirect(route('microsites.show', ['microsite' => $this->microsite->id]));
+        $response->assertRedirect(route('microsites.show', $this->microsite));
         $response->assertSessionHasErrors();
     }
 
@@ -131,7 +127,7 @@ class PaymentControllerTest extends TestCase
 
         $response = $this->get(route('microsites.payment.return', [
             'reference' => 'test_reference',
-            'microsite' => $this->microsite->id
+            'microsite' => $this->microsite->slug,
         ]));
 
         $response->assertOk();
@@ -159,10 +155,10 @@ class PaymentControllerTest extends TestCase
 
         $response = $this->get(route('microsites.payment.return', [
             'reference' => 'test_reference',
-            'microsite' => $this->microsite->id,
+            'microsite' => $this->microsite->slug,
         ]));
 
-        $response->assertRedirect(route('microsites.show', ['microsite' => $this->microsite->id]));
+        $response->assertRedirect(route('microsites.show', $this->microsite));
         $response->assertSessionHasErrors();
     }
 
@@ -170,10 +166,10 @@ class PaymentControllerTest extends TestCase
     {
         $response = $this->get(route('microsites.payment.return', [
             'reference' => 'test_reference',
-            'microsite' => $this->microsite->id
+            'microsite' => $this->microsite->slug,
         ]));
 
-        $response->assertRedirect(route('microsites.show', ['microsite' => $this->microsite->id]));
+        $response->assertRedirect(route('microsites.show', $this->microsite));
         $response->assertSessionHasErrors();
     }
 
@@ -195,7 +191,7 @@ class PaymentControllerTest extends TestCase
         ]);
 
         $this->get(route('microsites.payment.return', [
-            'microsite' => $this->microsite->id,
+            'microsite' => $this->microsite->slug,
             'reference' => 'test_reference',
         ]));
 

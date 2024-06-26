@@ -12,18 +12,18 @@ const { microsites } = defineProps<{
 
 const currentPage = microsites.current_page;
 
-const selectedMicrositeId = ref<number | null>(null);
+const selectedMicrositeSlug = ref<number | null>(null);
 
 const isDeleteModalOpen = ref(false);
 
-const openDeleteModal = (micrositeId: number) => {
-    selectedMicrositeId.value = micrositeId;
+const openDeleteModal = (micrositeSlug: number) => {
+    selectedMicrositeSlug.value = micrositeSlug;
     isDeleteModalOpen.value = true;
 };
 
 const closeDeleteModal = () => {
     isDeleteModalOpen.value = false;
-    selectedMicrositeId.value = null;
+    selectedMicrositeSlug.value = null;
 };
 </script>
 
@@ -36,14 +36,14 @@ const closeDeleteModal = () => {
             <template #cell-actions="{ row }">
                 <div class="flex justify-center gap-2">
                     <Link
-                        :href="route('microsites.edit', { microsite: row.id, page: currentPage })"
+                        :href="route('microsites.edit', { microsite: row.slug, page: currentPage })"
                         class="text-blue-600 hover:text-blue-900"
                     >
                         <PencilSquareIcon class="w-5 h-5" />
                     </Link>
                     <button
                         class="text-red-600 hover:text-red-900"
-                        @click="openDeleteModal(row.id)"
+                        @click="openDeleteModal(row.slug)"
                     >
                         <TrashIcon class="w-5 h-5" />
                     </button>
@@ -60,7 +60,7 @@ const closeDeleteModal = () => {
     </div>
     <DeleteMicrositeModal
         :isOpen="isDeleteModalOpen"
-        :micrositeId="selectedMicrositeId"
+        :micrositeSlug="selectedMicrositeSlug"
         @closeModal="closeDeleteModal"
     />
 </template>

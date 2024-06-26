@@ -13,6 +13,7 @@ return new class extends Migration {
         Schema::create('microsites', function (Blueprint $table) {
             $table->id();
             $table->string('name', 150)->unique();
+            $table->string('slug')->unique();
             $table->foreignId('category_id')->constrained('categories');
             $table->enum('payment_currency', array_column(CurrencyType::cases(), 'value'));
             $table->date('payment_expiration');

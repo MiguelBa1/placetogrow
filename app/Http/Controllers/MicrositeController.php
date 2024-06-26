@@ -25,6 +25,7 @@ class MicrositeController extends Controller
                 'name',
                 'category_id',
                 'type',
+                'slug',
                 'responsible_name',
                 'payment_currency',
                 'payment_expiration'
@@ -39,7 +40,7 @@ class MicrositeController extends Controller
     {
         $documentTypes = DocumentType::cases();
 
-        $micrositeData = $microsite->only(['id', 'name', 'payment_currency']);
+        $micrositeData = $microsite->only(['id', 'name', 'slug', 'payment_currency']);
         $micrositeData['logo'] = $microsite->getFirstMediaUrl('logos');
 
         return Inertia::render('Microsites/Show', [
