@@ -10,13 +10,12 @@ use Illuminate\Validation\Rule;
 
 abstract class BaseMicrositeRequest extends FormRequest
 {
-    protected function commonRules($micrositeId): array
+    protected function commonRules(): array
     {
         return [
             'name' => [
                 'string',
                 'max:150',
-                Rule::unique('microsites')->ignore($micrositeId),
             ],
             'logo' => ['image', 'max:2048', 'mimes:jpeg,png,jpg'],
             'category_id' => ['exists:categories,id'],
