@@ -9,6 +9,9 @@ import {
     type MicrositesPaginatedResponse,
     type Categories
 } from './index';
+import { useI18n } from 'vue-i18n';
+
+const { t } = useI18n();
 
 defineProps<{
     microsites: MicrositesPaginatedResponse;
@@ -19,7 +22,9 @@ defineProps<{
 
 <template>
     <Head>
-        <title>Home</title>
+        <title>
+            {{ t('home.index.title') }}
+        </title>
     </Head>
     <MainLayout>
         <template #header>
@@ -40,7 +45,9 @@ defineProps<{
                 v-else
                 class="text-center text-gray-500"
             >
-                No microsites found
+                <p>
+                    {{ t('home.index.noMicrosites') }}
+                </p>
             </div>
         </div>
     </MainLayout>

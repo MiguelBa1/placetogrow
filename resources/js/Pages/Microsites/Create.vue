@@ -5,8 +5,10 @@ import { MainLayout } from '@/Layouts';
 import { Category } from './index';
 import { InputField, Listbox, Button, FileInput } from '@/Components';
 import { useToast } from 'vue-toastification';
+import { useI18n } from 'vue-i18n';
 
 const toast = useToast();
+const { t } = useI18n();
 
 const { categories, documentTypes, micrositeTypes, currencyTypes } = defineProps<{
     categories: Category[];
@@ -58,14 +60,14 @@ const submit = () => {
     createForm.post(route('microsites.store'), {
         onSuccess: () => {
             createForm.reset();
-            toast.success('Microsite created successfully.');
+            toast.success(t('microsites.create.form.success'));
             const currentPage = route().params.page || 1;
             router.visit(route('microsites.index', { page: currentPage }), {
                 only: ['microsites'],
             });
         },
         onError: () => {
-            toast.error('Please check the form for errors.');
+            toast.error(t('microsites.create.form.error'));
         },
     });
 };
@@ -78,21 +80,21 @@ const goBack = () => {
 
 <template>
     <Head>
-        <title>Create Microsite</title>
+        <title>{{ t('microsites.create.title')}}</title>
     </Head>
 
     <MainLayout>
         <template #header>
             <div class="flex justify-between">
                 <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-                    Edit Microsite
+                    {{ t('microsites.create.header') }}
                 </h2>
                 <Button
                     variant="secondary"
                     color="gray"
                     @click="goBack"
                 >
-                    Back
+                    {{ t('microsites.create.back') }}
                 </Button>
             </div>
         </template>
@@ -104,7 +106,7 @@ const goBack = () => {
             <InputField
                 id="name"
                 type="text"
-                label="Name"
+                :label="t('microsites.create.form.name')"
                 v-model="createForm.name"
                 :error="createForm.errors.name"
                 required
@@ -112,7 +114,7 @@ const goBack = () => {
 
             <Listbox
                 id="category_id"
-                label="Category"
+                :label="t('microsites.create.form.category')"
                 v-model="createForm.category_id"
                 :options="categoryOptions"
                 :error="createForm.errors.category_id"
@@ -121,7 +123,7 @@ const goBack = () => {
 
             <Listbox
                 id="payment_currency"
-                label="Payment Currency"
+                :label="t('microsites.create.form.paymentCurrency')"
                 v-model="createForm.payment_currency"
                 :options="currencyOptions"
                 :error="createForm.errors.payment_currency"
@@ -131,7 +133,7 @@ const goBack = () => {
             <InputField
                 id="payment_expiration"
                 type="date"
-                label="Payment Expiration"
+                :label="t('microsites.create.form.paymentExpiration')"
                 v-model="createForm.payment_expiration"
                 :error="createForm.errors.payment_expiration"
                 required
@@ -139,7 +141,7 @@ const goBack = () => {
 
             <Listbox
                 id="type"
-                label="Microsite Type"
+                :label="t('microsites.create.form.type')"
                 v-model="createForm.type"
                 :options="micrositeTypeOptions"
                 :error="createForm.errors.type"
@@ -149,7 +151,7 @@ const goBack = () => {
             <InputField
                 id="responsible_name"
                 type="text"
-                label="Responsible Name"
+                :label="t('microsites.create.form.responsibleName')"
                 v-model="createForm.responsible_name"
                 :error="createForm.errors.responsible_name"
                 required
@@ -158,7 +160,7 @@ const goBack = () => {
             <InputField
                 id="responsible_document_number"
                 type="text"
-                label="Responsible Document Number"
+                :label="t('microsites.create.form.responsibleDocumentNumber')"
                 v-model="createForm.responsible_document_number"
                 :error="createForm.errors.responsible_document_number"
                 required
@@ -166,7 +168,7 @@ const goBack = () => {
 
             <Listbox
                 id="responsible_document_type"
-                label="Responsible Document Type"
+                :label="t('microsites.create.form.responsibleDocumentType')"
                 v-model="createForm.responsible_document_type"
                 :options="documentTypeOptions"
                 :error="createForm.errors.responsible_document_type"
@@ -176,7 +178,7 @@ const goBack = () => {
             <div class="col-span-2 grid grid-cols-2 gap-4">
                 <FileInput
                     id="logo"
-                    label="Logo (jpg, png, jpeg)"
+                    :label="t('microsites.create.form.logo')"
                     v-model="createForm.logo"
                     :error="createForm.errors.logo"
                     accept="image/*"
@@ -198,7 +200,7 @@ const goBack = () => {
                     color="blue"
                     :disabled="createForm.processing"
                 >
-                    Create Microsite
+                    {{ t('microsites.create.form.save') }}
                 </Button>
             </div>
         </form>

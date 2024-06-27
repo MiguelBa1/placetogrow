@@ -4,11 +4,16 @@ import dayjs from 'dayjs';
 import { PencilSquareIcon, TrashIcon } from '@heroicons/vue/16/solid';
 import { Link } from '@inertiajs/vue3';
 import { Button, DataTable, Pagination } from '@/Components';
-import { DeleteMicrositeModal, micrositesColumns, MicrositesPaginatedResponse, micrositeTypesTranslations, MicrositeType } from '../index';
+import { DeleteMicrositeModal, getMicrositeTableColumns, MicrositesPaginatedResponse, micrositeTypesTranslations, MicrositeType } from '../index';
+import { useI18n } from 'vue-i18n';
+
+const { t } = useI18n();
 
 const { microsites } = defineProps<{
     microsites: MicrositesPaginatedResponse;
 }>();
+
+const micrositesColumns = getMicrositeTableColumns(t);
 
 const currentPage = microsites.current_page;
 

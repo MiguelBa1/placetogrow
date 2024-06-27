@@ -3,7 +3,9 @@ import { ref } from 'vue';
 import { router } from '@inertiajs/vue3';
 import { InputField, Button } from '@/Components';
 import { MagnifyingGlassIcon } from '@heroicons/vue/16/solid';
+import { useI18n } from 'vue-i18n';
 
+const { t } = useI18n();
 const search = ref('');
 
 const handleSearch = () => {
@@ -24,7 +26,7 @@ const handleSearch = () => {
     >
         <div class="flex items-center">
             <h2 class="font-semibold text-xl text-gray-800">
-                Payment Microsites
+                {{ t('home.index.header') }}
             </h2>
         </div>
         <div class="flex items-center gap-2">
@@ -32,7 +34,7 @@ const handleSearch = () => {
                 id="search"
                 type="text"
                 class="w-64"
-                placeholder="Search"
+                :placeholder="t('home.index.searchPlaceholder')"
                 v-model="search"
             />
             <Button

@@ -1,10 +1,10 @@
-export const micrositesColumns = [
-    { key: 'id', label: 'ID' },
-    { key: 'name', label: 'Name' },
-    { key: 'category', label: 'Category' },
-    { key: 'type', label: 'Type' },
-    { key: 'responsible_name', label: 'Responsible Name' },
-    { key: 'payment_currency', label: 'Payment Currency' },
-    { key: 'payment_expiration', label: 'Payment Expiration' },
-    { key: 'actions', label: 'Actions' },
+export const getMicrositeTableColumns = (t: (key: string) => string) => [
+    { key: 'id', label: t('microsites.index.table.id') },
+    { key: 'name', label: t('microsites.index.table.name') },
+    { key: 'category', label: t('microsites.index.table.category') },
+    { key: 'type', label: t('microsites.index.table.type') },
+    { key: 'responsible_name', label: t('microsites.index.table.responsible_name') },
+    { key: 'payment_currency', label: t('microsites.index.table.payment_currency') },
+    { key: 'payment_expiration', label: t('microsites.index.table.payment_expiration') },
+    { key: 'actions', label: t('microsites.index.table.actions') },
 ];
