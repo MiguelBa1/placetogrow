@@ -27,18 +27,10 @@ class MicrositeFactory extends Factory
     {
         $name = 'Microsite ' . $this->faker->unique()->randomNumber(5);
 
-        $categories = Category::all();
-
-        if ($categories->isEmpty()) {
-            $category = Category::factory()->create();
-        } else {
-            $category = $categories->random();
-        }
-
         return [
             'name' => $name,
             'slug' => Str::slug($name),
-            'category_id' => $category->id,
+            'category_id' => Category::factory(),
             'payment_currency' => $this->faker->randomElement(array_column(CurrencyType::cases(), 'value')),
             'payment_expiration' => $this->faker->dateTimeBetween('now', '+1 year'),
             'type' => $this->faker->randomElement(array_column(MicrositeType::cases(), 'value')),

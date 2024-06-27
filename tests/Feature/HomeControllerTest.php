@@ -5,6 +5,7 @@ namespace Tests\Feature;
 use App\Models\Category;
 use App\Models\Microsite;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Storage;
 use Inertia\Testing\AssertableInertia;
 use Tests\TestCase;
 
@@ -15,6 +16,9 @@ class HomeControllerTest extends TestCase
     public function setUp(): void
     {
         parent::setUp();
+        Storage::fake('microsites_logos');
+        Storage::fake('category_icons');
+
         Category::factory()->count(5)->create();
         Microsite::factory()->count(15)->create();
     }

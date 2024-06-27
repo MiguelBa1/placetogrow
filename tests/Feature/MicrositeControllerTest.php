@@ -12,6 +12,7 @@ use App\Models\User;
 use Database\Seeders\RoleSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Storage;
 use Inertia\Testing\AssertableInertia;
 use Tests\TestCase;
 
@@ -25,6 +26,9 @@ class MicrositeControllerTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
+
+        Storage::fake('microsites_logos');
+        Storage::fake('category_icons');
 
         $this->seed(RoleSeeder::class);
         $this->adminUser = User::factory()->create()->assignRole(Role::ADMIN);

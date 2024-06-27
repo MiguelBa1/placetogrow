@@ -7,6 +7,7 @@ use App\Models\Category;
 use App\Models\User;
 use Database\Seeders\RoleSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Storage;
 use Inertia\Testing\AssertableInertia;
 use Tests\TestCase;
 
@@ -20,6 +21,8 @@ class CategoryControllerTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
+
+        Storage::fake('category_icons');
 
         $this->seed(RoleSeeder::class);
         $this->adminUser = User::factory()->create()->assignRole(Role::ADMIN);
