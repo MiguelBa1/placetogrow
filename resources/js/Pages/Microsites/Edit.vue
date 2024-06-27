@@ -2,13 +2,7 @@
 import { computed, ref, watch } from 'vue';
 import { Head, useForm, router } from '@inertiajs/vue3';
 import { MainLayout } from '@/Layouts';
-import {
-    Category,
-    micrositeTypesTranslations,
-    documentTypesTranslations,
-    DocumentType,
-    MicrositeType, CurrencyType,
-} from './index';
+import { Category } from './index';
 import { InputField, Listbox, Button, FileInput } from '@/Components';
 import dayjs from 'dayjs';
 import { useToast } from 'vue-toastification';
@@ -18,9 +12,9 @@ const toast = useToast();
 const { microsite, categories, documentTypes, micrositeTypes, currencyTypes } = defineProps<{
     microsite: any;
     categories: Category[];
-    documentTypes: DocumentType[];
-    micrositeTypes: MicrositeType[];
-    currencyTypes: CurrencyType[];
+    documentTypes: { label: string; value: string }[];
+    micrositeTypes: { label: string; value: string }[];
+    currencyTypes: { label: string; value: string }[];
 }>();
 
 const editForm = useForm({
@@ -35,31 +29,16 @@ const editForm = useForm({
     responsible_document_type: microsite.responsible_document_type,
 });
 
-const micrositeTypeOptions = computed(() => {
-    return micrositeTypes.map((type) => ({
-        label: micrositeTypesTranslations[type],
-        value: type,
-    }));
-});
+const micrositeTypeOptions = computed(() => micrositeTypes);
 
-const documentTypeOptions = computed(() => {
-    return documentTypes.map((type) => ({
-        label: documentTypesTranslations[type],
-        value: type,
-    }));
-});
+const documentTypeOptions = computed(() => documentTypes);
+
+const currencyOptions = computed(() => currencyTypes);
 
 const categoryOptions = computed(() => {
     return categories.map((category) => ({
         label: category.name,
         value: category.id,
-    }));
-});
-
-const currencyOptions = computed(() => {
-    return currencyTypes.map((currency) => ({
-        label: currency,
-        value: currency,
     }));
 });
 
@@ -204,7 +183,9 @@ const goBack = () => {
                     accept="image/*"
                 />
                 <div v-if="previewUrl" class="mt-1">
-                    <img :src="previewUrl" alt="Preview" class="w-48 h-48 object-cover rounded-md border" />
+                    <img :src="previewUrl"
+                         :alt="editForm.name + ' Logo'"
+                         class="w-48 h-48 object-cover rounded-md border" />
                 </div>
                 <div v-else class="mt-1">
                     <img src="/images/placeholder.png" alt="Placeholder"

@@ -12,7 +12,7 @@ const { microsite, documentTypes } = defineProps<{
         slug: string;
         payment_currency: string;
     };
-    documentTypes: string[];
+    documentTypes: { label: string; value: string }[];
 }>();
 
 const paymentForm = useForm({
@@ -26,23 +26,17 @@ const paymentForm = useForm({
     amount: '',
 });
 
-const documentTypeOptions = computed(() => {
-    return documentTypes.map((type) => ({
-        label: type,
-        value: type,
-    }));
-});
+const documentTypeOptions = computed(() => documentTypes);
 
 const currencyOption = [
     { label: microsite.payment_currency, value: microsite.payment_currency },
-]
+];
 
 const onSubmit = () => {
     paymentForm.post(route('microsites.payment.store', {
         microsite: microsite.slug,
     }));
 };
-
 </script>
 
 <template>

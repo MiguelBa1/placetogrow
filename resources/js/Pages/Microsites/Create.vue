@@ -1,14 +1,8 @@
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue';
-import {Head, router, useForm} from '@inertiajs/vue3';
+import { Head, router, useForm } from '@inertiajs/vue3';
 import { MainLayout } from '@/Layouts';
-import {
-    Category,
-    micrositeTypesTranslations,
-    documentTypesTranslations,
-    DocumentType,
-    MicrositeType, CurrencyType,
-} from './index';
+import { Category } from './index';
 import { InputField, Listbox, Button, FileInput } from '@/Components';
 import { useToast } from 'vue-toastification';
 
@@ -16,9 +10,9 @@ const toast = useToast();
 
 const { categories, documentTypes, micrositeTypes, currencyTypes } = defineProps<{
     categories: Category[];
-    documentTypes: DocumentType[];
-    micrositeTypes: MicrositeType[];
-    currencyTypes: CurrencyType[];
+    documentTypes: { label: string; value: string }[];
+    micrositeTypes: { label: string; value: string }[];
+    currencyTypes: { label: string; value: string }[];
 }>();
 
 const createForm = useForm({
@@ -33,31 +27,16 @@ const createForm = useForm({
     responsible_document_type: '',
 });
 
-const micrositeTypeOptions = computed(() => {
-    return micrositeTypes.map((type) => ({
-        label: micrositeTypesTranslations[type],
-        value: type,
-    }));
-});
+const micrositeTypeOptions = computed(() => micrositeTypes);
 
-const documentTypeOptions = computed(() => {
-    return documentTypes.map((type) => ({
-        label: documentTypesTranslations[type],
-        value: type,
-    }));
-});
+const documentTypeOptions = computed(() => documentTypes);
+
+const currencyOptions = computed(() => currencyTypes);
 
 const categoryOptions = computed(() => {
     return categories.map((category) => ({
         label: category.name,
         value: category.id,
-    }));
-});
-
-const currencyOptions = computed(() => {
-    return currencyTypes.map((currency) => ({
-        label: currency,
-        value: currency,
     }));
 });
 

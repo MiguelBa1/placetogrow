@@ -38,7 +38,7 @@ class MicrositeController extends Controller
 
     public function show(Microsite $microsite): Response
     {
-        $documentTypes = DocumentType::cases();
+        $documentTypes = DocumentType::toSelectArray();
 
         $micrositeData = $microsite->only(['id', 'name', 'slug', 'payment_currency']);
         $micrositeData['logo'] = $microsite->getFirstMediaUrl('logos');
@@ -52,9 +52,9 @@ class MicrositeController extends Controller
     public function create(): Response
     {
         $categories = Category::query()->select('id', 'name')->get();
-        $documentTypes = DocumentType::cases();
-        $micrositeTypes = MicrositeType::cases();
-        $currencyTypes = CurrencyType::cases();
+        $documentTypes = DocumentType::toSelectArray();
+        $micrositeTypes = MicrositeType::toSelectArray();
+        $currencyTypes = CurrencyType::toSelectArray();
 
         return Inertia::render('Microsites/Create', [
             'categories' => $categories,
@@ -80,9 +80,9 @@ class MicrositeController extends Controller
     public function edit(Microsite $microsite): Response
     {
         $categories = Category::query()->select('id', 'name')->get();
-        $documentTypes = DocumentType::cases();
-        $micrositeTypes = MicrositeType::cases();
-        $currencyTypes = CurrencyType::cases();
+        $documentTypes = DocumentType::toSelectArray();
+        $micrositeTypes = MicrositeType::toSelectArray();
+        $currencyTypes = CurrencyType::toSelectArray();
 
         $microsite->load('category:id,name');
         $micrositeData = $microsite->only(['id', 'name', 'category_id', 'type', 'payment_currency', 'payment_expiration', 'responsible_name', 'responsible_document_number', 'responsible_document_type']);
@@ -107,7 +107,7 @@ class MicrositeController extends Controller
                     ->addMediaFromRequest('logo')
                     ->toMediaCollection('logos');
             } catch (FileDoesNotExist | FileIsTooBig $e) {
-                return back()->withErrors(['logo' => trans('messages.error.uploading_logo', ['message' => $e->getMessage()])]);
+                return back()->withErrors(['logo' => trans('messages.error.uploading_logo')]);
             }
         }
 

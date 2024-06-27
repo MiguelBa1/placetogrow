@@ -12,11 +12,11 @@ const { microsites } = defineProps<{
 
 const currentPage = microsites.current_page;
 
-const selectedMicrositeSlug = ref<number | null>(null);
+const selectedMicrositeSlug = ref<string | null>(null);
 
 const isDeleteModalOpen = ref(false);
 
-const openDeleteModal = (micrositeSlug: number) => {
+const openDeleteModal = (micrositeSlug: string) => {
     selectedMicrositeSlug.value = micrositeSlug;
     isDeleteModalOpen.value = true;
 };
