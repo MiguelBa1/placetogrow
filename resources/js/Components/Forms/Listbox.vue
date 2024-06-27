@@ -88,6 +88,9 @@ import {
     ListboxLabel,
 } from '@headlessui/vue';
 import { ChevronDownIcon, CheckIcon } from '@heroicons/vue/24/solid';
+import { useI18n } from 'vue-i18n';
+
+const { t } = useI18n();
 
 type Option = {
     label: string;
@@ -105,7 +108,7 @@ const props = withDefaults(defineProps<{
     disabled?: boolean;
     required?: boolean;
 }>(), {
-    placeholder: 'Seleccionar',
+    placeholder: '',
     className: '',
     disabled: false,
     label: '',
@@ -134,4 +137,7 @@ const selectedOption = computed(() => {
     return props.options.find((option) => option.value === selectedValue.value);
 });
 
+const placeholder = computed(() => {
+    return props.placeholder || t('components.forms.listbox.placeholder');
+});
 </script>

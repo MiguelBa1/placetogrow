@@ -8,6 +8,7 @@ import {
     MobileNav,
     UserDropdown,
     HamburgerIcon,
+    LanguageSwitcher,
 } from '@/Components';
 import { getNavigationLinks, getGuestLinks } from '@/Data';
 
@@ -41,6 +42,7 @@ const guestLinks = getGuestLinks(t);
                 </div>
                 <!-- Auth Links -->
                 <div class="hidden sm:flex sm:items-center sm:ms-6">
+                    <LanguageSwitcher />
                     <UserDropdown
                         v-if="isAuthenticated"
                     />
@@ -49,7 +51,8 @@ const guestLinks = getGuestLinks(t);
                         v-for="link in guestLinks"
                         :key="link.name"
                         :href="route(link.route)"
-                        class="rounded-md px-3 py-2 text-black ring-1 ring-transparent transition hover:text-black/70 focus:outline-none focus-visible:ring-[#FF2D20]"
+                        class="rounded-md px-3 py-2 text-black ring-1 ring-transparent
+                         transition hover:text-black/70 focus:outline-none focus-visible:ring-[#FF2D20]"
                     >
                         {{ link.label }}
                     </Link>
