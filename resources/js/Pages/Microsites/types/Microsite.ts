@@ -11,7 +11,7 @@ export type Microsite = {
     type: string;
     slug: string;
     payment_currency: string;
-    payment_expiration: string;
+    payment_expiration?: string;
 };
 
 export type MicrositesPaginatedResponse = PaginatedResponse<Microsite>;

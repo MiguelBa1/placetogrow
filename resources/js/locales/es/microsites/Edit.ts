@@ -9,7 +9,7 @@ export const esEdit = {
         responsibleDocumentNumber: "Número de Documento del Responsable",
         responsibleDocumentType: "Tipo de Documento del Responsable",
         paymentCurrency: "Moneda de Pago",
-        paymentExpiration: "Tiempo de Pago",
+        paymentExpiration: "Tiempo de Pago (Días)",
         save: "Guardar",
         logo: "Logo, (tamaño recomendado 400x400)",
         cancel: "Cancelar",

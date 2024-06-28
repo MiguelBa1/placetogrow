@@ -15,7 +15,6 @@ class UpdateMicrositeRequest extends BaseMicrositeRequest
     {
         $micrositeId = $this->route('microsite')->id ?? null;
 
-
         $rules = [
             'name' => [Rule::unique('microsites')->ignore($micrositeId)],
             'logo' => ['nullable'],

@@ -26,14 +26,16 @@ class MicrositeFactory extends Factory
     public function definition(): array
     {
         $name = 'Microsite ' . $this->faker->unique()->randomNumber(5);
+        $type = $this->faker->randomElement(MicrositeType::cases());
+        $paymentExpiration = $type->defaultExpirationDays() ?? $this->faker->numberBetween(1, 365); // default or random within range
 
         return [
             'name' => $name,
             'slug' => Str::slug($name),
             'category_id' => Category::factory(),
             'payment_currency' => $this->faker->randomElement(array_column(CurrencyType::cases(), 'value')),
-            'payment_expiration' => $this->faker->dateTimeBetween('now', '+1 year'),
-            'type' => $this->faker->randomElement(array_column(MicrositeType::cases(), 'value')),
+            'payment_expiration' => $type === MicrositeType::BASIC ? null : $paymentExpiration,
+            'type' => $type->value,
             'responsible_name' => $this->faker->name,
             'responsible_document_number' => $this->faker->unique()->numerify('##########'),
             'responsible_document_type' => $this->faker->randomElement(array_column(DocumentType::cases(), 'value')),

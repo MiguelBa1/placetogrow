@@ -8,11 +8,13 @@ interface InputProps {
     label?: string;
     placeholder?: string;
     className?: string;
-    modelValue?: string;
+    modelValue?: string | number;
     disabled?: boolean;
     error?: string;
     autoComplete?: 'on' | 'off';
     required?: boolean;
+    min?: number;
+    max?: number;
 }
 
 const props = defineProps<InputProps>();

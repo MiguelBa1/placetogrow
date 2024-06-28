@@ -30,7 +30,6 @@ class Microsite extends Model implements HasMedia
     protected $casts = [
         'payment_currency' => CurrencyType::class,
         'type' => MicrositeType::class,
-        'payment_expiration' => 'date',
     ];
 
     public function category(): BelongsTo

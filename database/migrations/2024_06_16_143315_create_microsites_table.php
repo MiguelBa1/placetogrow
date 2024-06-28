@@ -16,7 +16,7 @@ return new class extends Migration {
             $table->string('slug')->unique();
             $table->foreignId('category_id')->constrained('categories');
             $table->enum('payment_currency', array_column(CurrencyType::cases(), 'value'));
-            $table->date('payment_expiration');
+            $table->integer('payment_expiration')->nullable();
             $table->enum('type', array_column(MicrositeType::cases(), 'value'));
             $table->string('responsible_name', 100);
             $table->string('responsible_document_number', 20);

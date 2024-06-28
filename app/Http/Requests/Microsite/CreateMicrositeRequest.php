@@ -18,7 +18,6 @@ class CreateMicrositeRequest extends BaseMicrositeRequest
             'logo' => ['required'],
             'category_id' => ['required'],
             'payment_currency' => ['required'],
-            'payment_expiration' => ['required'],
             'type' => ['required'],
             'responsible_name' => ['required'],
             'responsible_document_number' => ['required'],

@@ -1,10 +1,16 @@
 <script setup lang="ts">
 import { ref } from 'vue';
-import dayjs from 'dayjs';
 import { PencilSquareIcon, TrashIcon } from '@heroicons/vue/16/solid';
 import { Link } from '@inertiajs/vue3';
 import { Button, DataTable, Pagination } from '@/Components';
-import { DeleteMicrositeModal, getMicrositeTableColumns, MicrositesPaginatedResponse, micrositeTypesTranslations, MicrositeType } from '../index';
+import {
+    DeleteMicrositeModal,
+    getMicrositeTableColumns,
+    MicrositesPaginatedResponse,
+    Microsite,
+    micrositeTypesTranslations,
+    MicrositeType,
+} from '../index';
 import { useI18n } from 'vue-i18n';
 
 const { t } = useI18n();
@@ -30,6 +36,18 @@ const closeDeleteModal = () => {
     isDeleteModalOpen.value = false;
     selectedMicrositeSlug.value = null;
 };
+
+const getFormattedPaymentExpiration = (row: Microsite) => {
+    switch (row.type) {
+        case MicrositeType.BASIC:
+            return `${t('microsites.index.noExpire')}`;
+        case MicrositeType.SUBSCRIPTION:
+            return `${t('microsites.index.frequency')}: ${row.payment_expiration}`;
+        case MicrositeType.INVOICE:
+            return `${row.payment_expiration}`;
+    }
+};
+
 </script>
 
 <template>
@@ -58,7 +76,7 @@ const closeDeleteModal = () => {
                 {{ micrositeTypesTranslations[row.type as MicrositeType] }}
             </template>
             <template #cell-payment_expiration="{ row }">
-                {{ dayjs(row.payment_expiration as Date).format('DD/MM/YYYY') }}
+                {{ getFormattedPaymentExpiration(row as Microsite) }}
             </template>
         </DataTable>
         <Pagination :links="microsites.links" />

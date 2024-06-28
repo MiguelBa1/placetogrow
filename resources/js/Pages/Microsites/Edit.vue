@@ -2,9 +2,8 @@
 import { computed, ref, watch } from 'vue';
 import { Head, useForm, router } from '@inertiajs/vue3';
 import { MainLayout } from '@/Layouts';
-import { Category } from './index';
+import { Category, MicrositeType } from './index';
 import { InputField, Listbox, Button, FileInput } from '@/Components';
-import dayjs from 'dayjs';
 import { useToast } from 'vue-toastification';
 import { useI18n } from 'vue-i18n';
 
@@ -24,7 +23,7 @@ const editForm = useForm({
     logo: null as File | null,
     category_id: microsite.category_id,
     payment_currency: microsite.payment_currency,
-    payment_expiration: dayjs(microsite.payment_expiration).format('YYYY-MM-DD'),
+    payment_expiration: microsite.payment_expiration ?? undefined,
     type: microsite.type,
     responsible_name: microsite.responsible_name,
     responsible_document_number: microsite.responsible_document_number,
@@ -58,8 +57,15 @@ watch(() => editForm.logo, (newFile) => {
     }
 });
 
+watch(() => editForm.type, (newType) => {
+    if (newType === MicrositeType.BASIC) {
+        editForm.payment_expiration = undefined;
+    }
+});
+
+
 const submit = () => {
-    editForm.put(route('microsites.update', microsite.slug), {
+    editForm.put(route('microsites.update', microsite), {
         onSuccess: () => {
             toast.success(t('microsites.edit.form.success'));
             const currentPage = route().params.page || 1;
@@ -122,39 +128,21 @@ const goBack = () => {
                 required
             />
 
-            <Listbox
-                id="payment_currency"
-                :label="t('microsites.edit.form.paymentCurrency')"
-                v-model="editForm.payment_currency"
-                :options="currencyOptions"
-                :error="editForm.errors.payment_currency"
-                required
-            />
-
-            <InputField
-                id="payment_expiration"
-                type="date"
-                :label="t('microsites.edit.form.paymentExpiration')"
-                v-model="editForm.payment_expiration"
-                :error="editForm.errors.payment_expiration"
-                required
-            />
-
-            <Listbox
-                id="type"
-                :label="t('microsites.edit.form.type')"
-                v-model="editForm.type"
-                :options="micrositeTypeOptions"
-                :error="editForm.errors.type"
-                required
-            />
-
             <InputField
                 id="responsible_name"
                 type="text"
                 :label="t('microsites.edit.form.responsibleName')"
                 v-model="editForm.responsible_name"
                 :error="editForm.errors.responsible_name"
+                required
+            />
+
+            <Listbox
+                id="responsible_document_type"
+                :label="t('microsites.edit.form.responsibleDocumentType')"
+                v-model="editForm.responsible_document_type"
+                :options="documentTypeOptions"
+                :error="editForm.errors.responsible_document_type"
                 required
             />
 
@@ -168,12 +156,30 @@ const goBack = () => {
             />
 
             <Listbox
-                id="responsible_document_type"
-                :label="t('microsites.edit.form.responsibleDocumentType')"
-                v-model="editForm.responsible_document_type"
-                :options="documentTypeOptions"
-                :error="editForm.errors.responsible_document_type"
+                id="payment_currency"
+                :label="t('microsites.edit.form.paymentCurrency')"
+                v-model="editForm.payment_currency"
+                :options="currencyOptions"
+                :error="editForm.errors.payment_currency"
                 required
+            />
+
+            <Listbox
+                id="type"
+                :label="t('microsites.edit.form.type')"
+                v-model="editForm.type"
+                :options="micrositeTypeOptions"
+                :error="editForm.errors.type"
+                required
+            />
+
+            <InputField
+                id="payment_expiration"
+                type="number"
+                :label="t('microsites.edit.form.paymentExpiration')"
+                v-model="editForm.payment_expiration"
+                :error="editForm.errors.payment_expiration"
+                :disabled="![MicrositeType.SUBSCRIPTION, MicrositeType.INVOICE].includes(editForm.type as MicrositeType)"
             />
 
             <div class="col-span-2 grid grid-cols-2 gap-4">

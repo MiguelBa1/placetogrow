@@ -9,7 +9,7 @@ export const enCreate = {
         responsibleDocumentNumber: "Responsible Document Number",
         responsibleDocumentType: "Responsible Document Type",
         paymentCurrency: "Payment Currency",
-        paymentExpiration: "Payment Expiration",
+        paymentExpiration: "Payment Expiration (Days)",
         save: "Save",
         logo: "Logo, (recommended size 400x400)",
         cancel: "Cancel",

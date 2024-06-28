@@ -2,7 +2,7 @@
 import { computed, ref, watch } from 'vue';
 import { Head, router, useForm } from '@inertiajs/vue3';
 import { MainLayout } from '@/Layouts';
-import { Category } from './index';
+import { Category, MicrositeType } from './index';
 import { InputField, Listbox, Button, FileInput } from '@/Components';
 import { useToast } from 'vue-toastification';
 import { useI18n } from 'vue-i18n';
@@ -53,6 +53,12 @@ watch(() => createForm.logo, (newFile) => {
         reader.readAsDataURL(newFile);
     } else {
         previewUrl.value = null;
+    }
+});
+
+watch(() => createForm.type, (newType) => {
+    if (newType === MicrositeType.BASIC) {
+        createForm.payment_expiration = '';
     }
 });
 
@@ -121,39 +127,21 @@ const goBack = () => {
                 required
             />
 
-            <Listbox
-                id="payment_currency"
-                :label="t('microsites.create.form.paymentCurrency')"
-                v-model="createForm.payment_currency"
-                :options="currencyOptions"
-                :error="createForm.errors.payment_currency"
-                required
-            />
-
-            <InputField
-                id="payment_expiration"
-                type="date"
-                :label="t('microsites.create.form.paymentExpiration')"
-                v-model="createForm.payment_expiration"
-                :error="createForm.errors.payment_expiration"
-                required
-            />
-
-            <Listbox
-                id="type"
-                :label="t('microsites.create.form.type')"
-                v-model="createForm.type"
-                :options="micrositeTypeOptions"
-                :error="createForm.errors.type"
-                required
-            />
-
             <InputField
                 id="responsible_name"
                 type="text"
                 :label="t('microsites.create.form.responsibleName')"
                 v-model="createForm.responsible_name"
                 :error="createForm.errors.responsible_name"
+                required
+            />
+
+            <Listbox
+                id="responsible_document_type"
+                :label="t('microsites.create.form.responsibleDocumentType')"
+                v-model="createForm.responsible_document_type"
+                :options="documentTypeOptions"
+                :error="createForm.errors.responsible_document_type"
                 required
             />
 
@@ -167,12 +155,32 @@ const goBack = () => {
             />
 
             <Listbox
-                id="responsible_document_type"
-                :label="t('microsites.create.form.responsibleDocumentType')"
-                v-model="createForm.responsible_document_type"
-                :options="documentTypeOptions"
-                :error="createForm.errors.responsible_document_type"
+                id="payment_currency"
+                :label="t('microsites.create.form.paymentCurrency')"
+                v-model="createForm.payment_currency"
+                :options="currencyOptions"
+                :error="createForm.errors.payment_currency"
                 required
+            />
+
+            <Listbox
+                id="type"
+                :label="t('microsites.create.form.type')"
+                v-model="createForm.type"
+                :options="micrositeTypeOptions"
+                :error="createForm.errors.type"
+                required
+            />
+
+            <InputField
+                id="payment_expiration"
+                type="number"
+                :min="1"
+                :max="365"
+                :label="t('microsites.create.form.paymentExpiration')"
+                v-model="createForm.payment_expiration"
+                :error="createForm.errors.payment_expiration"
+                :disabled="![MicrositeType.SUBSCRIPTION, MicrositeType.INVOICE].includes(createForm.type as MicrositeType)"
             />
 
             <div class="col-span-2 grid grid-cols-2 gap-4">

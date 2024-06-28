@@ -86,7 +86,7 @@ class MicrositeController extends Controller
         $currencyTypes = CurrencyType::toSelectArray();
 
         $microsite->load('category:id,name');
-        $micrositeData = $microsite->only(['id', 'name', 'category_id', 'type', 'payment_currency', 'payment_expiration', 'responsible_name', 'responsible_document_number', 'responsible_document_type']);
+        $micrositeData = $microsite->only(['id', 'name', 'slug', 'category_id', 'type', 'payment_currency', 'payment_expiration', 'responsible_name', 'responsible_document_number', 'responsible_document_type']);
         $micrositeData['logo'] = $microsite->getFirstMediaUrl('logos');
 
         return Inertia::render('Microsites/Edit', [
@@ -112,7 +112,7 @@ class MicrositeController extends Controller
             }
         }
 
-        return back();
+        return redirect()->route('microsites.edit', $microsite);
     }
 
     public function destroy(Microsite $microsite): HttpFoundationResponse
