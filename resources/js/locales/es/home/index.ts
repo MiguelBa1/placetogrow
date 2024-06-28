@@ -1,4 +1,4 @@
-import { esIndex } from './Index';
+import { esIndex } from './esIndex';
 
 export default {
     index: esIndex,

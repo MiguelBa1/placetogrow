@@ -1,4 +1,4 @@
-import { enIndex } from './Index';
+import { enIndex } from './enIndex';
 import { enCreate } from './Create';
 import { enEdit } from './Edit';
 import { enShow } from './Show';
