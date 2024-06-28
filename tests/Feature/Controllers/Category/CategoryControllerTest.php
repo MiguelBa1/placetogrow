@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Feature;
+namespace Tests\Feature\Controllers\Category;
 
 use App\Constants\Role;
 use App\Models\Category;

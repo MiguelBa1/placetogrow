@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Home;
 
+use App\Http\Controllers\Controller;
 use App\Http\Requests\Home\FilterMicrositesRequest;
 use App\Models\Category;
 use App\Models\Microsite;

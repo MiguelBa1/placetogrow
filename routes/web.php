@@ -1,12 +1,12 @@
 <?php
 
 use App\Constants\Role;
-use App\Http\Controllers\CategoryController;
-use App\Http\Controllers\HomeController;
-use App\Http\Controllers\LanguageController;
-use App\Http\Controllers\MicrositeController;
-use App\Http\Controllers\PaymentController;
-use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\Category\CategoryController;
+use App\Http\Controllers\Home\HomeController;
+use App\Http\Controllers\Microsite\MicrositeController;
+use App\Http\Controllers\Payment\PaymentController;
+use App\Http\Controllers\Profile\ProfileController;
+use App\Http\Controllers\Support\LanguageController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 

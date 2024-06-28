@@ -1,10 +1,11 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Microsite;
 
 use App\Constants\CurrencyType;
 use App\Constants\DocumentType;
 use App\Constants\MicrositeType;
+use App\Http\Controllers\Controller;
 use App\Http\Requests\Microsite\CreateMicrositeRequest;
 use App\Http\Requests\Microsite\UpdateMicrositeRequest;
 use App\Models\Category;

@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Feature;
+namespace Tests\Feature\Controllers\Payment;
 
 use App\Constants\CurrencyType;
 use App\Constants\DocumentType;

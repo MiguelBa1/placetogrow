@@ -1,8 +1,9 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Payment;
 
-use App\Http\Requests\CreatePaymentRequest;
+use App\Http\Controllers\Controller;
+use App\Http\Requests\Payment\CreatePaymentRequest;
 use App\Models\Microsite;
 use App\Services\PaymentService;
 use Illuminate\Http\RedirectResponse;

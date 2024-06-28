@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Feature;
+namespace Tests\Feature\Controllers\Microsite;
 
 use App\Constants\CurrencyType;
 use App\Constants\DocumentType;

@@ -1,8 +1,9 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Category;
 
-use App\Http\Requests\CreateCategoryRequest;
+use App\Http\Controllers\Controller;
+use App\Http\Requests\Category\CreateCategoryRequest;
 use App\Models\Category;
 use Inertia\Inertia;
 use Inertia\Response;
