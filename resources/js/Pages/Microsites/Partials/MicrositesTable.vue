@@ -7,9 +7,6 @@ import {
     DeleteMicrositeModal,
     getMicrositeTableColumns,
     MicrositesPaginatedResponse,
-    Microsite,
-    micrositeTypesTranslations,
-    MicrositeType,
 } from '../index';
 import { useI18n } from 'vue-i18n';
 
@@ -20,8 +17,6 @@ const { microsites } = defineProps<{
 }>();
 
 const micrositesColumns = getMicrositeTableColumns(t);
-
-const currentPage = microsites.current_page;
 
 const selectedMicrositeSlug = ref<string | null>(null);
 
@@ -37,17 +32,6 @@ const closeDeleteModal = () => {
     selectedMicrositeSlug.value = null;
 };
 
-const getFormattedPaymentExpiration = (row: Microsite) => {
-    switch (row.type) {
-        case MicrositeType.BASIC:
-            return `${t('microsites.index.noExpire')}`;
-        case MicrositeType.SUBSCRIPTION:
-            return `${t('microsites.index.frequency')}: ${row.payment_expiration}`;
-        case MicrositeType.INVOICE:
-            return `${row.payment_expiration}`;
-    }
-};
-
 </script>
 
 <template>
@@ -59,7 +43,7 @@ const getFormattedPaymentExpiration = (row: Microsite) => {
             <template #cell-actions="{ row }">
                 <div class="flex justify-center gap-2">
                     <Link
-                        :href="route('microsites.edit', { microsite: row.slug, page: currentPage })"
+                        :href="route('microsites.edit', { microsite: row.slug, page: microsites.meta.current_page })"
                         class="text-blue-600 hover:text-blue-900"
                     >
                         <PencilSquareIcon class="w-5 h-5" />
@@ -72,14 +56,8 @@ const getFormattedPaymentExpiration = (row: Microsite) => {
                     </button>
                 </div>
             </template>
-            <template #cell-type="{ row }">
-                {{ micrositeTypesTranslations[row.type as MicrositeType] }}
-            </template>
-            <template #cell-payment_expiration="{ row }">
-                {{ getFormattedPaymentExpiration(row as Microsite) }}
-            </template>
         </DataTable>
-        <Pagination :links="microsites.links" />
+        <Pagination :links="microsites.meta.links" />
     </div>
     <DeleteMicrositeModal
         :isOpen="isDeleteModalOpen"

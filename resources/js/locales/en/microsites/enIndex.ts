@@ -10,9 +10,7 @@ export const enIndex = {
         type: "TYPE",
         responsible_name: "RESPONSIBLE",
         payment_currency: "PAYMENT CURRENCY",
-        payment_expiration: "PAYMENT EXPIRATION (DAYS)",
+        payment_expiration: "PAYMENT EXPIRATION",
         actions: "ACTIONS"
     },
-    frequency: "Frequency",
-    noExpire: "No Expire"
 }

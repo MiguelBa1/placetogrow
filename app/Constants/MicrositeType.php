@@ -17,7 +17,6 @@ enum MicrositeType: string
         };
     }
 
-
     public static function toSelectArray(): array
     {
         return array_map(fn ($case) => [

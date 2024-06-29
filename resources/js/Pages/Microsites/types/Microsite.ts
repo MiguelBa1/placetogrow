@@ -1,4 +1,4 @@
-import { type PaginatedResponse } from '@/Components';
+import { type PaginationLink } from '@/Components';
 
 export type Microsite = {
     id: number;
@@ -14,4 +14,26 @@ export type Microsite = {
     payment_expiration?: string;
 };
 
-export type MicrositesPaginatedResponse = PaginatedResponse<Microsite>;
+export type ApiResourceLink = {
+    first: string;
+    last: string;
+    prev: string | null;
+    next: string | null;
+};
+
+export type ApiResourceMeta = {
+    current_page: number;
+    from: number;
+    last_page: number;
+    path: string;
+    per_page: number;
+    to: number;
+    total: number;
+    links: PaginationLink[];
+};
+
+export type MicrositesPaginatedResponse = {
+    data: Microsite[];
+    links: ApiResourceLink;
+    meta: ApiResourceMeta;
+};

@@ -5,15 +5,16 @@ namespace App\Services;
 use App\Constants\CurrencyType;
 use App\Constants\DocumentType;
 use App\Constants\MicrositeType;
+use App\Http\Resources\MicrositeResource;
 use App\Models\Category;
 use App\Models\Microsite;
-use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 class MicrositeService
 {
-    public function getAllMicrosites(): LengthAwarePaginator
+    public function getAllMicrosites(): AnonymousResourceCollection
     {
-        return Microsite::with('category:id,name')
+        $microsites = Microsite::with('category:id,name')
             ->select(
                 'id',
                 'name',
@@ -23,7 +24,9 @@ class MicrositeService
                 'responsible_name',
                 'payment_currency',
                 'payment_expiration'
-            )->paginate(10)->onEachSide(1);
+            )->paginate(10)->withQueryString()->onEachSide(1);
+
+        return MicrositeResource::collection($microsites);
     }
 
     public function getMicrositeData(Microsite $microsite): array

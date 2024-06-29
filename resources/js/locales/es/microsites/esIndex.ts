@@ -10,9 +10,7 @@ export const esIndex = {
         type: "TIPO",
         responsible_name: "RESPONSABLE",
         payment_currency: "MONEDA DE PAGO",
-        payment_expiration: "TIEMPO DE PAGO (DÍAS)",
+        payment_expiration: "TIEMPO DE PAGO",
         actions: "ACCIONES",
     },
-    frequency: "Frecuencia",
-    noExpire: "No Expira",
 }

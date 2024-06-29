@@ -30,7 +30,7 @@ defineProps<{
                     {{  t('microsites.index.header') }}
                 </h2>
                 <Button @click="router.visit(route('microsites.create', {
-                    page: microsites.current_page || 1,
+                    page: microsites.meta.current_page || 1,
                 }))">
                     {{ t('microsites.index.createMicrosite') }}
                 </Button>
