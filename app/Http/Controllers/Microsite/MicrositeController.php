@@ -2,35 +2,25 @@
 
 namespace App\Http\Controllers\Microsite;
 
-use App\Constants\CurrencyType;
+use App\Actions\Microsite\DestroyMicrositeAction;
+use App\Actions\Microsite\StoreMicrositeAction;
+use App\Actions\Microsite\UpdateMicrositeAction;
 use App\Constants\DocumentType;
-use App\Constants\MicrositeType;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Microsite\CreateMicrositeRequest;
 use App\Http\Requests\Microsite\UpdateMicrositeRequest;
-use App\Models\Category;
 use App\Models\Microsite;
+use App\Services\MicrositeService;
+use Exception;
 use Inertia\Inertia;
 use Inertia\Response;
-use Spatie\MediaLibrary\MediaCollections\Exceptions\FileDoesNotExist;
-use Spatie\MediaLibrary\MediaCollections\Exceptions\FileIsTooBig;
 use Symfony\Component\HttpFoundation\Response as HttpFoundationResponse;
 
 class MicrositeController extends Controller
 {
     public function index(): Response
     {
-        $microsites = Microsite::with('category:id,name')
-            ->select(
-                'id',
-                'name',
-                'category_id',
-                'type',
-                'slug',
-                'responsible_name',
-                'payment_currency',
-                'payment_expiration'
-            )->paginate(10)->onEachSide(1);
+        $microsites = (new micrositeService)->getAllMicrosites();
 
         return Inertia::render('Microsites/Index', [
             'microsites' => fn () => $microsites,
@@ -39,10 +29,8 @@ class MicrositeController extends Controller
 
     public function show(Microsite $microsite): Response
     {
+        $micrositeData = (new micrositeService)->getMicrositeData($microsite);
         $documentTypes = DocumentType::toSelectArray();
-
-        $micrositeData = $microsite->only(['id', 'name', 'slug', 'payment_currency']);
-        $micrositeData['logo'] = $microsite->getFirstMediaUrl('logos');
 
         return Inertia::render('Microsites/Show', [
             'microsite' => $micrositeData,
@@ -52,72 +40,42 @@ class MicrositeController extends Controller
 
     public function create(): Response
     {
-        $categories = Category::query()->select('id', 'name')->get();
-        $documentTypes = DocumentType::toSelectArray();
-        $micrositeTypes = MicrositeType::toSelectArray();
-        $currencyTypes = CurrencyType::toSelectArray();
+        $formData = (new micrositeService)->getFormData();
 
-        return Inertia::render('Microsites/Create', [
-            'categories' => $categories,
-            'documentTypes' => $documentTypes,
-            'micrositeTypes' => $micrositeTypes,
-            'currencyTypes' => $currencyTypes,
-        ]);
+        return Inertia::render('Microsites/Create', $formData);
     }
 
-    public function store(CreateMicrositeRequest $request): HttpFoundationResponse
+    public function store(CreateMicrositeRequest $request, StoreMicrositeAction $storeMicrositeAction): HttpFoundationResponse
     {
-        $microsite = Microsite::create($request->except('logo'));
-
-        if ($request->hasFile('logo')) {
-            $microsite
-                ->addMediaFromRequest('logo')
-                ->toMediaCollection('logos');
-        }
+        $storeMicrositeAction->execute($request);
 
         return back();
     }
 
     public function edit(Microsite $microsite): Response
     {
-        $categories = Category::query()->select('id', 'name')->get();
-        $documentTypes = DocumentType::toSelectArray();
-        $micrositeTypes = MicrositeType::toSelectArray();
-        $currencyTypes = CurrencyType::toSelectArray();
+        $formData = (new micrositeService)->getFormData();
+        $micrositeData = (new micrositeService)->getEditData($microsite);
 
-        $microsite->load('category:id,name');
-        $micrositeData = $microsite->only(['id', 'name', 'slug', 'category_id', 'type', 'payment_currency', 'payment_expiration', 'responsible_name', 'responsible_document_number', 'responsible_document_type']);
-        $micrositeData['logo'] = $microsite->getFirstMediaUrl('logos');
-
-        return Inertia::render('Microsites/Edit', [
+        return Inertia::render('Microsites/Edit', array_merge($formData, [
             'microsite' => $micrositeData,
-            'categories' => $categories,
-            'documentTypes' => $documentTypes,
-            'micrositeTypes' => $micrositeTypes,
-            'currencyTypes' => $currencyTypes,
-        ]);
+        ]));
     }
 
-    public function update(UpdateMicrositeRequest $request, Microsite $microsite): HttpFoundationResponse
+    public function update(UpdateMicrositeRequest $request, Microsite $microsite, UpdateMicrositeAction $updateMicrositeAction): HttpFoundationResponse
     {
-        $microsite->update($request->except('logo'));
-
-        if ($request->hasFile('logo')) {
-            try {
-                $microsite
-                    ->addMediaFromRequest('logo')
-                    ->toMediaCollection('logos');
-            } catch (FileDoesNotExist | FileIsTooBig $e) {
-                return back()->withErrors(['logo' => trans('messages.error.uploading_logo')]);
-            }
+        try {
+            $updateMicrositeAction->execute($request, $microsite);
+        } catch (Exception $e) {
+            return back()->withErrors(['logo' => $e->getMessage()]);
         }
 
         return redirect()->route('microsites.edit', $microsite);
     }
 
-    public function destroy(Microsite $microsite): HttpFoundationResponse
+    public function destroy(Microsite $microsite, DestroyMicrositeAction $destroyMicrositeAction): HttpFoundationResponse
     {
-        $microsite->delete();
+        $destroyMicrositeAction->execute($microsite);
 
         return back();
     }
