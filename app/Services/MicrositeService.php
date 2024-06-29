@@ -12,7 +12,7 @@ use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 class MicrositeService
 {
-    public function getAllMicrosites(): AnonymousResourceCollection
+    public function getAllMicrosites(?string $searchFilter): AnonymousResourceCollection
     {
         $microsites = Microsite::with('category:id,name')
             ->select(
@@ -24,7 +24,9 @@ class MicrositeService
                 'responsible_name',
                 'payment_currency',
                 'payment_expiration'
-            )->paginate(10)->withQueryString()->onEachSide(1);
+            )->when($searchFilter, function ($query, $searchFilter) {
+                return $query->where('name', 'like', '%' . $searchFilter . '%');
+            })->paginate(10)->onEachSide(1)->withQueryString();
 
         return MicrositeResource::collection($microsites);
     }

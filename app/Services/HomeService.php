@@ -24,7 +24,7 @@ class HomeService
             });
     }
 
-    public function filterMicrosites($categoryFilter, $searchFilter): LengthAwarePaginator
+    public function filterMicrosites(?string $categoryFilter, ?string $searchFilter): LengthAwarePaginator
     {
         $micrositesQuery = Microsite::query()
             ->select('id', 'name', 'slug', 'category_id')
