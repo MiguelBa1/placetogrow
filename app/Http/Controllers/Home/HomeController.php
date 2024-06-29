@@ -4,48 +4,20 @@ namespace App\Http\Controllers\Home;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Home\FilterMicrositesRequest;
-use App\Models\Category;
-use App\Models\Microsite;
+use App\Services\HomeService;
 use Inertia\Inertia;
 use Inertia\Response;
 
 class HomeController extends Controller
 {
-    public function index(FilterMicrositesRequest $request): Response
+    public function index(FilterMicrositesRequest $request, HomeService $homeService): Response
     {
-        $categories = Category::query()->select('id', 'name')
-            ->with('media')
-            ->get()
-            ->map(function ($category) {
-                return [
-                    'id' => $category->id,
-                    'name' => $category->name,
-                    'logo' => $category->getFirstMediaUrl('logos')
-                ];
-            });
+        $categories = $homeService->getCategoriesWithLogos();
 
         $categoryFilter = $request->input('category');
         $searchFilter = $request->input('search');
 
-        $micrositesQuery = Microsite::query()->select('id', 'name', 'slug', 'category_id')
-            ->with('media')
-            ->when($categoryFilter, function ($query, $categoryFilter) {
-                return $query->where('category_id', $categoryFilter);
-            })
-            ->when($searchFilter, function ($query, $searchFilter) {
-                return $query->where('name', 'like', '%' . $searchFilter . '%');
-            });
-
-        $microsites = $micrositesQuery->paginate(10)->withQueryString();
-
-        $microsites->getCollection()->transform(function ($microsite) {
-            return [
-                'id' => $microsite->id,
-                'name' => $microsite->name,
-                'slug' => $microsite->slug,
-                'logo' => $microsite->getFirstMediaUrl('logos')
-            ];
-        });
+        $microsites = $homeService->filterMicrosites($categoryFilter, $searchFilter);
 
         return Inertia::render('Home/Index', [
             'categories' => fn () => $categories,
