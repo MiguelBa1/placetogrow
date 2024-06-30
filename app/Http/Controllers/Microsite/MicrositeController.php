@@ -13,7 +13,6 @@ use App\Http\Requests\Microsite\UpdateMicrositeRequest;
 use App\Models\Microsite;
 use App\Services\MicrositeService;
 use Exception;
-use Illuminate\Support\Facades\Log;
 use Inertia\Inertia;
 use Inertia\Response;
 use Symfony\Component\HttpFoundation\Response as HttpFoundationResponse;
@@ -22,8 +21,6 @@ class MicrositeController extends Controller
 {
     public function index(FilterMicrositesRequest $request): Response
     {
-        Log::debug('MicrositeController@index');
-
         $searchFilter = $request->input('search');
 
         $microsites = (new micrositeService)->getAllMicrosites($searchFilter);
