@@ -3,15 +3,19 @@ import { useForm, Head } from '@inertiajs/vue3';
 import { MainLayout } from '@/Layouts';
 import { InputField, Listbox, Button } from '@/Components';
 import { computed } from 'vue';
+import { useI18n } from 'vue-i18n';
+
+const { t } = useI18n();
 
 const { microsite, documentTypes } = defineProps<{
     microsite: {
         id: string;
         name: string;
         logo: string;
+        slug: string;
         payment_currency: string;
     };
-    documentTypes: string[];
+    documentTypes: { label: string; value: string }[];
 }>();
 
 const paymentForm = useForm({
@@ -25,23 +29,17 @@ const paymentForm = useForm({
     amount: '',
 });
 
-const documentTypeOptions = computed(() => {
-    return documentTypes.map((type) => ({
-        label: type,
-        value: type,
-    }));
-});
+const documentTypeOptions = computed(() => documentTypes);
 
 const currencyOption = [
     { label: microsite.payment_currency, value: microsite.payment_currency },
-]
+];
 
 const onSubmit = () => {
     paymentForm.post(route('microsites.payment.store', {
-        microsite: microsite.id,
+        microsite: microsite.slug,
     }));
 };
-
 </script>
 
 <template>
@@ -72,7 +70,7 @@ const onSubmit = () => {
             <InputField
                 id="name"
                 type="text"
-                label="Nombre"
+                :label="t('microsites.show.form.name')"
                 v-model="paymentForm.name"
                 required
                 :error="paymentForm.errors.name"
@@ -81,7 +79,7 @@ const onSubmit = () => {
             <InputField
                 id="lastName"
                 type="text"
-                label="Apellido"
+                :label="t('microsites.show.form.lastName')"
                 v-model="paymentForm.last_name"
                 required
                 :error="paymentForm.errors.last_name"
@@ -90,7 +88,7 @@ const onSubmit = () => {
             <InputField
                 id="email"
                 type="text"
-                label="Email"
+                :label="t('microsites.show.form.email')"
                 v-model="paymentForm.email"
                 :error="paymentForm.errors.email"
                 required
@@ -98,7 +96,7 @@ const onSubmit = () => {
 
             <Listbox
                 id="document-type"
-                label="Tipo de documento"
+                :label="t('microsites.show.form.documentType')"
                 :options="documentTypeOptions"
                 v-model="paymentForm.document_type"
                 required
@@ -108,7 +106,7 @@ const onSubmit = () => {
             <InputField
                 id="document-number"
                 type="text"
-                label="Número de documento"
+                :label="t('microsites.show.form.documentNumber')"
                 v-model="paymentForm.document_number"
                 required
                 :error="paymentForm.errors.document_number"
@@ -117,7 +115,7 @@ const onSubmit = () => {
             <InputField
                 id="phone"
                 type="text"
-                label="Teléfono"
+                :label="t('microsites.show.form.phone')"
                 v-model="paymentForm.phone"
                 required
                 :error="paymentForm.errors.phone"
@@ -125,7 +123,7 @@ const onSubmit = () => {
 
             <Listbox
                 id="currency"
-                label="Moneda"
+                :label="t('microsites.show.form.currency')"
                 :options="currencyOption"
                 v-model="paymentForm.currency"
                 required
@@ -136,7 +134,7 @@ const onSubmit = () => {
             <InputField
                 id="amount"
                 type="number"
-                label="Valor"
+                :label="t('microsites.show.form.amount')"
                 v-model="paymentForm.amount"
                 required
                 :error="paymentForm.errors.amount"
@@ -148,7 +146,7 @@ const onSubmit = () => {
                     type="submit"
                     :disabled="paymentForm.processing"
                 >
-                    Pagar
+                    {{ t('microsites.show.form.submit') }}
                 </Button>
             </div>
         </form>

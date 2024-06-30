@@ -16,13 +16,13 @@ const handleImageError = (event: Event) => {
 <template>
     <Link
         :href="route('microsites.show', {
-            microsite: microsite.id
+            microsite: microsite.slug
         })"
         class="grid gap-2 p-4 max-w-sm rounded overflow-hidden border bg-white
-               shadow-sm hover:shadow-lg
-               cursor-pointer transition duration-300 ease-in-out"
+               shadow-sm hover:text-blue-500
+               cursor-pointer"
     >
-        <div class="flex justify-start items-center">
+        <div class="flex justify-center items-center">
             <img
                 class="h-24 w-24"
                 :src="microsite.logo"
@@ -30,6 +30,6 @@ const handleImageError = (event: Event) => {
                 @error="handleImageError"
             />
         </div>
-        <div class="font-bold text-xl">{{ microsite.name }}</div>
+        <div class="font-bold text-xl text-center">{{ microsite.name }}</div>
     </Link>
 </template>

@@ -33,7 +33,7 @@ class PaymentService implements PaymentServiceInterface
         ];
     }
 
-    public function createPayment(array $paymentData, string $ipAddress, string $userAgent, int $micrositeId): RedirectResponse|Response
+    public function createPayment(array $paymentData, string $ipAddress, string $userAgent, string $micrositeSlug): RedirectResponse|Response
     {
         $paymentReference = Str::random();
 
@@ -60,7 +60,7 @@ class PaymentService implements PaymentServiceInterface
             'expiration' => Carbon::now()->addMinutes(10)->toIso8601String(),
             'returnUrl' => route('microsites.payment.return', [
                 'reference' => $paymentReference,
-                'microsite' => $micrositeId,
+                'microsite' => $micrositeSlug,
             ]),
             'ipAddress' => $ipAddress,
             'userAgent' => $userAgent,
@@ -73,14 +73,14 @@ class PaymentService implements PaymentServiceInterface
 
             return Inertia::location($result['processUrl']);
         } else {
-            return Redirect::to(route('microsites.show', $micrositeId))
+            return Redirect::to(route('microsites.show', $micrositeSlug))
                 ->withErrors(
                     $result['status']['message'] ?? 'An error occurred while processing the payment, please try again.'
                 );
         }
     }
 
-    public function checkPayment(string $reference, int $micrositeId): \Inertia\Response|RedirectResponse
+    public function checkPayment(string $reference, string $micrositeSlug): \Inertia\Response|RedirectResponse
     {
         $authData = $this->generateAuthData();
 
@@ -91,7 +91,7 @@ class PaymentService implements PaymentServiceInterface
         $payment = Payment::query()->where('payment_reference', $reference)->latest()->first();
 
         if (!$payment) {
-            return Redirect::to(route('microsites.show', $micrositeId))
+            return Redirect::to(route('microsites.show', $micrositeSlug))
                 ->withErrors('Payment not found.');
         }
 
@@ -104,7 +104,7 @@ class PaymentService implements PaymentServiceInterface
                 'payment' => $payment->refresh(),
             ]);
         } else {
-            return Redirect::to(route('microsites.show', $micrositeId))
+            return Redirect::to(route('microsites.show', $micrositeSlug))
                 ->withErrors(
                     $result['status']['message'] ?? 'An error occurred while completing the payment.'
                 );

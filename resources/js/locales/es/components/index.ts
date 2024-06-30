@@ -1,5 +1,7 @@
 import esUi from './ui';
+import esForms from './forms';
 
 export default {
-  ui: esUi,
+    forms: esForms,
+    ui: esUi,
 };

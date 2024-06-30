@@ -2,25 +2,20 @@
 import { computed, ref, watch } from 'vue';
 import { Head, useForm, router } from '@inertiajs/vue3';
 import { MainLayout } from '@/Layouts';
-import {
-    Category,
-    micrositeTypesTranslations,
-    documentTypesTranslations,
-    DocumentType,
-    MicrositeType, CurrencyType,
-} from './index';
+import { Category, MicrositeType } from './index';
 import { InputField, Listbox, Button, FileInput } from '@/Components';
-import dayjs from 'dayjs';
 import { useToast } from 'vue-toastification';
+import { useI18n } from 'vue-i18n';
 
 const toast = useToast();
+const { t } = useI18n();
 
 const { microsite, categories, documentTypes, micrositeTypes, currencyTypes } = defineProps<{
     microsite: any;
     categories: Category[];
-    documentTypes: DocumentType[];
-    micrositeTypes: MicrositeType[];
-    currencyTypes: CurrencyType[];
+    documentTypes: { label: string; value: string }[];
+    micrositeTypes: { label: string; value: string }[];
+    currencyTypes: { label: string; value: string }[];
 }>();
 
 const editForm = useForm({
@@ -28,38 +23,23 @@ const editForm = useForm({
     logo: null as File | null,
     category_id: microsite.category_id,
     payment_currency: microsite.payment_currency,
-    payment_expiration: dayjs(microsite.payment_expiration).format('YYYY-MM-DD'),
+    payment_expiration: microsite.payment_expiration ?? undefined,
     type: microsite.type,
     responsible_name: microsite.responsible_name,
     responsible_document_number: microsite.responsible_document_number,
     responsible_document_type: microsite.responsible_document_type,
 });
 
-const micrositeTypeOptions = computed(() => {
-    return micrositeTypes.map((type) => ({
-        label: micrositeTypesTranslations[type],
-        value: type,
-    }));
-});
+const micrositeTypeOptions = computed(() => micrositeTypes);
 
-const documentTypeOptions = computed(() => {
-    return documentTypes.map((type) => ({
-        label: documentTypesTranslations[type],
-        value: type,
-    }));
-});
+const documentTypeOptions = computed(() => documentTypes);
+
+const currencyOptions = computed(() => currencyTypes);
 
 const categoryOptions = computed(() => {
     return categories.map((category) => ({
         label: category.name,
         value: category.id,
-    }));
-});
-
-const currencyOptions = computed(() => {
-    return currencyTypes.map((currency) => ({
-        label: currency,
-        value: currency,
     }));
 });
 
@@ -77,17 +57,24 @@ watch(() => editForm.logo, (newFile) => {
     }
 });
 
+watch(() => editForm.type, (newType) => {
+    if (newType === MicrositeType.BASIC) {
+        editForm.payment_expiration = undefined;
+    }
+});
+
+
 const submit = () => {
-    editForm.put(route('microsites.update', microsite.id), {
+    editForm.put(route('microsites.update', microsite), {
         onSuccess: () => {
-            toast.success('Microsite updated successfully.');
+            toast.success(t('microsites.edit.form.success'));
             const currentPage = route().params.page || 1;
             router.visit(route('microsites.index', { page: currentPage }), {
                 only: ['microsites'],
             });
         },
         onError: () => {
-            toast.error('Please check the form for errors.');
+            toast.error(t('microsites.edit.form.error'));
         },
     });
 };
@@ -100,21 +87,21 @@ const goBack = () => {
 
 <template>
     <Head>
-        <title>Edit Microsite</title>
+        <title>{{ t('microsites.edit.title') }}</title>
     </Head>
 
     <MainLayout>
         <template #header>
             <div class="flex justify-between">
                 <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-                    Edit Microsite
+                    {{ t('microsites.edit.header') }}
                 </h2>
                 <Button
                     variant="secondary"
                     color="gray"
                     @click="goBack"
                 >
-                    Back
+                    {{ t('microsites.edit.back') }}
                 </Button>
             </div>
         </template>
@@ -126,7 +113,7 @@ const goBack = () => {
             <InputField
                 id="name"
                 type="text"
-                label="Name"
+                :label="t('microsites.edit.form.name')"
                 v-model="editForm.name"
                 :error="editForm.errors.name"
                 required
@@ -134,34 +121,52 @@ const goBack = () => {
 
             <Listbox
                 id="category_id"
-                label="Category"
+                :label="t('microsites.edit.form.category')"
                 v-model="editForm.category_id"
                 :options="categoryOptions"
                 :error="editForm.errors.category_id"
                 required
             />
 
+            <InputField
+                id="responsible_name"
+                type="text"
+                :label="t('microsites.edit.form.responsibleName')"
+                v-model="editForm.responsible_name"
+                :error="editForm.errors.responsible_name"
+                required
+            />
+
+            <Listbox
+                id="responsible_document_type"
+                :label="t('microsites.edit.form.responsibleDocumentType')"
+                v-model="editForm.responsible_document_type"
+                :options="documentTypeOptions"
+                :error="editForm.errors.responsible_document_type"
+                required
+            />
+
+            <InputField
+                id="responsible_document_number"
+                type="text"
+                :label="t('microsites.edit.form.responsibleDocumentNumber')"
+                v-model="editForm.responsible_document_number"
+                :error="editForm.errors.responsible_document_number"
+                required
+            />
+
             <Listbox
                 id="payment_currency"
-                label="Payment Currency"
+                :label="t('microsites.edit.form.paymentCurrency')"
                 v-model="editForm.payment_currency"
                 :options="currencyOptions"
                 :error="editForm.errors.payment_currency"
                 required
             />
 
-            <InputField
-                id="payment_expiration"
-                type="date"
-                label="Payment Expiration"
-                v-model="editForm.payment_expiration"
-                :error="editForm.errors.payment_expiration"
-                required
-            />
-
             <Listbox
                 id="type"
-                label="Microsite Type"
+                :label="t('microsites.edit.form.type')"
                 v-model="editForm.type"
                 :options="micrositeTypeOptions"
                 :error="editForm.errors.type"
@@ -169,42 +174,26 @@ const goBack = () => {
             />
 
             <InputField
-                id="responsible_name"
-                type="text"
-                label="Responsible Name"
-                v-model="editForm.responsible_name"
-                :error="editForm.errors.responsible_name"
-                required
-            />
-
-            <InputField
-                id="responsible_document_number"
-                type="text"
-                label="Responsible Document Number"
-                v-model="editForm.responsible_document_number"
-                :error="editForm.errors.responsible_document_number"
-                required
-            />
-
-            <Listbox
-                id="responsible_document_type"
-                label="Responsible Document Type"
-                v-model="editForm.responsible_document_type"
-                :options="documentTypeOptions"
-                :error="editForm.errors.responsible_document_type"
-                required
+                id="payment_expiration"
+                type="number"
+                :label="t('microsites.edit.form.paymentExpiration')"
+                v-model="editForm.payment_expiration"
+                :error="editForm.errors.payment_expiration"
+                :disabled="![MicrositeType.SUBSCRIPTION, MicrositeType.INVOICE].includes(editForm.type as MicrositeType)"
             />
 
             <div class="col-span-2 grid grid-cols-2 gap-4">
                 <FileInput
                     id="logo"
-                    label="Logo (jpg, png, jpeg)"
+                    :label="t('microsites.edit.form.logo')"
                     v-model="editForm.logo"
                     :error="editForm.errors.logo"
                     accept="image/*"
                 />
                 <div v-if="previewUrl" class="mt-1">
-                    <img :src="previewUrl" alt="Preview" class="w-48 h-48 object-cover rounded-md border" />
+                    <img :src="previewUrl"
+                         :alt="editForm.name + ' Logo'"
+                         class="w-48 h-48 object-cover rounded-md border" />
                 </div>
                 <div v-else class="mt-1">
                     <img src="/images/placeholder.png" alt="Placeholder"
@@ -219,7 +208,7 @@ const goBack = () => {
                     color="blue"
                     :disabled="editForm.processing"
                 >
-                    Update Microsite
+                    {{ t('microsites.edit.form.save') }}
                 </Button>
             </div>
         </form>
