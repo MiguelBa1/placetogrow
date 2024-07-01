@@ -65,7 +65,7 @@ watch(() => editForm.type, (newType) => {
 
 
 const submit = () => {
-    editForm.put(route('microsites.update', microsite), {
+    editForm.post(route('microsites.update', microsite), {
         onSuccess: () => {
             toast.success(t('microsites.edit.form.success'));
             const currentPage = route().params.page || 1;

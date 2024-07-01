@@ -80,7 +80,7 @@ class MicrositeControllerTest extends TestCase
         $category = Category::factory()->create();
         $microsite = Microsite::factory()->create(['category_id' => $category->id]);
 
-        $response = $this->actingAs($this->adminUser)->put(route('microsites.update', $microsite), [
+        $response = $this->actingAs($this->adminUser)->post(route('microsites.update', $microsite), [
             'name' => 'Updated Microsite',
             'logo' => UploadedFile::fake()->image('new-logo.png'),
             'category_id' => $microsite->category_id,
@@ -150,7 +150,7 @@ class MicrositeControllerTest extends TestCase
 
         $file = UploadedFile::fake()->create('logo.png', 12000);
 
-        $response = $this->actingAs($this->adminUser)->put(route('microsites.update', $microsite), [
+        $response = $this->actingAs($this->adminUser)->post(route('microsites.update', $microsite), [
             'name' => 'Updated Microsite',
             'logo' => $file,
             'category_id' => $microsite->category_id,
