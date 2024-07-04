@@ -30,7 +30,7 @@ Route::prefix('microsites')->name('microsites.')->group(function () {
         Route::post('/', [MicrositeController::class, 'store'])->name('store');
         Route::prefix('{microsite}')->group(function () {
             Route::get('/edit', [MicrositeController::class, 'edit'])->name('edit');
-            Route::put('/', [MicrositeController::class, 'update'])->name('update');
+            Route::post('/', [MicrositeController::class, 'update'])->name('update');
             Route::delete('/', [MicrositeController::class, 'destroy'])->name('destroy');
         });
 
