@@ -28,6 +28,17 @@ class PaymentControllerTest extends TestCase
         $this->microsite = Microsite::factory()->create();
     }
 
+    public function test_guest_can_view_payment_page(): void
+    {
+        $response = $this->get(route('payments.show', $this->microsite));
+
+        $response->assertOk();
+        $response->assertInertia(
+            fn (Assert $page) => $page
+            ->component('Payments/Show')
+        );
+    }
+
     public function test_store_payment(): void
     {
         Http::fake([

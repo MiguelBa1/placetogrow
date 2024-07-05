@@ -28,10 +28,10 @@ Route::prefix('microsites')->name('microsites.')->middleware(['auth', 'role:' . 
     Route::get('/create', [MicrositeController::class, 'create'])->name('create');
     Route::post('/', [MicrositeController::class, 'store'])->name('store');
     Route::prefix('{microsite}')->group(function () {
+        Route::get('/', [MicrositeController::class, 'show'])->name('show');
         Route::get('/edit', [MicrositeController::class, 'edit'])->name('edit');
         Route::post('/', [MicrositeController::class, 'update'])->name('update');
         Route::delete('/', [MicrositeController::class, 'destroy'])->name('destroy');
-        Route::get('/', [MicrositeController::class, 'show'])->name('show');
     });
 
     Route::get('/', [MicrositeController::class, 'index'])->name('index');

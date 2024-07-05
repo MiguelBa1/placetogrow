@@ -5,7 +5,8 @@ namespace App\Services;
 use App\Constants\CurrencyType;
 use App\Constants\DocumentType;
 use App\Constants\MicrositeType;
-use App\Http\Resources\MicrositeResource;
+use App\Http\Resources\Microsite\MicrositeDetailResource;
+use App\Http\Resources\Microsite\MicrositeListResource;
 use App\Models\Category;
 use App\Models\Microsite;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
@@ -28,15 +29,13 @@ class MicrositeService
                 return $query->where('name', 'like', '%' . $searchFilter . '%');
             })->paginate(10)->onEachSide(1)->withQueryString();
 
-        return MicrositeResource::collection($microsites);
+        return MicrositeListResource::collection($microsites);
     }
 
     public function getMicrositeData(Microsite $microsite): array
     {
-        $micrositeData = $microsite->only(['id', 'name', 'slug', 'payment_currency']);
-        $micrositeData['logo'] = $microsite->getFirstMediaUrl('logos');
-
-        return $micrositeData;
+        $microsite->load('category:id,name');
+        return (new MicrositeDetailResource($microsite))->toArray(request());
     }
 
     public function getFormData(): array
@@ -51,8 +50,18 @@ class MicrositeService
 
     public function getEditData(Microsite $microsite): array
     {
-        $microsite->load('category:id,name');
-        $micrositeData = $microsite->only(['id', 'name', 'slug', 'category_id', 'type', 'payment_currency', 'payment_expiration', 'responsible_name', 'responsible_document_number', 'responsible_document_type']);
+        $micrositeData = $microsite->only([
+            'id',
+            'name',
+            'slug',
+            'category_id',
+            'type',
+            'payment_currency',
+            'payment_expiration',
+            'responsible_name',
+            'responsible_document_number',
+            'responsible_document_type',
+        ]);
         $micrositeData['logo'] = $microsite->getFirstMediaUrl('logos');
 
         return $micrositeData;

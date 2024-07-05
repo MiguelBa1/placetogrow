@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref } from 'vue';
-import { PencilSquareIcon, TrashIcon } from '@heroicons/vue/16/solid';
+import { PencilSquareIcon, TrashIcon, EyeIcon } from '@heroicons/vue/16/solid';
 import { Link } from '@inertiajs/vue3';
 import { Button, DataTable, Pagination } from '@/Components';
 import {
@@ -42,6 +42,13 @@ const closeDeleteModal = () => {
             </template>
             <template #cell-actions="{ row }">
                 <div class="flex justify-center gap-2">
+                    <Link
+                        :href="route('microsites.show', { microsite: row.slug, page: microsites.meta.current_page })"
+                        class="text-gray-600 hover:text-gray-900"
+                    >
+                        <EyeIcon class="w-5 h-5" />
+                    </Link>
+
                     <Link
                         :href="route('microsites.edit', { microsite: row.slug, page: microsites.meta.current_page })"
                         class="text-blue-600 hover:text-blue-900"

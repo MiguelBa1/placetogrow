@@ -70,14 +70,13 @@ class MicrositeViewsTest extends TestCase
     {
         $microsite = Microsite::factory()->create();
 
-        $response = $this->actingAs($this->adminUser)->get(route('payments.show', $microsite));
+        $response = $this->actingAs($this->adminUser)->get(route('microsites.show', $microsite));
 
         $response->assertOk();
         $response->assertInertia(
             fn (AssertableInertia $page) => $page
-                ->component('Payments/Show')
+                ->component('Microsites/Show')
                 ->has('microsite')
-                ->has('documentTypes')
         );
     }
 

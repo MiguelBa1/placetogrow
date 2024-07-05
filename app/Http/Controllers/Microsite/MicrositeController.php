@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Microsite;
 use App\Actions\Microsite\DestroyMicrositeAction;
 use App\Actions\Microsite\StoreMicrositeAction;
 use App\Actions\Microsite\UpdateMicrositeAction;
-use App\Constants\DocumentType;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Microsite\CreateMicrositeRequest;
 use App\Http\Requests\Microsite\FilterMicrositesRequest;
@@ -36,11 +35,9 @@ class MicrositeController extends Controller
     public function show(Microsite $microsite): Response
     {
         $micrositeData = (new micrositeService)->getMicrositeData($microsite);
-        $documentTypes = DocumentType::toSelectArray();
 
-        return Inertia::render('Payments/Show', [
+        return Inertia::render('Microsites/Show', [
             'microsite' => $micrositeData,
-            'documentTypes' => $documentTypes,
         ]);
     }
 
