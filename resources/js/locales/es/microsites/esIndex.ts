@@ -13,4 +13,13 @@ export const esIndex = {
         payment_expiration: "TIEMPO DE PAGO",
         actions: "ACCIONES",
     },
+    delete: {
+        title: "Eliminar Micrositio",
+        message: "¿Estás seguro de que deseas eliminar este micrositio?",
+        cancel: "Cancelar",
+        delete: "Eliminar",
+        deleting: "Eliminando...",
+        success: "Micrositio eliminado con éxito.",
+        error: "Error al eliminar el micrositio."
+    }
 }

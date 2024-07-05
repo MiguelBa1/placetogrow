@@ -2,6 +2,9 @@
 import { useForm } from '@inertiajs/vue3';
 import { Modal, Button } from '@/Components';
 import { useToast } from 'vue-toastification';
+import { useI18n } from 'vue-i18n';
+
+const { t } = useI18n();
 
 const props = defineProps<{
     isOpen: boolean;
@@ -25,10 +28,10 @@ const deleteMicrosite = () => {
 
     deleteForm.delete(route('microsites.destroy', props.micrositeSlug), {
         onSuccess: () => {
-            toast.success('Microsite deleted successfully.');
+            toast.success(t('microsites.index.delete.success'));
         },
         onError: () => {
-            toast.error('Failed to delete microsite.');
+            toast.error(t('microsites.index.delete.error'));
         },
         onFinish: () => {
             closeModal();
@@ -38,12 +41,16 @@ const deleteMicrosite = () => {
 </script>
 
 <template>
-    <Modal title="Delete Microsite" :isOpen="isOpen" @close="closeModal">
-        <p>Are you sure you want to delete this microsite?</p>
+    <Modal
+        :title="t('microsites.index.delete.title')"
+        :isOpen="isOpen" @close="closeModal">
+        <p>
+            {{ t('microsites.index.delete.message')}}
+        </p>
 
         <template #footerButtons>
             <Button type="button" variant="secondary" @click="closeModal">
-                Cancel
+                {{ t('microsites.index.delete.cancel') }}
             </Button>
             <Button
                 type="button"
@@ -51,7 +58,11 @@ const deleteMicrosite = () => {
                 @click="deleteMicrosite"
                 :disabled="deleteForm.processing"
             >
-                {{ deleteForm.processing ? 'Deleting...' : 'Delete' }}
+                {{
+                    deleteForm.processing ?
+                        t('microsites.index.delete.deleting') :
+                        t('microsites.index.delete.delete')
+                }}
             </Button>
         </template>
     </Modal>

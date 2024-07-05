@@ -13,4 +13,13 @@ export const enIndex = {
         payment_expiration: "PAYMENT EXPIRATION",
         actions: "ACTIONS"
     },
+    delete: {
+        title: "Delete Microsite",
+        message: "Are you sure you want to delete this microsite?",
+        cancel: "Cancel",
+        delete: "Delete",
+        deleting: "Deleting...",
+        success: "Microsite deleted successfully.",
+        error: "Error deleting microsite.",
+    }
 }
