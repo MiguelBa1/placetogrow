@@ -38,7 +38,7 @@ class MicrositeController extends Controller
         $micrositeData = (new micrositeService)->getMicrositeData($microsite);
         $documentTypes = DocumentType::toSelectArray();
 
-        return Inertia::render('Microsites/Show', [
+        return Inertia::render('Payments/Show', [
             'microsite' => $micrositeData,
             'documentTypes' => $documentTypes,
         ]);
