@@ -8,19 +8,35 @@ Placetogrow is a platform that allows administrators to create and manage micros
 - MySQL 8.0
 - InertiaJs with Vue 3.4.0 and TypeScript 5.0.2
 - Tailwind CSS 3.2.1
+- Headless UI 1.7
 
 ## Installation and Setup
 1. Clone the repository:
-```
-git clone https://github.com/MiguelBa1/placetogrow
-```
+    ```sh
+    git clone https://github.com/MiguelBa1/placetogrow
+    ```
 
 2. Create the `.env` file from the `.env.example` file:
-```
-cp .env.example .env
-```
+    ```sh
+    cp .env.example .env
+    ```
 
-3. Configure the necessary information in the `.env` file.
+3. Configure the necessary information in the `.env` file. Make sure to set the following variables:
+
+   ### Database Connection
+    - `DB_CONNECTION`
+    - `DB_HOST`
+    - `DB_PORT`
+    - `DB_DATABASE`
+    - `DB_USERNAME`
+    - `DB_PASSWORD`
+
+   ### Admin User
+    - `ADMIN_NAME`
+    - `ADMIN_EMAIL`
+    - `ADMIN_PASSWORD`
+   
+
 4. Run `composer install` to install the dependencies.
 5. Run `php artisan key:generate` to set the `APP_KEY` value in the `.env` file.
 6. Run `php artisan storage:link` to make the images available to the application.
@@ -28,30 +44,15 @@ cp .env.example .env
 8. Run `php artisan serve` to start the application.
 9. Run `npm install` and `npm run dev` to compile the assets.
 
-**Note:** To use the image manipulation features in the application, the PHP `gd` extension must be enabled. Please
-ensure that this extension is enabled on your server.
+**Note:** To use the image manipulation features in the application, the PHP `gd` extension must be enabled. Please ensure that this extension is enabled on your server.
 
-## .Env File
-The `.env` file contains the application configuration. It is important to configure the following variables:
+## Creating an Admin User
+To access the admin panel, you need an admin user. You can create this user in one of the following ways:
 
-### Database Connection
-- `DB_CONNECTION`
-- `DB_HOST`
-- `DB_PORT`
-- `DB_DATABASE`
-- `DB_USERNAME`
-- `DB_PASSWORD`
+1. By filling in the admin user variables in the `.env` file as mentioned above.
+2. By running the following artisan command:
+    ```sh
+    php artisan create:admin {name} {email} {password}
+    ```
 
-### Admin User
-
-In order to access the admin panel, you need to create an admin user. You can do this by running the following command:
-```
-php artisan create:admin {name} {email} {password}
-```
-
-Or you can create the user filling the following variables in the `.env` file:
-
-- `ADMIN_NAME`
-- `ADMIN_EMAIL`
-- `ADMIN_PASSWORD`
-
+This command allows you to directly create an admin user with the specified name, email, and password.

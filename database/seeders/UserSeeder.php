@@ -13,10 +13,18 @@ class UserSeeder extends Seeder
     {
         $adminRole = SpatieRole::where('name', Role::ADMIN->value)->first();
 
+        $adminName = config('user.admin.name');
+        $adminEmail = config('user.admin.email');
+        $adminPassword = config('user.admin.password');
+
+        if (empty($adminName) || empty($adminEmail) || empty($adminPassword)) {
+            return;
+        }
+
         $user = User::create([
-            'name' => config('user.admin.name'),
-            'email' => config('user.admin.email'),
-            'password' => bcrypt(config('user.admin.password')),
+            'name' => $adminName,
+            'email' => $adminEmail,
+            'password' => bcrypt($adminPassword),
         ]);
 
         $user->assignRole($adminRole);
