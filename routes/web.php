@@ -24,26 +24,28 @@ Route::prefix('profile')->middleware('auth')->name('profile.')->group(function (
     Route::delete('/', [ProfileController::class, 'destroy'])->name('destroy');
 });
 
-Route::prefix('microsites')->name('microsites.')->group(function () {
-    Route::middleware(['auth', 'role:' . Role::ADMIN->value])->group(function () {
-        Route::get('/create', [MicrositeController::class, 'create'])->name('create');
-        Route::post('/', [MicrositeController::class, 'store'])->name('store');
-        Route::prefix('{microsite}')->group(function () {
-            Route::get('/edit', [MicrositeController::class, 'edit'])->name('edit');
-            Route::post('/', [MicrositeController::class, 'update'])->name('update');
-            Route::delete('/', [MicrositeController::class, 'destroy'])->name('destroy');
-        });
-
-        Route::get('/', [MicrositeController::class, 'index'])->name('index');
-    });
-
+Route::prefix('microsites')->name('microsites.')->middleware(['auth', 'role:' . Role::ADMIN->value])->group(function () {
+    Route::get('/create', [MicrositeController::class, 'create'])->name('create');
+    Route::post('/', [MicrositeController::class, 'store'])->name('store');
     Route::prefix('{microsite}')->group(function () {
         Route::get('/', [MicrositeController::class, 'show'])->name('show');
-        Route::post('/payment', [PaymentController::class, 'store'])->name('payment.store');
-        Route::get('/return/{reference}', [PaymentController::class, 'return'])->name('payment.return');
+        Route::get('/edit', [MicrositeController::class, 'edit'])->name('edit');
+        Route::post('/', [MicrositeController::class, 'update'])->name('update');
+        Route::delete('/', [MicrositeController::class, 'destroy'])->name('destroy');
+        Route::put('/restore', [MicrositeController::class, 'restore'])->name('restore');
     });
 
+    Route::get('/', [MicrositeController::class, 'index'])->name('index');
 });
+
+Route::prefix('payments')->name('payments.')->group(function () {
+    Route::prefix('{microsite}')->group(function () {
+        Route::get('/', [PaymentController::class, 'show'])->name('show');
+        Route::post('/payment', [PaymentController::class, 'store'])->name('store');
+        Route::get('/return/{reference}', [PaymentController::class, 'return'])->name('return');
+    });
+});
+
 
 Route::prefix('categories')->name('categories.')->middleware(['auth', 'role:' . Role::ADMIN->value])->group(function () {
     Route::post('/', [CategoryController::class, 'store'])->name('store');

@@ -1,45 +1,37 @@
 <script setup lang="ts">
-import { useForm, Head } from '@inertiajs/vue3';
+import dayjs from 'dayjs';
+import { Head } from '@inertiajs/vue3';
 import { MainLayout } from '@/Layouts';
-import { InputField, Listbox, Button } from '@/Components';
-import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
+import { Button } from '@/Components';
 
 const { t } = useI18n();
 
-const { microsite, documentTypes } = defineProps<{
+const { microsite } = defineProps<{
     microsite: {
         id: string;
         name: string;
-        logo: string;
         slug: string;
+        logo: string;
+        type: string;
+        category: {
+            id: string;
+            name: string;
+        };
+        responsible_name: string;
+        responsible_document_number: string;
+        responsible_document_type: string;
         payment_currency: string;
+        payment_expiration?: string;
+        created_at: string;
+        updated_at: string;
     };
-    documentTypes: { label: string; value: string }[];
 }>();
 
-const paymentForm = useForm({
-    name: '',
-    last_name: '',
-    email: '',
-    document_type: '',
-    document_number: '',
-    phone: '',
-    currency: microsite.payment_currency,
-    amount: '',
-});
-
-const documentTypeOptions = computed(() => documentTypes);
-
-const currencyOption = [
-    { label: microsite.payment_currency, value: microsite.payment_currency },
-];
-
-const onSubmit = () => {
-    paymentForm.post(route('microsites.payment.store', {
-        microsite: microsite.slug,
-    }));
+const goBack = () => {
+    history.back();
 };
+
 </script>
 
 <template>
@@ -51,104 +43,124 @@ const onSubmit = () => {
 
     <MainLayout>
         <template #header>
-            <div class="flex gap-4 items-center">
-                <img
-                    class="h-20 w-auto"
-                    :src="microsite.logo"
-                    :alt="microsite.name"
-                />
-                <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-                    {{ microsite.name }}
-                </h2>
+            <div class="flex justify-between items-center">
+                <div class="flex gap-4 items-center">
+                    <img
+                        class="h-20 w-auto"
+                        :src="microsite.logo"
+                        :alt="microsite.name"
+                    />
+                    <div>
+                        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+                            {{ microsite.name }}
+                        </h2>
+                        <p class="text-gray-600">
+                            {{ microsite.slug }}
+                        </p>
+                    </div>
+                </div>
+                <div>
+                    <Button
+                        variant="secondary"
+                        color="gray"
+                        @click="goBack"
+                    >
+                        {{ t('microsites.edit.back') }}
+                    </Button>
+                </div>
             </div>
         </template>
 
-        <form
-            class="bg-white p-10 rounded-xl shadow-sm grid sm:grid-cols-2 gap-4"
-            @submit.prevent="onSubmit"
-        >
-            <InputField
-                id="name"
-                type="text"
-                :label="t('microsites.show.form.name')"
-                v-model="paymentForm.name"
-                required
-                :error="paymentForm.errors.name"
-            />
+        <div class="bg-white p-10 rounded-xl shadow-sm">
+            <div class="grid md:grid-cols-3 gap-8">
+                <div>
+                    <h3 class="font-semibold text-lg text-gray-800 leading-tight">
+                        {{ t('microsites.show.details') }}
+                    </h3>
+                    <dl class="mt-4">
+                        <div class="flex flex-col">
+                            <dt class="font-semibold text-gray-600">
+                                {{ t('microsites.show.category') }}
+                            </dt>
+                            <dd class="mb-2">
+                                {{ microsite.category.name }}
+                            </dd>
+                        </div>
+                        <div class="flex flex-col">
+                            <dt class="font-semibold text-gray-600">
+                                {{ t('microsites.show.type') }}
+                            </dt>
+                            <dd class="mb-2">
+                                {{ microsite.type }}
+                            </dd>
+                        </div>
+                        <div class="flex flex-col">
+                            <dt class="font-semibold text-gray-600">
+                                {{ t('microsites.show.paymentExpiration') }}
+                            </dt>
+                            <dd class="mb-2">
+                                {{ microsite.payment_expiration }}
+                            </dd>
+                        </div>
+                    </dl>
+                </div>
 
-            <InputField
-                id="lastName"
-                type="text"
-                :label="t('microsites.show.form.lastName')"
-                v-model="paymentForm.last_name"
-                required
-                :error="paymentForm.errors.last_name"
-            />
+                <div>
+                    <h3 class="font-semibold text-lg text-gray-800 leading-tight">
+                        {{ t('microsites.show.responsiblePerson.title') }}
+                    </h3>
+                    <dl class="mt-4">
+                        <div class="flex flex-col">
+                            <dt class="font-semibold text-gray-600">
+                                {{ t('microsites.show.responsiblePerson.name') }}
+                            </dt>
+                            <dd class="mb-2">
+                                {{ microsite.responsible_name }}
+                            </dd>
+                        </div>
+                        <div class="flex flex-col">
+                            <dt class="font-semibold text-gray-600">
+                                {{ t('microsites.show.responsiblePerson.documentNumber') }}
+                            </dt>
+                            <dd class="mb-2">
+                                {{ microsite.responsible_document_number }}
+                            </dd>
+                        </div>
+                        <div class="flex flex-col">
+                            <dt class="font-semibold text-gray-600">
+                                {{ t('microsites.show.responsiblePerson.documentType') }}
+                            </dt>
+                            <dd class="mb-2">
+                                {{ microsite.responsible_document_type }}
+                            </dd>
+                        </div>
+                    </dl>
+                </div>
 
-            <InputField
-                id="email"
-                type="text"
-                :label="t('microsites.show.form.email')"
-                v-model="paymentForm.email"
-                :error="paymentForm.errors.email"
-                required
-            />
-
-            <Listbox
-                id="document-type"
-                :label="t('microsites.show.form.documentType')"
-                :options="documentTypeOptions"
-                v-model="paymentForm.document_type"
-                required
-                :error="paymentForm.errors.document_type"
-            />
-
-            <InputField
-                id="document-number"
-                type="text"
-                :label="t('microsites.show.form.documentNumber')"
-                v-model="paymentForm.document_number"
-                required
-                :error="paymentForm.errors.document_number"
-            />
-
-            <InputField
-                id="phone"
-                type="text"
-                :label="t('microsites.show.form.phone')"
-                v-model="paymentForm.phone"
-                required
-                :error="paymentForm.errors.phone"
-            />
-
-            <Listbox
-                id="currency"
-                :label="t('microsites.show.form.currency')"
-                :options="currencyOption"
-                v-model="paymentForm.currency"
-                required
-                :error="paymentForm.errors.currency"
-                disabled
-            />
-
-            <InputField
-                id="amount"
-                type="number"
-                :label="t('microsites.show.form.amount')"
-                v-model="paymentForm.amount"
-                required
-                :error="paymentForm.errors.amount"
-            />
-
-            <div>
-                <Button
-                    class="sm:col-span-2 mt-5"
-                    type="submit"
-                    :disabled="paymentForm.processing"
-                >
-                    {{ t('microsites.show.form.submit') }}
-                </Button>
+                <div>
+                    <h3 class="font-semibold text-lg text-gray-800 leading-tight">
+                        {{ t('microsites.show.timestamps') }}
+                    </h3>
+                    <dl class="mt-4">
+                        <div class="flex flex-col">
+                            <dt class="font-semibold text-gray-600">
+                                {{ t('microsites.show.createdAt') }}
+                            </dt>
+                            <dd class="mb-2">
+                                {{ dayjs(microsite.created_at).format('DD/MM/YYYY HH:mm') }}
+                            </dd>
+                        </div>
+                        <div class="flex flex-col">
+                            <dt class="font-semibold text-gray-600">
+                                {{ t('microsites.show.updatedAt') }}
+                            </dt>
+                            <dd class="mb-2">
+                                {{ dayjs(microsite.updated_at).format('DD/MM/YYYY HH:mm') }}
+                            </dd>
+                        </div>
+                    </dl>
+                </div>
             </div>
-        </form>
+        </div>
     </MainLayout>
 </template>

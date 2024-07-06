@@ -58,7 +58,7 @@ class PaymentService implements PaymentServiceInterface
                 ],
             ],
             'expiration' => Carbon::now()->addMinutes(10)->toIso8601String(),
-            'returnUrl' => route('microsites.payment.return', [
+            'returnUrl' => route('payments.return', [
                 'reference' => $paymentReference,
                 'microsite' => $micrositeSlug,
             ]),
@@ -73,7 +73,7 @@ class PaymentService implements PaymentServiceInterface
 
             return Inertia::location($result['processUrl']);
         } else {
-            return Redirect::to(route('microsites.show', $micrositeSlug))
+            return Redirect::to(route('payments.show', $micrositeSlug))
                 ->withErrors(
                     $result['status']['message'] ?? 'An error occurred while processing the payment, please try again.'
                 );
@@ -91,7 +91,7 @@ class PaymentService implements PaymentServiceInterface
         $payment = Payment::query()->where('payment_reference', $reference)->latest()->first();
 
         if (!$payment) {
-            return Redirect::to(route('microsites.show', $micrositeSlug))
+            return Redirect::to(route('payments.show', $micrositeSlug))
                 ->withErrors('Payment not found.');
         }
 
@@ -100,11 +100,11 @@ class PaymentService implements PaymentServiceInterface
         if ($result->ok()) {
             $this->updatePayment($reference, $result->json());
 
-            return Inertia::render('Payment/Return', [
+            return Inertia::render('Payments/Return', [
                 'payment' => $payment->refresh(),
             ]);
         } else {
-            return Redirect::to(route('microsites.show', $micrositeSlug))
+            return Redirect::to(route('payments.show', $micrositeSlug))
                 ->withErrors(
                     $result['status']['message'] ?? 'An error occurred while completing the payment.'
                 );

@@ -15,7 +15,7 @@ const handleImageError = (event: Event) => {
 
 <template>
     <Link
-        :href="route('microsites.show', {
+        :href="route('payments.show', {
             microsite: microsite.slug
         })"
         class="grid gap-2 p-4 max-w-sm rounded overflow-hidden border bg-white

@@ -3,9 +3,9 @@
 namespace App\Http\Controllers\Microsite;
 
 use App\Actions\Microsite\DestroyMicrositeAction;
+use App\Actions\Microsite\RestoreMicrositeAction;
 use App\Actions\Microsite\StoreMicrositeAction;
 use App\Actions\Microsite\UpdateMicrositeAction;
-use App\Constants\DocumentType;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Microsite\CreateMicrositeRequest;
 use App\Http\Requests\Microsite\FilterMicrositesRequest;
@@ -19,16 +19,21 @@ use Symfony\Component\HttpFoundation\Response as HttpFoundationResponse;
 
 class MicrositeController extends Controller
 {
-    public function index(FilterMicrositesRequest $request): Response
+    public function index(FilterMicrositesRequest $request, MicrositeService $micrositeService): Response
     {
         $searchFilter = $request->input('search');
+        $categoryFilter = $request->input('category');
 
-        $microsites = (new micrositeService)->getAllMicrosites($searchFilter);
+        $microsites = $micrositeService->getAllMicrosites($searchFilter, $categoryFilter);
+
+        $categories = $micrositeService->getFormData()['categories'];
 
         return Inertia::render('Microsites/Index', [
             'microsites' => fn () => $microsites,
+            'categories' => fn () => $categories,
             'filters' => fn () => [
                 'search' => $searchFilter,
+                'category' => $categoryFilter,
             ],
         ]);
     }
@@ -36,11 +41,9 @@ class MicrositeController extends Controller
     public function show(Microsite $microsite): Response
     {
         $micrositeData = (new micrositeService)->getMicrositeData($microsite);
-        $documentTypes = DocumentType::toSelectArray();
 
         return Inertia::render('Microsites/Show', [
             'microsite' => $micrositeData,
-            'documentTypes' => $documentTypes,
         ]);
     }
 
@@ -82,6 +85,13 @@ class MicrositeController extends Controller
     public function destroy(Microsite $microsite, DestroyMicrositeAction $destroyMicrositeAction): HttpFoundationResponse
     {
         $destroyMicrositeAction->execute($microsite);
+
+        return back();
+    }
+
+    public function restore(string $slug, RestoreMicrositeAction $restoreMicrositeAction): HttpFoundationResponse
+    {
+        $restoreMicrositeAction->execute($slug);
 
         return back();
     }

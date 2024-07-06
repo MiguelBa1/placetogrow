@@ -18,20 +18,20 @@ const closeModal = () => {
     emit('closeModal');
 };
 
-const deleteForm = useForm({});
+const restoreForm = useForm({});
 
-const deleteMicrosite = () => {
-    if (!props?.micrositeSlug) {
-        console.log('Microsite ID is required');
+const restoreMicrosite = () => {
+    if (!props.micrositeSlug) {
+        console.log('Microsite slug is required');
         return;
     }
 
-    deleteForm.delete(route('microsites.destroy', props.micrositeSlug), {
+    restoreForm.put(route('microsites.restore', props.micrositeSlug), {
         onSuccess: () => {
-            toast.success(t('microsites.index.delete.success'));
+            toast.success(t('microsites.index.restore.success'));
         },
         onError: () => {
-            toast.error(t('microsites.index.delete.error'));
+            toast.error(t('microsites.index.restore.error'));
         },
         onFinish: () => {
             closeModal();
@@ -42,26 +42,26 @@ const deleteMicrosite = () => {
 
 <template>
     <Modal
-        :title="t('microsites.index.delete.title')"
+        :title="t('microsites.index.restore.title')"
         :isOpen="isOpen" @close="closeModal">
         <p>
-            {{ t('microsites.index.delete.message')}}
+            {{ t('microsites.index.restore.message') }}
         </p>
 
         <template #footerButtons>
             <Button type="button" variant="secondary" @click="closeModal">
-                {{ t('microsites.index.delete.cancel') }}
+                {{ t('microsites.index.restore.cancel') }}
             </Button>
             <Button
                 type="button"
-                color="red"
-                @click="deleteMicrosite"
-                :disabled="deleteForm.processing"
+                color="green"
+                @click="restoreMicrosite"
+                :disabled="restoreForm.processing"
             >
                 {{
-                    deleteForm.processing ?
-                        t('microsites.index.delete.deleting') :
-                        t('microsites.index.delete.delete')
+                    restoreForm.processing ?
+                        t('microsites.index.restore.restoring') :
+                        t('microsites.index.restore.restore')
                 }}
             </Button>
         </template>
