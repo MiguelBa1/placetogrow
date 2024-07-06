@@ -10,6 +10,7 @@ use App\Http\Resources\Microsite\MicrositeListResource;
 use App\Models\Category;
 use App\Models\Microsite;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+use Illuminate\Support\Facades\Cache;
 
 class MicrositeService
 {
@@ -43,8 +44,12 @@ class MicrositeService
 
     public function getFormData(): array
     {
+        $categories = Cache::remember('categories', 86400, function () {
+            return Category::select('id', 'name')->get();
+        });
+
         return [
-            'categories' => Category::query()->select('id', 'name')->get(),
+            'categories' => $categories,
             'documentTypes' => DocumentType::toSelectArray(),
             'micrositeTypes' => MicrositeType::toSelectArray(),
             'currencyTypes' => CurrencyType::toSelectArray(),
