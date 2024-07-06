@@ -21,5 +21,14 @@ export const enIndex = {
         deleting: "Deleting...",
         success: "Microsite deleted successfully.",
         error: "Error deleting microsite.",
-    }
+    },
+    restore: {
+        title: "Restore Microsite",
+        message: "Are you sure you want to restore this microsite?",
+        cancel: "Cancel",
+        restore: "Restore",
+        restoring: "Restoring...",
+        success: "Microsite restored successfully.",
+        error: "Error restoring microsite.",
+    },
 }

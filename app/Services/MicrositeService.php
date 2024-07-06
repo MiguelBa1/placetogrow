@@ -15,7 +15,7 @@ class MicrositeService
 {
     public function getAllMicrosites(?string $searchFilter): AnonymousResourceCollection
     {
-        $microsites = Microsite::with('category:id,name')
+        $microsites = Microsite::withTrashed()->with('category:id,name')
             ->select(
                 'id',
                 'name',
@@ -24,7 +24,8 @@ class MicrositeService
                 'slug',
                 'responsible_name',
                 'payment_currency',
-                'payment_expiration'
+                'payment_expiration',
+                'deleted_at',
             )->when($searchFilter, function ($query, $searchFilter) {
                 return $query->where('name', 'like', '%' . $searchFilter . '%');
             })->paginate(10)->onEachSide(1)->withQueryString();

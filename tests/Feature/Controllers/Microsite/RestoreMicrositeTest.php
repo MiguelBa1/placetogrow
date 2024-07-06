@@ -9,7 +9,7 @@ use Database\Seeders\RoleSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
-class DestroyMicrositeTest extends TestCase
+class RestoreMicrositeTest extends TestCase
 {
     use RefreshDatabase;
 
@@ -23,14 +23,16 @@ class DestroyMicrositeTest extends TestCase
         $this->adminUser = User::factory()->create()->assignRole(Role::ADMIN);
     }
 
-    public function test_admin_can_delete_microsite()
+    public function test_admin_can_restore_microsite()
     {
-        $microsite = Microsite::factory()->create();
+        $microsite = Microsite::factory()->create(['deleted_at' => now()]);
 
-        $response = $this->actingAs($this->adminUser)->delete(route('microsites.destroy', $microsite));
+        $response = $this->actingAs($this->adminUser)->put(route('microsites.restore', $microsite->slug));
 
         $response->assertRedirect();
-
-        $this->assertSoftDeleted('microsites', ['id' => $microsite->id]);
+        $this->assertDatabaseHas('microsites', [
+            'id' => $microsite->id,
+            'deleted_at' => null
+        ]);
     }
 }

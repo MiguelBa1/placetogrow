@@ -32,6 +32,7 @@ Route::prefix('microsites')->name('microsites.')->middleware(['auth', 'role:' . 
         Route::get('/edit', [MicrositeController::class, 'edit'])->name('edit');
         Route::post('/', [MicrositeController::class, 'update'])->name('update');
         Route::delete('/', [MicrositeController::class, 'destroy'])->name('destroy');
+        Route::put('/restore', [MicrositeController::class, 'restore'])->name('restore');
     });
 
     Route::get('/', [MicrositeController::class, 'index'])->name('index');

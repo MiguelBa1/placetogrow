@@ -12,6 +12,7 @@ export type Microsite = {
     slug: string;
     payment_currency: string;
     payment_expiration?: string;
+    deleted_at?: string;
 };
 
 export type ApiResourceLink = {

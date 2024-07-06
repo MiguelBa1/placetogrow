@@ -25,6 +25,7 @@ class MicrositeListResource extends JsonResource
             'payment_expiration' => __("payment_expirations.{$this->type->value}", ['days' => $this->payment_expiration]),
             'slug' => $this->slug,
             'responsible_name' => $this->responsible_name,
+            'deleted_at' => $this->deleted_at,
         ];
     }
 }

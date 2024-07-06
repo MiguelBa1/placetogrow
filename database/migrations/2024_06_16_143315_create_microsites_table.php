@@ -22,6 +22,7 @@ return new class extends Migration {
             $table->string('responsible_document_number', 20);
             $table->enum('responsible_document_type', array_column(DocumentType::cases(), 'value'));
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

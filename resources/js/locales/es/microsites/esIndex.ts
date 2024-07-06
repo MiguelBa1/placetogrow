@@ -21,5 +21,14 @@ export const esIndex = {
         deleting: "Eliminando...",
         success: "Micrositio eliminado con éxito.",
         error: "Error al eliminar el micrositio."
-    }
+    },
+    restore: {
+        title: "Restaurar Micrositio",
+        message: "¿Estás seguro de que deseas restaurar este micrositio?",
+        cancel: "Cancelar",
+        restore: "Restaurar",
+        restoring: "Restaurando...",
+        success: "Micrositio restaurado con éxito.",
+        error: "Error al restaurar el micrositio."
+    },
 }

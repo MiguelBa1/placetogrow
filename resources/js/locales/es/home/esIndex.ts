@@ -4,4 +4,5 @@ export const esIndex = {
     searchPlaceholder: "Buscar",
     categories: "Categorías",
     microsites: "Micrositios",
+    noMicrosites: "No hay micrositios",
 }

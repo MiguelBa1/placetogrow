@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Microsite;
 
 use App\Actions\Microsite\DestroyMicrositeAction;
+use App\Actions\Microsite\RestoreMicrositeAction;
 use App\Actions\Microsite\StoreMicrositeAction;
 use App\Actions\Microsite\UpdateMicrositeAction;
 use App\Http\Controllers\Controller;
@@ -79,6 +80,13 @@ class MicrositeController extends Controller
     public function destroy(Microsite $microsite, DestroyMicrositeAction $destroyMicrositeAction): HttpFoundationResponse
     {
         $destroyMicrositeAction->execute($microsite);
+
+        return back();
+    }
+
+    public function restore(string $slug, RestoreMicrositeAction $restoreMicrositeAction): HttpFoundationResponse
+    {
+        $restoreMicrositeAction->execute($slug);
 
         return back();
     }
