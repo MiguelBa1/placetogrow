@@ -13,7 +13,7 @@ use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 class MicrositeService
 {
-    public function getAllMicrosites(?string $searchFilter): AnonymousResourceCollection
+    public function getAllMicrosites(?string $searchFilter, ?string $categoryFilter): AnonymousResourceCollection
     {
         $microsites = Microsite::withTrashed()->with('category:id,name')
             ->select(
@@ -28,6 +28,8 @@ class MicrositeService
                 'deleted_at',
             )->when($searchFilter, function ($query, $searchFilter) {
                 return $query->where('name', 'like', '%' . $searchFilter . '%');
+            })->when($categoryFilter, function ($query, $categoryFilter) {
+                return $query->where('category_id', $categoryFilter);
             })->paginate(10)->onEachSide(1)->withQueryString();
 
         return MicrositeListResource::collection($microsites);

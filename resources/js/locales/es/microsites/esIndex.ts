@@ -1,6 +1,10 @@
 export const esIndex = {
     title: "Micrositios",
     header: "Micrositios",
+    filters: {
+        category: "Categoría",
+        name: "Nombre",
+    },
     createMicrosite: "Crear Micrositio",
     noMicrosites: "No se encontraron micrositios.",
     table: {

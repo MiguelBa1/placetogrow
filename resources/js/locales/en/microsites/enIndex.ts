@@ -1,6 +1,10 @@
 export const enIndex = {
     title: "Microsites",
     header: "Microsites",
+    filters: {
+        category: "Category",
+        name: "Name",
+    },
     createMicrosite: "Create Microsite",
     noMicrosites: "No microsites found.",
     table: {

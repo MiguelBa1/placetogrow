@@ -19,16 +19,21 @@ use Symfony\Component\HttpFoundation\Response as HttpFoundationResponse;
 
 class MicrositeController extends Controller
 {
-    public function index(FilterMicrositesRequest $request): Response
+    public function index(FilterMicrositesRequest $request, MicrositeService $micrositeService): Response
     {
         $searchFilter = $request->input('search');
+        $categoryFilter = $request->input('category');
 
-        $microsites = (new micrositeService)->getAllMicrosites($searchFilter);
+        $microsites = $micrositeService->getAllMicrosites($searchFilter, $categoryFilter);
+
+        $categories = $micrositeService->getFormData()['categories'];
 
         return Inertia::render('Microsites/Index', [
             'microsites' => fn () => $microsites,
+            'categories' => fn () => $categories,
             'filters' => fn () => [
                 'search' => $searchFilter,
+                'category' => $categoryFilter,
             ],
         ]);
     }
