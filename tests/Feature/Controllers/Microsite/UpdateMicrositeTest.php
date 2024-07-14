@@ -9,15 +9,15 @@ use App\Constants\Role;
 use App\Models\Category;
 use App\Models\Microsite;
 use App\Models\User;
-use Database\Seeders\RoleSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
 use Tests\TestCase;
+use Tests\Traits\SeedsRolesAndPermissions;
 
 class UpdateMicrositeTest extends TestCase
 {
-    use RefreshDatabase;
+    use RefreshDatabase, SeedsRolesAndPermissions;
 
     private User $adminUser;
 
@@ -28,7 +28,7 @@ class UpdateMicrositeTest extends TestCase
         Storage::fake('microsites_logos');
         Storage::fake('category_icons');
 
-        $this->seed(RoleSeeder::class);
+        $this->seedRolesAndPermissions();
         $this->adminUser = User::factory()->create()->assignRole(Role::ADMIN);
     }
 

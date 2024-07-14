@@ -5,13 +5,13 @@ namespace Tests\Feature\Controllers\Microsite;
 use App\Constants\Role;
 use App\Models\Microsite;
 use App\Models\User;
-use Database\Seeders\RoleSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
+use Tests\Traits\SeedsRolesAndPermissions;
 
 class RestoreMicrositeTest extends TestCase
 {
-    use RefreshDatabase;
+    use RefreshDatabase, SeedsRolesAndPermissions;
 
     private User $adminUser;
 
@@ -19,7 +19,7 @@ class RestoreMicrositeTest extends TestCase
     {
         parent::setUp();
 
-        $this->seed(RoleSeeder::class);
+        $this->seedRolesAndPermissions();
         $this->adminUser = User::factory()->create()->assignRole(Role::ADMIN);
     }
 
