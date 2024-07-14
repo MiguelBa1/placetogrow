@@ -6,6 +6,7 @@ use App\Http\Controllers\Home\HomeController;
 use App\Http\Controllers\Microsite\MicrositeController;
 use App\Http\Controllers\Payment\PaymentController;
 use App\Http\Controllers\Profile\ProfileController;
+use App\Http\Controllers\RolePermission\RolePermissionController;
 use App\Http\Controllers\Support\LanguageController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -24,7 +25,18 @@ Route::prefix('profile')->middleware('auth')->name('profile.')->group(function (
     Route::delete('/', [ProfileController::class, 'destroy'])->name('destroy');
 });
 
-Route::prefix('microsites')->name('microsites.')->middleware(['auth', 'role:' . Role::ADMIN->value])->group(function () {
+Route::prefix('roles-permissions')->name('roles-permissions.')
+    ->middleware(['auth', 'role:' . Role::ADMIN->value])
+    ->group(function () {
+        Route::get('/', [RolePermissionController::class, 'index'])->name('index');
+        Route::post('/', [RolePermissionController::class, 'store'])->name('store');
+        Route::prefix('{role}')->group(function () {
+            Route::get('/', [RolePermissionController::class, 'edit'])->name('edit');
+            Route::put('/', [RolePermissionController::class, 'update'])->name('update');
+        });
+    });
+
+Route::prefix('microsites')->name('microsites.')->middleware(['auth'])->group(function () {
     Route::get('/create', [MicrositeController::class, 'create'])->name('create');
     Route::post('/', [MicrositeController::class, 'store'])->name('store');
     Route::prefix('{microsite}')->group(function () {
@@ -54,4 +66,4 @@ Route::prefix('categories')->name('categories.')->middleware(['auth', 'role:' . 
     Route::get('/', [CategoryController::class, 'index'])->name('index');
 });
 
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';

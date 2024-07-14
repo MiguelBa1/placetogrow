@@ -3,6 +3,7 @@ export const esAuthenticatedLayout = {
     profile: "Perfil",
     logOut: "Cerrar Sesión",
     microsites: "Micrositios",
+    roles: "Roles",
     userDropdown: {
         profile: "Perfil",
         logOut: "Cerrar Sesión"

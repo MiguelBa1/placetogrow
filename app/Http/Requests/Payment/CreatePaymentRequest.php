@@ -29,7 +29,7 @@ class CreatePaymentRequest extends FormRequest
             'document_number' => ['required', 'string'],
             'phone' => ['required', 'string'],
             'currency' => ['required', Rule::in(array_column(CurrencyType::cases(), 'value'))],
-            'amount' => ['required', 'numeric'],
+            'amount' => ['required', 'numeric', 'min:1'],
         ];
     }
 }

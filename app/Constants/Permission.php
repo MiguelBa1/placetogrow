@@ -11,5 +11,17 @@ enum Permission: string
     case DELETE_MICROSITE = 'delete_microsite';
     case RESTORE_MICROSITE = 'restore_microsite';
 
-    case MANAGE_PERMISSIONS = 'manage_permissions';
+    public static function grouped(): array
+    {
+        return [
+            'microsite' => [
+                self::VIEW_ANY_MICROSITE,
+                self::VIEW_MICROSITE,
+                self::CREATE_MICROSITE,
+                self::UPDATE_MICROSITE,
+                self::DELETE_MICROSITE,
+                self::RESTORE_MICROSITE,
+            ],
+        ];
+    }
 }
