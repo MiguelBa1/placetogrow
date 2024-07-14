@@ -8,15 +8,15 @@ use App\Constants\MicrositeType;
 use App\Constants\Role;
 use App\Models\Category;
 use App\Models\User;
-use Database\Seeders\RoleSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
 use Tests\TestCase;
+use Tests\Traits\SeedsRolesAndPermissions;
 
 class StoreMicrositeTest extends TestCase
 {
-    use RefreshDatabase;
+    use RefreshDatabase, SeedsRolesAndPermissions;
 
     private User $adminUser;
     private User $guestUser;
@@ -28,7 +28,7 @@ class StoreMicrositeTest extends TestCase
         Storage::fake('microsites_logos');
         Storage::fake('category_icons');
 
-        $this->seed(RoleSeeder::class);
+        $this->seedRolesAndPermissions();
         $this->adminUser = User::factory()->create()->assignRole(Role::ADMIN);
         $this->guestUser = User::factory()->create()->assignRole(Role::GUEST);
     }
@@ -65,8 +65,8 @@ class StoreMicrositeTest extends TestCase
 
         $response = $this->actingAs($this->guestUser)->post(route('microsites.store'), [
             'name' => 'Test Microsite',
-            'logo' => 'https://example.com/logo.png',
             'category_id' => $category->id,
+            'logo' => UploadedFile::fake()->image('logo.png'),
             'payment_currency' => CurrencyType::USD->value,
             'payment_expiration' => 30,
             'type' => MicrositeType::INVOICE->value,
