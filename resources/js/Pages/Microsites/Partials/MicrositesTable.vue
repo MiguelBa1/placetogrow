@@ -2,7 +2,7 @@
 import { ref } from 'vue';
 import { PencilSquareIcon, TrashIcon, EyeIcon, ArrowUturnLeftIcon } from '@heroicons/vue/16/solid';
 import { Link } from '@inertiajs/vue3';
-import { Button, DataTable, Pagination } from '@/Components';
+import { DataTable, Pagination } from '@/Components';
 import {
     DeleteMicrositeModal,
     RestoreMicrositeModal,

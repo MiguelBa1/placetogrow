@@ -8,6 +8,7 @@ use App\Http\Controllers\Payment\PaymentController;
 use App\Http\Controllers\Profile\ProfileController;
 use App\Http\Controllers\RolePermission\RolePermissionController;
 use App\Http\Controllers\Support\LanguageController;
+use App\Http\Controllers\User\UserController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -48,6 +49,10 @@ Route::prefix('microsites')->name('microsites.')->middleware(['auth'])->group(fu
     });
 
     Route::get('/', [MicrositeController::class, 'index'])->name('index');
+});
+
+Route::prefix('users')->name('users.')->middleware(['auth'])->group(function () {
+    Route::get('/', [UserController::class, 'index'])->name('index');
 });
 
 Route::prefix('payments')->name('payments.')->group(function () {
