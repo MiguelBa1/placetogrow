@@ -19,6 +19,9 @@ class DefaultRolesAndPermissionsSeeder extends Seeder
                 Permission::UPDATE_MICROSITE,
                 Permission::DELETE_MICROSITE,
                 Permission::RESTORE_MICROSITE,
+
+                Permission::VIEW_ANY_USER,
+                Permission::UPDATE_USER_ROLE,
             ],
             Role::CUSTOMER->value => [],
             Role::GUEST->value => [],

@@ -8,11 +8,14 @@ use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Inertia\Response;
 use Spatie\Permission\Models\Role;
+use App\Constants\PolicyName;
 
 class UserController extends Controller
 {
     public function index(): Response
     {
+        $this->authorize(PolicyName::VIEW_ANY->value, User::class);
+
         $users = User::select('id', 'name', 'email', 'created_at')
             ->with('roles:name')
             ->paginate(10)
@@ -29,6 +32,8 @@ class UserController extends Controller
 
     public function updateRoles(UpdateUserRolesRequest $request, User $user): RedirectResponse
     {
+        $this->authorize(PolicyName::UPDATE_ROLE->value, $user);
+
         $user->syncRoles($request->input('roles'));
 
         return back();

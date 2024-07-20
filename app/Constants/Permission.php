@@ -11,6 +11,9 @@ enum Permission: string
     case DELETE_MICROSITE = 'delete_microsite';
     case RESTORE_MICROSITE = 'restore_microsite';
 
+    case VIEW_ANY_USER = 'view_any_user';
+    case UPDATE_USER_ROLE = 'update_user_role';
+
     public static function grouped(): array
     {
         return [
@@ -21,6 +24,10 @@ enum Permission: string
                 self::UPDATE_MICROSITE,
                 self::DELETE_MICROSITE,
                 self::RESTORE_MICROSITE,
+            ],
+            'user' => [
+                self::VIEW_ANY_USER,
+                self::UPDATE_USER_ROLE,
             ],
         ];
     }

@@ -8,7 +8,11 @@ return [
     'delete_microsite' => 'Eliminar micrositio',
     'restore_microsite' => 'Restaurar micrositio',
 
+    'view_any_user' => 'Ver cualquier usuario',
+    'update_user_role' => 'Actualizar rol de usuario',
+
     'group' => [
         'microsite' => 'Micrositio',
+        'user' => 'Usuario',
     ],
 ];

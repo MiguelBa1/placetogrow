@@ -12,4 +12,5 @@ enum PolicyName: string
     case RESTORE = 'restore';
     case FORCE_DELETE = 'forceDelete';
     case MANAGE = 'manage';
+    case UPDATE_ROLE = 'updateRole';
 }
