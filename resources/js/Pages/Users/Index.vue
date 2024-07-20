@@ -8,6 +8,7 @@ const { t } = useI18n();
 
 defineProps<{
     users: UsersPaginatedResponse;
+    roles: { id: number; name: string; }[];
 }>();
 
 </script>
@@ -24,7 +25,7 @@ defineProps<{
                 {{ t('users.index.title') }}
             </h2>
         </template>
-        <UsersTable v-if="users.data.length > 0" :users="users" />
+        <UsersTable v-if="users.data.length > 0" :users="users" :roles="roles" />
         <div v-else class="flex justify-center items-center h-96">
             <p class="text-gray-500">
                 {{ t('users.index.noUsers') }}

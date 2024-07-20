@@ -53,6 +53,9 @@ Route::prefix('microsites')->name('microsites.')->middleware(['auth'])->group(fu
 
 Route::prefix('users')->name('users.')->middleware(['auth'])->group(function () {
     Route::get('/', [UserController::class, 'index'])->name('index');
+    Route::prefix('{user}')->group(function () {
+        Route::put('/roles', [UserController::class, 'updateRoles'])->name('updateRoles');
+    });
 });
 
 Route::prefix('payments')->name('payments.')->group(function () {

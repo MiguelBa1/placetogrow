@@ -10,4 +10,13 @@ export const esIndex = {
         actions: "Acciones",
         modifyRoles: "Modificar Roles",
     },
+    updateRoles: {
+        title: "Modificar Roles",
+        subTitle: "Selecciona los roles que deseas asignar al usuario {name}",
+        roles: "Roles",
+        cancel: "Cancelar",
+        save: "Guardar",
+        success: "Roles actualizados correctamente",
+        error: "Ha ocurrido un error actualizando los roles",
+    },
 }
