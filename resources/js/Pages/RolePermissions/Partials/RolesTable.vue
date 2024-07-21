@@ -18,6 +18,9 @@ const rolesColumns = getRoleTableColumns(t);
 
 <template>
     <DataTable :columns="rolesColumns" :rows="roles" class="rounded-lg">
+        <template #cell-name="{ row }">
+            {{ row.name.charAt(0).toUpperCase() + row.name.slice(1) }}
+        </template>
         <template #cell-actions="{ row }">
             <div class="flex justify-center">
                 <Link

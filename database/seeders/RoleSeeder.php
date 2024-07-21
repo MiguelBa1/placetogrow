@@ -11,7 +11,7 @@ class RoleSeeder extends Seeder
     public function run(): void
     {
         foreach (Role::cases() as $role) {
-            SpatieRole::create(['name' => $role]);
+            SpatieRole::firstOrCreate(['name' => $role]);
         }
     }
 }

@@ -1,5 +1,6 @@
 <?php
 
+use App\Constants\Permission;
 use App\Constants\Role;
 use App\Http\Controllers\Category\CategoryController;
 use App\Http\Controllers\Home\HomeController;
@@ -8,6 +9,7 @@ use App\Http\Controllers\Payment\PaymentController;
 use App\Http\Controllers\Profile\ProfileController;
 use App\Http\Controllers\RolePermission\RolePermissionController;
 use App\Http\Controllers\Support\LanguageController;
+use App\Http\Controllers\User\UserController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -26,7 +28,7 @@ Route::prefix('profile')->middleware('auth')->name('profile.')->group(function (
 });
 
 Route::prefix('roles-permissions')->name('roles-permissions.')
-    ->middleware(['auth', 'role:' . Role::ADMIN->value])
+    ->middleware(['auth', 'permission:' . Permission::MANAGE_ROLES->value])
     ->group(function () {
         Route::get('/', [RolePermissionController::class, 'index'])->name('index');
         Route::post('/', [RolePermissionController::class, 'store'])->name('store');
@@ -48,6 +50,13 @@ Route::prefix('microsites')->name('microsites.')->middleware(['auth'])->group(fu
     });
 
     Route::get('/', [MicrositeController::class, 'index'])->name('index');
+});
+
+Route::prefix('users')->name('users.')->middleware(['auth'])->group(function () {
+    Route::get('/', [UserController::class, 'index'])->name('index');
+    Route::prefix('{user}')->group(function () {
+        Route::put('/roles', [UserController::class, 'updateRoles'])->name('updateRoles');
+    });
 });
 
 Route::prefix('payments')->name('payments.')->group(function () {

@@ -4,6 +4,7 @@ import esProfile from './profile';
 import esRolePermission from './rolePermissions'
 import esMicrosites from './microsites';
 import esPayment from './payments';
+import esUsers from './users';
 import esHome from './home';
 import esLayouts from './layouts';
 import esComponents from './components';
@@ -15,6 +16,7 @@ export default {
     rolePermissions: esRolePermission,
     microsites: esMicrosites,
     payments: esPayment,
+    users: esUsers,
     home: esHome,
     layouts: esLayouts,
     components: esComponents,

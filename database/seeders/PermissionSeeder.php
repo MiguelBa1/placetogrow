@@ -11,7 +11,7 @@ class PermissionSeeder extends Seeder
     public function run(): void
     {
         foreach (Permission::cases() as $permission) {
-            SpatiePermission::create(['name' => $permission]);
+            SpatiePermission::firstOrCreate(['name' => $permission]);
         }
     }
 }

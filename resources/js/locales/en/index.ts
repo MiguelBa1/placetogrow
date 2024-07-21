@@ -3,7 +3,8 @@ import enAuth from './auth';
 import enProfile from './profile';
 import enRolePermission from './rolePermissions'
 import enMicrosites from './microsites';
-import esPayment from './payments';
+import enPayment from './payments';
+import enUsers from './users';
 import enHome from './home';
 import enLayouts from './layouts';
 import enComponents from './components';
@@ -14,7 +15,8 @@ export default {
     profile: enProfile,
     rolePermissions: enRolePermission,
     microsites: enMicrosites,
-    payments: esPayment,
+    payments: enPayment,
+    users: enUsers,
     home: enHome,
     layouts: enLayouts,
     components: enComponents,
