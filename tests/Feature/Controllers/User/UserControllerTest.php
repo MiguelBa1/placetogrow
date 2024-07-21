@@ -4,8 +4,8 @@ namespace Tests\Feature\Controllers\User;
 
 use App\Constants\Role;
 use App\Models\User;
-use Spatie\Permission\Models\Role as SpatieRole;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Spatie\Permission\Models\Role as SpatieRole;
 use Tests\TestCase;
 use Tests\Traits\SeedsRolesAndPermissions;
 

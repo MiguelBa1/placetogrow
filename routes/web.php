@@ -1,5 +1,6 @@
 <?php
 
+use App\Constants\Permission;
 use App\Constants\Role;
 use App\Http\Controllers\Category\CategoryController;
 use App\Http\Controllers\Home\HomeController;
@@ -27,7 +28,7 @@ Route::prefix('profile')->middleware('auth')->name('profile.')->group(function (
 });
 
 Route::prefix('roles-permissions')->name('roles-permissions.')
-    ->middleware(['auth', 'role:' . Role::ADMIN->value])
+    ->middleware(['auth', 'permission:' . Permission::MANAGE_ROLES->value])
     ->group(function () {
         Route::get('/', [RolePermissionController::class, 'index'])->name('index');
         Route::post('/', [RolePermissionController::class, 'store'])->name('store');

@@ -12,6 +12,7 @@ class UserSeeder extends Seeder
     public function run(): void
     {
         $adminRole = SpatieRole::where('name', Role::ADMIN->value)->first();
+        $roleManagerRole = SpatieRole::where('name', Role::ROLE_MANAGER->value)->first();
 
         $adminName = config('user.admin.name');
         $adminEmail = config('user.admin.email');
@@ -28,5 +29,6 @@ class UserSeeder extends Seeder
         ]);
 
         $user->assignRole($adminRole);
+        $user->assignRole($roleManagerRole);
     }
 }

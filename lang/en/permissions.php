@@ -11,8 +11,13 @@ return [
     'view_any_user' => 'View any user',
     'update_user_role' => 'Update user role',
 
+    'manage_roles' => 'Manage roles',
+    'view_dashboard' => 'View dashboard',
+
     'group' => [
         'microsite' => 'Microsite',
         'user' => 'User',
+        'role' => 'Role',
+        'dashboard' => 'Dashboard',
     ],
 ];

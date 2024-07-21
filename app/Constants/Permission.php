@@ -13,6 +13,8 @@ enum Permission: string
 
     case VIEW_ANY_USER = 'view_any_user';
     case UPDATE_USER_ROLE = 'update_user_role';
+    case MANAGE_ROLES = 'manage_roles';
+    case VIEW_DASHBOARD = 'view_dashboard';
 
     public static function grouped(): array
     {
@@ -28,6 +30,12 @@ enum Permission: string
             'user' => [
                 self::VIEW_ANY_USER,
                 self::UPDATE_USER_ROLE,
+            ],
+            'role' => [
+                self::MANAGE_ROLES,
+            ],
+            'dashboard' => [
+                self::VIEW_DASHBOARD,
             ],
         ];
     }

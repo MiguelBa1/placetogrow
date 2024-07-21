@@ -42,6 +42,7 @@ const handleSubmit = () => {
         preserveScroll: true,
         onSuccess: () => {
             toast.success(t('rolePermissions.edit.success'));
+            window.location.reload();
         },
         onError: () => {
             toast.error(t('rolePermissions.edit.error'));

@@ -2,13 +2,13 @@
 
 namespace App\Http\Controllers\User;
 
+use App\Constants\PolicyName;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\User\UpdateUserRolesRequest;
 use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Inertia\Response;
 use Spatie\Permission\Models\Role;
-use App\Constants\PolicyName;
 
 class UserController extends Controller
 {
