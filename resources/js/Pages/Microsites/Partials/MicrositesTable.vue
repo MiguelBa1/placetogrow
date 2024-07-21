@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import { PencilSquareIcon, TrashIcon, EyeIcon, ArrowUturnLeftIcon } from '@heroicons/vue/16/solid';
-import { Link } from '@inertiajs/vue3';
+import { Link, usePage } from '@inertiajs/vue3';
 import { DataTable, Pagination } from '@/Components';
 import {
     DeleteMicrositeModal,
@@ -10,6 +10,8 @@ import {
     MicrositesPaginatedResponse,
 } from '../index';
 import { useI18n } from 'vue-i18n';
+
+const { props: { auth: { permissions }}} = usePage();
 
 const { t } = useI18n();
 
@@ -59,18 +61,21 @@ const closeRestoreModal = () => {
                         class="flex justify-center gap-2"
                     >
                         <Link
+                            v-if="permissions.includes('view_microsite')"
                             :href="route('microsites.show', { microsite: row.slug, page: microsites.meta.current_page })"
                             class="text-gray-600 hover:text-gray-900"
                         >
                             <EyeIcon class="w-5 h-5" />
                         </Link>
                         <Link
+                            v-if="permissions.includes('update_microsite')"
                             :href="route('microsites.edit', { microsite: row.slug, page: microsites.meta.current_page })"
                             class="text-blue-600 hover:text-blue-900"
                         >
                             <PencilSquareIcon class="w-5 h-5" />
                         </Link>
                         <button
+                            v-if="permissions.includes('delete_microsite')"
                             class="text-red-600 hover:text-red-900"
                             @click="openDeleteModal(row.slug)"
                         >
@@ -79,6 +84,7 @@ const closeRestoreModal = () => {
                     </div>
                     <button
                         v-else
+                        v-if="permissions.includes('restore_microsite')"
                         class="text-green-600 hover:text-green-800"
                         @click="openRestoreModal(row.slug)"
                     >

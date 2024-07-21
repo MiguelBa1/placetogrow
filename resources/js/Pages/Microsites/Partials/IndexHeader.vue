@@ -1,12 +1,14 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { router, useForm } from '@inertiajs/vue3';
+import { router, useForm, usePage } from '@inertiajs/vue3';
 import { Button, InputField, Listbox } from '@/Components';
 import { MagnifyingGlassIcon, AdjustmentsVerticalIcon, XMarkIcon } from '@heroicons/vue/16/solid';
 import { MicrositesPaginatedResponse } from '../index';
 
 const { t } = useI18n();
+
+const { props: { auth: { permissions }}} = usePage();
 
 const { categories, filters: initialFilters } = defineProps<{
     microsites: MicrositesPaginatedResponse;
@@ -85,7 +87,9 @@ const categoryOptions = computed(() => {
                 </Button>
             </form>
         </div>
-        <Button @click="router.visit(route('microsites.create', {
+        <Button
+            v-if="permissions.includes('create_microsite')"
+            @click="router.visit(route('microsites.create', {
                     page: microsites.meta.current_page || 1,
                 }))">
             {{ t('microsites.index.createMicrosite') }}

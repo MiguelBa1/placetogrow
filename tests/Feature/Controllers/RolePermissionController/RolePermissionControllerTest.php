@@ -22,8 +22,9 @@ class RolePermissionControllerTest extends TestCase
         parent::setUp();
 
         $this->seedRolesAndPermissions();
+        // Admin user that has the role of manager
         $this->adminUser = User::factory()->create();
-        $this->adminUser->assignRole(Role::ADMIN);
+        $this->adminUser->assignRole(Role::ROLE_MANAGER);
     }
 
     public function test_admin_can_view_roles_index()
