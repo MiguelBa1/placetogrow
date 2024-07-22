@@ -20,7 +20,7 @@ class MicrositeFieldListResource extends JsonResource
             'name' => $this->name,
             'label' => __("microsite_fields.{$this->name}"),
             'type' => $this->type,
-            'is_required' => $this->pivot->is_required,
+            'modifiable' => (bool) $this->pivot->modifiable,
             'validation_rules' => $this->validation_rules,
         ];
     }

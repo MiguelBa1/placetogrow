@@ -12,7 +12,7 @@ return new class extends Migration {
             $table->id();
             $table->foreignId('microsite_id')->constrained()->onDelete('cascade');
             $table->foreignId('microsite_field_id')->constrained()->onDelete('cascade');
-            $table->boolean('is_required')->default(false);
+            $table->boolean('modifiable')->default(false);
             $table->timestamps();
         });
     }

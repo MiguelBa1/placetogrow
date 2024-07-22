@@ -42,7 +42,7 @@ class Microsite extends Model implements HasMedia
     public function fields(): BelongsToMany
     {
         return $this->belongsToMany(MicrositeField::class, 'microsite_field_microsite')
-            ->withPivot('is_required')
+            ->withPivot('modifiable')
             ->withTimestamps();
     }
 

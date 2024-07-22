@@ -13,7 +13,6 @@ return new class extends Migration {
             $table->string('name', 100);
             $table->string('label', 150);
             $table->string('type', 50);
-            $table->boolean('is_required')->default(false);
             $table->string('validation_rules')->nullable();
             $table->timestamps();
         });

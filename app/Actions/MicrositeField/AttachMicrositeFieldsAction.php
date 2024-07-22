@@ -20,11 +20,10 @@ class AttachMicrositeFieldsAction
                 [
                     'label' => $field->value,
                     'type' => $field->type(),
-                    'is_required' => true,
                     'validation_rules' => implode('|', $field->defaultValidationRules())
                 ]
             );
-            $microsite->fields()->attach($micrositeField->id, ['is_required' => true]);
+            $microsite->fields()->attach($micrositeField->id, ['modifiable' => false]);
         }
     }
 }
