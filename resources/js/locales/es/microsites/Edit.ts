@@ -1,6 +1,7 @@
 export const esEdit = {
     title: "Editar Micrositio",
     header: "Editar Micrositio",
+    generalInformation: "Información General",
     form: {
         name: "Nombre",
         category: "Categoría",

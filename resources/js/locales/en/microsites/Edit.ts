@@ -1,6 +1,7 @@
 export const enEdit = {
     title: "Edit Microsite",
     header: "Edit Microsite",
+    generalInformation: "General Information",
     form: {
         name: "Name",
         category: "Category",
