@@ -11,6 +11,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Microsite\CreateMicrositeRequest;
 use App\Http\Requests\Microsite\FilterMicrositesRequest;
 use App\Http\Requests\Microsite\UpdateMicrositeRequest;
+use App\Http\Resources\MicrositeField\MicrositeFieldListResource;
 use App\Models\Microsite;
 use App\Services\MicrositeService;
 use Exception;
@@ -92,9 +93,11 @@ class MicrositeController extends Controller
 
         $formData = (new micrositeService)->getFormData();
         $micrositeData = (new micrositeService)->getEditData($microsite);
+        $fields = MicrositeFieldListResource::collection($microsite->fields()->orderBy('created_at', 'desc')->get());
 
         return Inertia::render('Microsites/Edit', array_merge($formData, [
             'microsite' => $micrositeData,
+            'fields' => $fields,
         ]));
     }
 

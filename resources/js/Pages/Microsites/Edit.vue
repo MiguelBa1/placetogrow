@@ -2,18 +2,23 @@
 import { Head } from "@inertiajs/vue3";
 import { Button, Accordion } from "@/Components";
 import { MainLayout } from '@/Layouts';
-import { Category, EditForm } from './index';
+import { Category, EditForm, MicrositeField, FieldsTable } from './index';
 import { useI18n } from "vue-i18n";
 
 const { t } = useI18n();
 
-const { microsite, categories, documentTypes, micrositeTypes, currencyTypes } = defineProps<{
+const { microsite, categories, documentTypes, micrositeTypes, currencyTypes, fields } = defineProps<{
     microsite: any;
     categories: Category[];
     documentTypes: { label: string; value: string }[];
     micrositeTypes: { label: string; value: string }[];
     currencyTypes: { label: string; value: string }[];
+    fields: {
+        data: MicrositeField[];
+    };
 }>();
+
+console.log(fields)
 
 const goBack = () => {
     history.back();
@@ -42,14 +47,28 @@ const goBack = () => {
             </div>
         </template>
 
-        <Accordion :title="t('microsites.edit.generalInformation')" default-open>
-            <EditForm
-                :microsite="microsite"
-                :categories="categories"
-                :documentTypes="documentTypes"
-                :currencyTypes="currencyTypes"
-                :micrositeTypes="micrositeTypes"
-            />
-        </Accordion>
+        <div class="space-y-6">
+            <Accordion :title="t('microsites.edit.generalInformation')" :default-open="false">
+                <EditForm
+                    :microsite="microsite"
+                    :categories="categories"
+                    :documentTypes="documentTypes"
+                    :currencyTypes="currencyTypes"
+                    :micrositeTypes="micrositeTypes"
+                />
+            </Accordion>
+
+            <Accordion :title="t('microsites.edit.fieldsTable')" :default-open="true">
+                <FieldsTable
+                    v-if="fields.data.length > 0"
+                    :fields="fields" />
+                <div
+                    v-else
+                    class="flex justify-center items-center h-40"
+                >
+                    <p class="text-gray-500">{{ t('microsites.edit.noFields') }}</p>
+                </div>
+            </Accordion>
+        </div>
     </MainLayout>
 </template>

@@ -2,6 +2,15 @@ export const esEdit = {
     title: "Editar Micrositio",
     header: "Editar Micrositio",
     generalInformation: "Información General",
+    fieldsTable: "Campos Solicitados",
+    noFields: "No hay campos solicitados",
+    fields: {
+        name: "Nombre",
+        label: "Etiqueta",
+        type: "Tipo",
+        actions: "Acciones",
+        create: "Crear Campo",
+    },
     form: {
         name: "Nombre",
         category: "Categoría",
