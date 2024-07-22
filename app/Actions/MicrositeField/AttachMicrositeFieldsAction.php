@@ -18,7 +18,7 @@ class AttachMicrositeFieldsAction
             $micrositeField = MicrositeFieldModel::firstOrCreate(
                 ['name' => $field->value],
                 [
-                    'label' => $field->label(),
+                    'label' => $field->value,
                     'type' => $field->type(),
                     'is_required' => true,
                     'validation_rules' => implode('|', $field->defaultValidationRules())

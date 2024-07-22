@@ -13,20 +13,6 @@ enum MicrositeField: string
     case REFERENCE = 'reference';
     case DOCUMENT_NUMBER = 'document_number';
 
-    public function label(): string
-    {
-        return match($this) {
-            self::BUYER_DOCUMENT => 'Documento del comprador',
-            self::BUYER_DOCUMENT_TYPE => 'Tipo de documento del comprador',
-            self::BUYER_NAME => 'Nombre del comprador',
-            self::BUYER_EMAIL => 'Email',
-            self::PAYMENT_DESCRIPTION => 'Descripción del pago',
-            self::REFERENCE => 'Referencia',
-            self::DOCUMENT_NUMBER => 'Número de documento',
-            self::AMOUNT => 'Monto',
-        };
-    }
-
     public function type(): string
     {
         return match($this) {
