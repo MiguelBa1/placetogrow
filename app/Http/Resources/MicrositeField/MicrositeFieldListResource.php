@@ -18,7 +18,7 @@ class MicrositeFieldListResource extends JsonResource
         return [
             'id' => $this->id,
             'name' => $this->name,
-            'label' => __("microsite_fields.{$this->name}"),
+            'label' => $this->label,
             'type' => $this->type,
             'modifiable' => (bool) $this->pivot->modifiable,
             'validation_rules' => $this->validation_rules,
