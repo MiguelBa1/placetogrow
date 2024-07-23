@@ -9,4 +9,5 @@ return [
     'amount' => 'Amount',
     'reference' => 'Reference',
     'document_number' => 'Document Number',
+    'not_modifiable' => 'This field is not modifiable.'
 ];
