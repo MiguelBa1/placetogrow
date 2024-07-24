@@ -44,6 +44,30 @@ return [
             'throw' => false,
         ],
 
+        'category_icons' => [
+            'driver' => 'local',
+            'root' => storage_path('app/public/category-icons'),
+            'url' => env('APP_URL').'/storage/category-icons',
+            'visibility' => 'public',
+            'throw' => false,
+        ],
+
+        'microsites_logos' => [
+            'driver' => 'local',
+            'root' => storage_path('app/public/microsites-logos'),
+            'url' => env('APP_URL').'/storage/microsites-logos',
+            'visibility' => 'public',
+            'throw' => false,
+        ],
+
+        'test_images' => [
+            'driver' => 'local',
+            'root' => storage_path('app/public/test-images'),
+            'url' => env('APP_URL').'/storage/test-images',
+            'visibility' => 'public',
+            'throw' => false,
+        ],
+
         's3' => [
             'driver' => 's3',
             'key' => env('AWS_ACCESS_KEY_ID'),

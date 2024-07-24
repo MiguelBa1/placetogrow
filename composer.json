@@ -8,10 +8,19 @@
         "php": "^8.2",
         "inertiajs/inertia-laravel": "^1.0",
         "laravel/framework": "^11.0",
-        "laravel/tinker": "^2.9"
+        "laravel/sanctum": "^4.0",
+        "laravel/telescope": "^5.0",
+        "laravel/tinker": "^2.9",
+        "spatie/laravel-medialibrary": "^11.7",
+        "spatie/laravel-permission": "^6.7",
+        "spatie/laravel-sluggable": "^3.6",
+        "tightenco/ziggy": "^2.0"
     },
     "require-dev": {
         "fakerphp/faker": "^1.23",
+        "friendsofphp/php-cs-fixer": "^3.58",
+        "laravel-lang/common": "^6.3",
+        "laravel/breeze": "^2.0",
         "laravel/pint": "^1.13",
         "laravel/sail": "^1.26",
         "mockery/mockery": "^1.6",
@@ -32,6 +41,7 @@
         }
     },
     "scripts": {
+        "fix": "php-cs-fixer fix",
         "post-autoload-dump": [
             "Illuminate\\Foundation\\ComposerScripts::postAutoloadDump",
             "@php artisan package:discover --ansi"
