@@ -20,9 +20,9 @@
 </template>
 
 <script setup lang="ts">
-import {defineProps, computed} from 'vue'
-import {Disclosure, DisclosureButton, DisclosurePanel} from '@headlessui/vue'
-import {ChevronUpIcon, ChevronDownIcon} from '@heroicons/vue/16/solid'
+import { computed } from 'vue'
+import { Disclosure, DisclosureButton, DisclosurePanel } from '@headlessui/vue'
+import { ChevronUpIcon, ChevronDownIcon } from '@heroicons/vue/16/solid'
 
 interface Props {
     title: string

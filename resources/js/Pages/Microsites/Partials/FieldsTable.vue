@@ -1,12 +1,17 @@
 <script setup lang="ts">
-import { MicrositeField, getFieldsTableColumns } from "../index";
+import { ref } from 'vue';
+import { useForm } from '@inertiajs/vue3';
+import { MicrositeField, getFieldsTableColumns, MicrositeEditData, CreateFieldModal, EditFieldModal } from "../index";
 import { DataTable, Button } from "@/Components";
 import { PencilSquareIcon, TrashIcon } from '@heroicons/vue/16/solid';
 import { useI18n } from 'vue-i18n';
+import { useToast } from "vue-toastification";
 
 const { t } = useI18n();
+const toast = useToast();
 
-defineProps<{
+const { microsite, fields } = defineProps<{
+    microsite: MicrositeEditData;
     fields: {
         data: MicrositeField[];
     };
@@ -14,12 +19,27 @@ defineProps<{
 
 const fieldsColumns = getFieldsTableColumns(t);
 
+const isCreateFieldModalOpen = ref(false);
+
+const isEditFieldModalOpen = ref(false);
+const editFieldData = ref<MicrositeField | null>(null);
+
 const editField = (field: MicrositeField) => {
-    console.log('Edit field', field);
+    editFieldData.value = field;
+    isEditFieldModalOpen.value = true;
 };
 
+const deleteForm = useForm({});
+
 const deleteField = (field: MicrositeField) => {
-    console.log('Delete field', field);
+    deleteForm.delete(route('microsites.fields.destroy', [microsite.slug, field.id]), {
+        onSuccess: () => {
+            toast.success(t('microsites.edit.fields.deletion.success'));
+        },
+        onError: (errors) => {
+            toast.error(errors[0]);
+        },
+    });
 };
 
 </script>
@@ -27,7 +47,7 @@ const deleteField = (field: MicrositeField) => {
 <template>
     <div class="space-y-4">
         <div class="flex justify-start">
-            <Button @click="console.log('Create field')">
+            <Button @click="isCreateFieldModalOpen = true">
                 {{ t('microsites.edit.fields.create')}}
             </Button>
         </div>
@@ -37,7 +57,9 @@ const deleteField = (field: MicrositeField) => {
                 {{ row.modifiable ? row.name : row.name + ' (system)' }}
             </template>
             <template #cell-actions="{ row }">
-                <div class="flex justify-center gap-1">
+                <fieldset
+                    :disabled="deleteForm.processing"
+                    class="flex justify-center gap-1">
                     <button
                         :disabled="row.modifiable === false"
                         class="text-blue-600 hover:text-blue-900 disabled:opacity-50 disabled:cursor-not-allowed"
@@ -52,8 +74,21 @@ const deleteField = (field: MicrositeField) => {
                     >
                         <TrashIcon class="w-5 h-5" />
                     </button>
-                </div>
+                </fieldset>
             </template>
         </DataTable>
     </div>
+    <CreateFieldModal
+        v-if="isCreateFieldModalOpen"
+        :isOpen="isCreateFieldModalOpen"
+        :micrositeSlug="microsite.slug"
+        @closeModal="isCreateFieldModalOpen = false"
+    />
+    <EditFieldModal
+        v-if="isEditFieldModalOpen"
+        :isOpen="isEditFieldModalOpen"
+        :field="editFieldData"
+        :micrositeSlug="microsite.slug"
+        @closeModal="isEditFieldModalOpen = false"
+    />
 </template>

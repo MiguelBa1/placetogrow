@@ -10,6 +10,37 @@ export const esEdit = {
         type: "Tipo",
         actions: "Acciones",
         create: "Crear Campo",
+        deletion: {
+            success: "Campo eliminado con éxito",
+        },
+        creationModal: {
+            title: "Crear Campo",
+            name: "Nombre",
+            type: "Tipo",
+            translations: {
+                es: "Traducción en Español",
+                en: "Traducción en Inglés",
+            },
+            validationRules: "Reglas de Validación",
+            save: "Guardar",
+            cancel: "Cancelar",
+            success: "Campo creado con éxito",
+            error: "Error al crear",
+        },
+        editModal: {
+            title: "Editar Campo",
+            name: "Nombre",
+            type: "Tipo",
+            translations: {
+                es: "Traducción en Español",
+                en: "Traducción en Inglés",
+            },
+            validationRules: "Reglas de Validación",
+            save: "Guardar",
+            cancel: "Cancelar",
+            success: "Campo editado con éxito",
+            error: "Error al editar",
+        },
     },
     form: {
         name: "Nombre",
@@ -24,7 +55,7 @@ export const esEdit = {
         logo: "Logo, (tamaño recomendado 400x400)",
         cancel: "Cancelar",
         success: "Micrositio editado con éxito",
-        error: "Error al editar el micrositio"
+        error: "Error al editar el micrositio",
     },
     back: "Volver",
 }

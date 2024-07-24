@@ -2,13 +2,13 @@
 import { Head } from "@inertiajs/vue3";
 import { Button, Accordion } from "@/Components";
 import { MainLayout } from '@/Layouts';
-import { Category, EditForm, MicrositeField, FieldsTable } from './index';
+import { Category, EditForm, MicrositeField, FieldsTable, MicrositeEditData } from './index';
 import { useI18n } from "vue-i18n";
 
 const { t } = useI18n();
 
 const { microsite, categories, documentTypes, micrositeTypes, currencyTypes, fields } = defineProps<{
-    microsite: any;
+    microsite: MicrositeEditData;
     categories: Category[];
     documentTypes: { label: string; value: string }[];
     micrositeTypes: { label: string; value: string }[];
@@ -17,8 +17,6 @@ const { microsite, categories, documentTypes, micrositeTypes, currencyTypes, fie
         data: MicrositeField[];
     };
 }>();
-
-console.log(fields)
 
 const goBack = () => {
     history.back();
@@ -61,7 +59,9 @@ const goBack = () => {
             <Accordion :title="t('microsites.edit.fieldsTable')" :default-open="true">
                 <FieldsTable
                     v-if="fields.data.length > 0"
-                    :fields="fields" />
+                    :fields="fields"
+                    :microsite="microsite"
+                />
                 <div
                     v-else
                     class="flex justify-center items-center h-40"
