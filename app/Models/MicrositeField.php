@@ -17,6 +17,11 @@ class MicrositeField extends Model
         'label',
         'type',
         'validation_rules',
+        'options',
+    ];
+
+    protected $casts = [
+        'options' => 'array',
     ];
 
     public function microsites(): BelongsToMany

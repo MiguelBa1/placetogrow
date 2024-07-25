@@ -59,6 +59,8 @@ Route::prefix('microsites')->name('microsites.')->middleware(['auth'])->group(fu
     Route::get('/', [MicrositeController::class, 'index'])->name('index');
 });
 
+Route::get('/microsite-fields/types', [MicrositeFieldController::class, 'getFieldTypes'])->name('microsite.fields.types');
+
 Route::prefix('users')->name('users.')->middleware(['auth'])->group(function () {
     Route::get('/', [UserController::class, 'index'])->name('index');
     Route::prefix('{user}')->group(function () {

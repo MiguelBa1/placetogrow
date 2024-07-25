@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { useForm } from '@inertiajs/vue3';
-import { Modal, Button, InputField } from '@/Components';
+import { Modal, Button, InputField, Listbox } from '@/Components';
 import { useToast } from 'vue-toastification';
 import { useI18n } from 'vue-i18n';
-import { MicrositeField } from '../index';
+import { MicrositeField, useFieldTypesQuery } from '../index';
 import { ref } from 'vue';
 
 const { t } = useI18n();
@@ -16,6 +16,13 @@ const { isOpen, micrositeSlug, field } = defineProps<{
 }>();
 
 const emit = defineEmits(['closeModal']);
+
+const {
+    data: fieldTypes,
+    isLoading: fieldTypesLoading,
+} = useFieldTypesQuery({
+    enabled: isOpen,
+});
 
 const editForm = useForm({
     name: field?.name,
@@ -85,13 +92,14 @@ const editField = () => {
                 :label="t('microsites.show.fields.editModal.translations.en')"
                 :error="editForm.errors.translation_en"
             />
-            <InputField
+            <Listbox
                 id="field-type"
-                type="text"
-                required
                 v-model="editForm.type"
                 :label="t('microsites.show.fields.editModal.type')"
                 :error="editForm.errors.type"
+                :options="fieldTypes ?? []"
+                :isLoading="fieldTypesLoading"
+                :placeholder="fieldTypesLoading ? t('common.loading') : t('common.select')"
             />
             <InputField
                 id="field-validation_rules"

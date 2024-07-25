@@ -1,15 +1,23 @@
 <script setup lang="ts">
 import { useForm } from '@inertiajs/vue3';
-import { Modal, Button, InputField } from '@/Components';
+import { Modal, Button, InputField, Listbox } from '@/Components';
+import { useFieldTypesQuery } from '../index';
 import { useToast } from 'vue-toastification';
 import { useI18n } from 'vue-i18n';
 
 const { t } = useI18n();
 
-const { micrositeSlug } = defineProps<{
+const { isOpen, micrositeSlug } = defineProps<{
     isOpen: boolean;
     micrositeSlug: string | null;
 }>();
+
+const {
+    data: fieldTypes,
+    isLoading: fieldTypesLoading,
+} = useFieldTypesQuery({
+    enabled: isOpen,
+});
 
 const emit = defineEmits(['closeModal']);
 const toast = useToast();
@@ -39,7 +47,7 @@ const createField = () => {
         onFinish: () => {
             createForm.reset();
         },
-        preserveScroll: true
+        preserveScroll: true,
     });
 };
 </script>
@@ -74,12 +82,13 @@ const createField = () => {
                 :label="t('microsites.show.fields.creationModal.translations.en')"
                 :error="createForm.errors.translation_en"
             />
-            <InputField
+            <Listbox
                 id="field-type"
-                type="text"
                 v-model="createForm.type"
                 :label="t('microsites.show.fields.creationModal.type')"
                 :error="createForm.errors.type"
+                :options="fieldTypes ?? []"
+                :placeholder="fieldTypesLoading ? t('common.loading') : t('common.select')"
             />
             <InputField
                 id="field-validation-rules"

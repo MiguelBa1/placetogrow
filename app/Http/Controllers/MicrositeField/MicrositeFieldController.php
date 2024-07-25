@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers\MicrositeField;
 
+use App\Constants\FieldType;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\MicrositeField\MicrositeFieldRequest;
 use App\Models\FieldTranslation;
 use App\Models\Microsite;
 use App\Models\MicrositeField;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 
 class MicrositeFieldController extends Controller
@@ -18,6 +20,7 @@ class MicrositeFieldController extends Controller
             'label' => $request->validated('name'),
             'type' => $request->validated('type'),
             'validation_rules' => $request->validated('validation_rules'),
+            'options' => $request->validated('options'),
         ]);
 
         FieldTranslation::create([
@@ -50,6 +53,7 @@ class MicrositeFieldController extends Controller
             'label' => $request->validated('name'),
             'type' => $request->validated('type'),
             'validation_rules' => $request->validated('validation_rules'),
+            'options' => $request->validated('options'),
         ]);
 
         FieldTranslation::updateOrCreate(
@@ -83,5 +87,10 @@ class MicrositeFieldController extends Controller
         }
 
         return back();
+    }
+
+    public function getFieldTypes(): JsonResponse
+    {
+        return response()->json(FieldType::toSelectArray());
     }
 }

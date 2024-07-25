@@ -72,7 +72,7 @@ const goBack = () => {
                     v-else
                     class="flex justify-center items-center h-40"
                 >
-                    <p class="text-gray-500">{{ t('microsites.edit.noFields') }}</p>
+                    <p class="text-gray-500">{{ t('microsites.show.noFields') }}</p>
                 </div>
             </Accordion>
         </div>

@@ -1,5 +1,6 @@
 <?php
 
+use App\Constants\FieldType;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -12,8 +13,9 @@ return new class extends Migration {
             $table->id();
             $table->string('name', 100);
             $table->string('label', 150);
-            $table->string('type', 50);
+            $table->enum('type', FieldType::toArray());
             $table->string('validation_rules')->nullable();
+            $table->json('options')->nullable();
             $table->timestamps();
         });
     }
