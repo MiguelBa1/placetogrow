@@ -10,8 +10,8 @@ import { useToast } from "vue-toastification";
 const { t } = useI18n();
 const toast = useToast();
 
-const { microsite, fields } = defineProps<{
-    microsite: MicrositeEditData;
+const { micrositeSlug, fields } = defineProps<{
+    micrositeSlug: MicrositeEditData['slug'];
     fields: {
         data: MicrositeField[];
     };
@@ -32,9 +32,9 @@ const editField = (field: MicrositeField) => {
 const deleteForm = useForm({});
 
 const deleteField = (field: MicrositeField) => {
-    deleteForm.delete(route('microsites.fields.destroy', [microsite.slug, field.id]), {
+    deleteForm.delete(route('microsites.fields.destroy', [micrositeSlug, field.id]), {
         onSuccess: () => {
-            toast.success(t('microsites.edit.fields.deletion.success'));
+            toast.success(t('microsites.show.fields.deletion.success'));
         },
         onError: (errors) => {
             toast.error(errors[0]);
@@ -48,7 +48,7 @@ const deleteField = (field: MicrositeField) => {
     <div class="space-y-4">
         <div class="flex justify-start">
             <Button @click="isCreateFieldModalOpen = true">
-                {{ t('microsites.edit.fields.create')}}
+                {{ t('microsites.show.fields.create')}}
             </Button>
         </div>
 
@@ -81,14 +81,14 @@ const deleteField = (field: MicrositeField) => {
     <CreateFieldModal
         v-if="isCreateFieldModalOpen"
         :isOpen="isCreateFieldModalOpen"
-        :micrositeSlug="microsite.slug"
+        :micrositeSlug="micrositeSlug"
         @closeModal="isCreateFieldModalOpen = false"
     />
     <EditFieldModal
         v-if="isEditFieldModalOpen"
         :isOpen="isEditFieldModalOpen"
         :field="editFieldData"
-        :micrositeSlug="microsite.slug"
+        :micrositeSlug="micrositeSlug"
         @closeModal="isEditFieldModalOpen = false"
     />
 </template>

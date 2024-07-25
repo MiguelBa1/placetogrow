@@ -30,11 +30,11 @@ const createField = () => {
 
     createForm.post(route('microsites.fields.store', micrositeSlug), {
         onSuccess: () => {
-            toast.success(t('microsites.edit.fields.creationModal.success'));
+            toast.success(t('microsites.show.fields.creationModal.success'));
             emit('closeModal');
         },
         onError: () => {
-            toast.error(t('microsites.edit.fields.creationModal.error'));
+            toast.error(t('microsites.show.fields.creationModal.error'));
         },
         onFinish: () => {
             createForm.reset();
@@ -46,7 +46,7 @@ const createField = () => {
 
 <template>
     <Modal
-        :title="t('microsites.edit.fields.creationModal.title')"
+        :title="t('microsites.show.fields.creationModal.title')"
         :isOpen="isOpen" @close="emit('closeModal')"
     >
         <form
@@ -57,35 +57,35 @@ const createField = () => {
                 id="field-name"
                 type="text"
                 v-model="createForm.name"
-                :label="t('microsites.edit.fields.creationModal.name')"
+                :label="t('microsites.show.fields.creationModal.name')"
                 :error="createForm.errors.name"
             />
             <InputField
                 id="field-translations-es"
                 type="text"
                 v-model="createForm.translation_es"
-                :label="t('microsites.edit.fields.creationModal.translations.es')"
+                :label="t('microsites.show.fields.creationModal.translations.es')"
                 :error="createForm.errors.translation_es"
             />
             <InputField
                 id="field-translations-en"
                 type="text"
                 v-model="createForm.translation_en"
-                :label="t('microsites.edit.fields.creationModal.translations.en')"
+                :label="t('microsites.show.fields.creationModal.translations.en')"
                 :error="createForm.errors.translation_en"
             />
             <InputField
                 id="field-type"
                 type="text"
                 v-model="createForm.type"
-                :label="t('microsites.edit.fields.creationModal.type')"
+                :label="t('microsites.show.fields.creationModal.type')"
                 :error="createForm.errors.type"
             />
             <InputField
                 id="field-validation-rules"
                 type="text"
                 v-model="createForm.validation_rules"
-                :label="t('microsites.edit.fields.creationModal.validationRules')"
+                :label="t('microsites.show.fields.creationModal.validationRules')"
                 :error="createForm.errors.validation_rules"
             />
 
@@ -93,7 +93,7 @@ const createField = () => {
 
         <template #footerButtons>
             <Button type="button" variant="secondary" @click="emit('closeModal')">
-                {{ t('microsites.edit.fields.creationModal.cancel') }}
+                {{ t('microsites.show.fields.creationModal.cancel') }}
             </Button>
             <Button
                 type="button"
@@ -101,7 +101,7 @@ const createField = () => {
                 @click="createField"
                 :disabled="createForm.processing"
             >
-                {{ t('microsites.edit.fields.creationModal.save') }}
+                {{ t('microsites.show.fields.creationModal.save') }}
             </Button>
         </template>
     </Modal>

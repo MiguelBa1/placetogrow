@@ -1,16 +1,6 @@
 export const enEdit = {
     title: "Edit Microsite",
     header: "Edit Microsite",
-    generalInformation: "General Information",
-    fieldsTable: "Requested Fields",
-    noFields: "No requested fields",
-    fields: {
-        name: "Name",
-        label: "Label",
-        type: "Type",
-        actions: "Actions",
-        create: "Create Field",
-    },
     form: {
         name: "Name",
         category: "Category",

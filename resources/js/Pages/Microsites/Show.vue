@@ -1,30 +1,16 @@
 <script setup lang="ts">
-import dayjs from 'dayjs';
 import { Head } from '@inertiajs/vue3';
 import { MainLayout } from '@/Layouts';
 import { useI18n } from 'vue-i18n';
-import { Button } from '@/Components';
+import { Accordion, Button } from '@/Components';
+import { FieldsTable, MicrositeField, MicrositeInformation, MicrositeDetails } from "./index";
 
 const { t } = useI18n();
 
 const { microsite } = defineProps<{
-    microsite: {
-        id: string;
-        name: string;
-        slug: string;
-        logo: string;
-        type: string;
-        category: {
-            id: string;
-            name: string;
-        };
-        responsible_name: string;
-        responsible_document_number: string;
-        responsible_document_type: string;
-        payment_currency: string;
-        payment_expiration?: string;
-        created_at: string;
-        updated_at: string;
+    microsite: MicrositeInformation;
+    fields: {
+        data: MicrositeField[];
     };
 }>();
 
@@ -71,96 +57,24 @@ const goBack = () => {
             </div>
         </template>
 
-        <div class="bg-white p-10 rounded-xl shadow-sm">
-            <div class="grid md:grid-cols-3 gap-8">
-                <div>
-                    <h3 class="font-semibold text-lg text-gray-800 leading-tight">
-                        {{ t('microsites.show.details') }}
-                    </h3>
-                    <dl class="mt-4">
-                        <div class="flex flex-col">
-                            <dt class="font-semibold text-gray-600">
-                                {{ t('microsites.show.category') }}
-                            </dt>
-                            <dd class="mb-2">
-                                {{ microsite.category.name }}
-                            </dd>
-                        </div>
-                        <div class="flex flex-col">
-                            <dt class="font-semibold text-gray-600">
-                                {{ t('microsites.show.type') }}
-                            </dt>
-                            <dd class="mb-2">
-                                {{ microsite.type }}
-                            </dd>
-                        </div>
-                        <div class="flex flex-col">
-                            <dt class="font-semibold text-gray-600">
-                                {{ t('microsites.show.paymentExpiration') }}
-                            </dt>
-                            <dd class="mb-2">
-                                {{ microsite.payment_expiration }}
-                            </dd>
-                        </div>
-                    </dl>
-                </div>
+        <div class="space-y-6">
+            <Accordion :title="t('microsites.show.generalInformation')" :default-open="true">
+                <MicrositeDetails :microsite="microsite" />
+            </Accordion>
 
-                <div>
-                    <h3 class="font-semibold text-lg text-gray-800 leading-tight">
-                        {{ t('microsites.show.responsiblePerson.title') }}
-                    </h3>
-                    <dl class="mt-4">
-                        <div class="flex flex-col">
-                            <dt class="font-semibold text-gray-600">
-                                {{ t('microsites.show.responsiblePerson.name') }}
-                            </dt>
-                            <dd class="mb-2">
-                                {{ microsite.responsible_name }}
-                            </dd>
-                        </div>
-                        <div class="flex flex-col">
-                            <dt class="font-semibold text-gray-600">
-                                {{ t('microsites.show.responsiblePerson.documentNumber') }}
-                            </dt>
-                            <dd class="mb-2">
-                                {{ microsite.responsible_document_number }}
-                            </dd>
-                        </div>
-                        <div class="flex flex-col">
-                            <dt class="font-semibold text-gray-600">
-                                {{ t('microsites.show.responsiblePerson.documentType') }}
-                            </dt>
-                            <dd class="mb-2">
-                                {{ microsite.responsible_document_type }}
-                            </dd>
-                        </div>
-                    </dl>
+            <Accordion :title="t('microsites.show.fieldsTable')" :default-open="true">
+                <FieldsTable
+                    v-if="fields.data.length > 0"
+                    :fields="fields"
+                    :micrositeSlug="microsite.slug"
+                />
+                <div
+                    v-else
+                    class="flex justify-center items-center h-40"
+                >
+                    <p class="text-gray-500">{{ t('microsites.edit.noFields') }}</p>
                 </div>
-
-                <div>
-                    <h3 class="font-semibold text-lg text-gray-800 leading-tight">
-                        {{ t('microsites.show.timestamps') }}
-                    </h3>
-                    <dl class="mt-4">
-                        <div class="flex flex-col">
-                            <dt class="font-semibold text-gray-600">
-                                {{ t('microsites.show.createdAt') }}
-                            </dt>
-                            <dd class="mb-2">
-                                {{ dayjs(microsite.created_at).format('DD/MM/YYYY HH:mm') }}
-                            </dd>
-                        </div>
-                        <div class="flex flex-col">
-                            <dt class="font-semibold text-gray-600">
-                                {{ t('microsites.show.updatedAt') }}
-                            </dt>
-                            <dd class="mb-2">
-                                {{ dayjs(microsite.updated_at).format('DD/MM/YYYY HH:mm') }}
-                            </dd>
-                        </div>
-                    </dl>
-                </div>
-            </div>
+            </Accordion>
         </div>
     </MainLayout>
 </template>

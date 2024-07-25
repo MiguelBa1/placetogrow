@@ -3,7 +3,8 @@ import { useForm } from '@inertiajs/vue3';
 import { Modal, Button, InputField } from '@/Components';
 import { useToast } from 'vue-toastification';
 import { useI18n } from 'vue-i18n';
-import { MicrositeField } from '../index'
+import { MicrositeField } from '../index';
+import { ref } from 'vue';
 
 const { t } = useI18n();
 const toast = useToast();
@@ -24,6 +25,14 @@ const editForm = useForm({
     translation_en: field?.translation_en,
 });
 
+const editFormRef = ref<HTMLFormElement | null>(null);
+
+const submitForm = () => {
+    if (editFormRef.value) {
+        editFormRef.value.requestSubmit();
+    }
+};
+
 const editField = () => {
     if (!micrositeSlug) {
         console.log('Microsite slug is required');
@@ -32,11 +41,11 @@ const editField = () => {
 
     editForm.put(route('microsites.fields.update', [micrositeSlug, field?.id]), {
         onSuccess: () => {
-            toast.success(t('microsites.edit.fields.editModal.success'));
+            toast.success(t('microsites.show.fields.editModal.success'));
             emit('closeModal');
         },
         onError: () => {
-            toast.error(t('microsites.edit.fields.editModal.error'));
+            toast.error(t('microsites.show.fields.editModal.error'));
         },
         onFinish: () => {
             editForm.reset();
@@ -48,55 +57,60 @@ const editField = () => {
 
 <template>
     <Modal
-        :title="t('microsites.edit.fields.editModal.title')"
+        :title="t('microsites.show.fields.editModal.title')"
         :isOpen="isOpen" @close="emit('closeModal')"
     >
-        <form
-            @submit.prevent="editField"
-            class="space-y-2"
-        >
+        <form ref="editFormRef" @submit.prevent="editField" class="space-y-2">
             <InputField
                 id="field-name"
                 type="text"
+                required
                 v-model="editForm.name"
-                :label="t('microsites.edit.fields.editModal.name')"
+                :label="t('microsites.show.fields.editModal.name')"
+                :error="editForm.errors.name"
             />
             <InputField
                 id="field-translation_es"
                 type="text"
+                required
                 v-model="editForm.translation_es"
-                :label="t('microsites.edit.fields.editModal.translations.es')"
+                :label="t('microsites.show.fields.editModal.translations.es')"
+                :error="editForm.errors.translation_es"
             />
             <InputField
                 id="field-translation_en"
                 type="text"
+                required
                 v-model="editForm.translation_en"
-                :label="t('microsites.edit.fields.editModal.translations.en')"
+                :label="t('microsites.show.fields.editModal.translations.en')"
+                :error="editForm.errors.translation_en"
             />
             <InputField
                 id="field-type"
                 type="text"
+                required
                 v-model="editForm.type"
-                :label="t('microsites.edit.fields.editModal.type')"
+                :label="t('microsites.show.fields.editModal.type')"
+                :error="editForm.errors.type"
             />
             <InputField
                 id="field-validation_rules"
                 type="text"
                 v-model="editForm.validation_rules"
-                :label="t('microsites.edit.fields.editModal.validationRules')"
+                :label="t('microsites.show.fields.editModal.validationRules')"
+                :error="editForm.errors.validation_rules"
             />
-
         </form>
 
         <template #footerButtons>
             <Button variant="secondary" @click="emit('closeModal')">
-                {{ t('microsites.edit.fields.editModal.cancel') }}
+                {{ t('microsites.show.fields.editModal.cancel') }}
             </Button>
             <Button
                 color="green"
                 type="submit"
-                @click="editField">
-                {{ t('microsites.edit.fields.editModal.save') }}
+                @click="submitForm">
+                {{ t('microsites.show.fields.editModal.save') }}
             </Button>
         </template>
     </Modal>

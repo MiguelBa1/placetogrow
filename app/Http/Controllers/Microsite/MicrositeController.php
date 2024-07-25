@@ -54,9 +54,11 @@ class MicrositeController extends Controller
         $this->authorize(PolicyName::VIEW->value, $microsite);
 
         $micrositeData = (new micrositeService)->getMicrositeData($microsite);
+        $fields = MicrositeFieldListResource::collection($microsite->fields()->orderBy('created_at', 'desc')->get());
 
         return Inertia::render('Microsites/Show', [
             'microsite' => $micrositeData,
+            'fields' => $fields,
         ]);
     }
 
@@ -93,11 +95,9 @@ class MicrositeController extends Controller
 
         $formData = (new micrositeService)->getFormData();
         $micrositeData = (new micrositeService)->getEditData($microsite);
-        $fields = MicrositeFieldListResource::collection($microsite->fields()->orderBy('created_at', 'desc')->get());
 
         return Inertia::render('Microsites/Edit', array_merge($formData, [
             'microsite' => $micrositeData,
-            'fields' => $fields,
         ]));
     }
 

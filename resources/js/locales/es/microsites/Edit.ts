@@ -1,47 +1,6 @@
 export const esEdit = {
     title: "Editar Micrositio",
     header: "Editar Micrositio",
-    generalInformation: "Información General",
-    fieldsTable: "Campos Solicitados",
-    noFields: "No hay campos solicitados",
-    fields: {
-        name: "Nombre",
-        label: "Etiqueta",
-        type: "Tipo",
-        actions: "Acciones",
-        create: "Crear Campo",
-        deletion: {
-            success: "Campo eliminado con éxito",
-        },
-        creationModal: {
-            title: "Crear Campo",
-            name: "Nombre",
-            type: "Tipo",
-            translations: {
-                es: "Traducción en Español",
-                en: "Traducción en Inglés",
-            },
-            validationRules: "Reglas de Validación",
-            save: "Guardar",
-            cancel: "Cancelar",
-            success: "Campo creado con éxito",
-            error: "Error al crear",
-        },
-        editModal: {
-            title: "Editar Campo",
-            name: "Nombre",
-            type: "Tipo",
-            translations: {
-                es: "Traducción en Español",
-                en: "Traducción en Inglés",
-            },
-            validationRules: "Reglas de Validación",
-            save: "Guardar",
-            cancel: "Cancelar",
-            success: "Campo editado con éxito",
-            error: "Error al editar",
-        },
-    },
     form: {
         name: "Nombre",
         category: "Categoría",
