@@ -2,20 +2,17 @@
 import { Head } from "@inertiajs/vue3";
 import { Button } from "@/Components";
 import { MainLayout } from '@/Layouts';
-import { Category, EditForm, MicrositeField, MicrositeEditData } from './index';
+import { Category, EditForm, MicrositeEditData } from './index';
 import { useI18n } from "vue-i18n";
 
 const { t } = useI18n();
 
-const { microsite, categories, documentTypes, micrositeTypes, currencyTypes, fields } = defineProps<{
+const { microsite, categories, documentTypes, micrositeTypes, currencyTypes } = defineProps<{
     microsite: MicrositeEditData;
     categories: Category[];
     documentTypes: { label: string; value: string }[];
     micrositeTypes: { label: string; value: string }[];
     currencyTypes: { label: string; value: string }[];
-    fields: {
-        data: MicrositeField[];
-    };
 }>();
 
 const goBack = () => {
@@ -45,13 +42,12 @@ const goBack = () => {
             </div>
         </template>
 
-            <EditForm
-                :microsite="microsite"
-                :categories="categories"
-                :documentTypes="documentTypes"
-                :currencyTypes="currencyTypes"
-                :micrositeTypes="micrositeTypes"
-            />
-        </div>
+        <EditForm
+            :microsite="microsite"
+            :categories="categories"
+            :documentTypes="documentTypes"
+            :currencyTypes="currencyTypes"
+            :micrositeTypes="micrositeTypes"
+        />
     </MainLayout>
 </template>

@@ -84,7 +84,7 @@ const submit = () => {
 <template>
     <form
         @submit.prevent="submit"
-        class="sm:rounded-lg flex flex-col md:grid md:grid-cols-2 gap-4"
+        class="w-full p-4 sm:p-8 bg-white shadow sm:rounded-lg grid grid-cols-2 gap-4"
     >
         <InputField
             id="name"
