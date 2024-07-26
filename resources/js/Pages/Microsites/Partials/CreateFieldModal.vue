@@ -5,6 +5,7 @@ import { Modal, Button, InputField, Listbox } from '@/Components';
 import { useFieldTypesQuery } from '../index';
 import { useToast } from 'vue-toastification';
 import { useI18n } from 'vue-i18n';
+import {create} from "muggle-string";
 
 const { t } = useI18n();
 
@@ -49,6 +50,7 @@ const createField = () => {
     createForm.transform((data) => ({
         ...data,
         options: data.type === 'select' ? data.options.split(',').map(option => option.trim()) : null,
+        validation_rules: data.validation_rules?.split(',').map(rule => rule.trim()).join('|'),
     })).post(route('microsites.fields.store', micrositeSlug), {
         onSuccess: () => {
             toast.success(t('microsites.show.fields.creationModal.success'));
@@ -81,22 +83,6 @@ const createField = () => {
                 :label="t('microsites.show.fields.creationModal.name')"
                 :error="createForm.errors.name"
             />
-            <InputField
-                id="field-translations-es"
-                type="text"
-                required
-                v-model="createForm.translation_es"
-                :label="t('microsites.show.fields.creationModal.translations.es')"
-                :error="createForm.errors.translation_es"
-            />
-            <InputField
-                id="field-translations-en"
-                type="text"
-                required
-                v-model="createForm.translation_en"
-                :label="t('microsites.show.fields.creationModal.translations.en')"
-                :error="createForm.errors.translation_en"
-            />
             <Listbox
                 id="field-type"
                 v-model="createForm.type"
@@ -123,6 +109,23 @@ const createField = () => {
                 v-model="createForm.validation_rules"
                 :label="t('microsites.show.fields.creationModal.validationRules')"
                 :error="createForm.errors.validation_rules"
+                :placeholder="t('microsites.show.fields.validationRulesHelp')"
+            />
+            <InputField
+                id="field-translations-es"
+                type="text"
+                required
+                v-model="createForm.translation_es"
+                :label="t('microsites.show.fields.creationModal.translations.es')"
+                :error="createForm.errors.translation_es"
+            />
+            <InputField
+                id="field-translations-en"
+                type="text"
+                required
+                v-model="createForm.translation_en"
+                :label="t('microsites.show.fields.creationModal.translations.en')"
+                :error="createForm.errors.translation_en"
             />
         </form>
 

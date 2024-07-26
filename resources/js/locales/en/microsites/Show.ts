@@ -27,6 +27,7 @@ export const enShow = {
         deletion: {
             success: "Field deleted successfully",
         },
+        validationRulesHelp: "Example: required,numeric,min:10,max:100",
         creationModal: {
             title: "Create Field",
             name: "Name",
@@ -41,7 +42,7 @@ export const enShow = {
             success: "Field created successfully",
             error: "Error creating",
             options: "Options",
-            optionsPlaceholder: "Write the options separated by commas, for example: Option 1, Option 2, Option 3",
+            optionsPlaceholder: "Example: Option 1, Option 2, Option 3",
         },
         editModal: {
             title: "Edit Field",

@@ -50,13 +50,14 @@ const editField = () => {
     editForm.transform((data) => ({
         ...data,
         options: data.type === 'select' ? data.options.split(',').map(option => option.trim()) : null,
+        validation_rules: data.validation_rules?.split(',').map(rule => rule.trim()).join('|'),
     })).put(route('microsites.fields.update', [micrositeSlug, field?.id]), {
         onSuccess: () => {
             toast.success(t('microsites.show.fields.editModal.success'));
             emit('closeModal');
             editForm.reset();
         },
-        onError: (error) => {
+        onError: () => {
             toast.error(t('microsites.show.fields.editModal.error'));
         },
         preserveScroll: true,
@@ -78,22 +79,6 @@ const editField = () => {
                 v-model="editForm.name"
                 :label="t('microsites.show.fields.editModal.name')"
                 :error="editForm.errors.name"
-            />
-            <InputField
-                id="field-translation_es"
-                type="text"
-                required
-                v-model="editForm.translation_es"
-                :label="t('microsites.show.fields.editModal.translations.es')"
-                :error="editForm.errors.translation_es"
-            />
-            <InputField
-                id="field-translation_en"
-                type="text"
-                required
-                v-model="editForm.translation_en"
-                :label="t('microsites.show.fields.editModal.translations.en')"
-                :error="editForm.errors.translation_en"
             />
             <Listbox
                 id="field-type"
@@ -120,7 +105,25 @@ const editField = () => {
                 v-model="editForm.validation_rules"
                 :label="t('microsites.show.fields.editModal.validationRules')"
                 :error="editForm.errors.validation_rules"
+                :placeholder="t('microsites.show.fields.validationRulesHelp')"
             />
+            <InputField
+                id="field-translation_es"
+                type="text"
+                required
+                v-model="editForm.translation_es"
+                :label="t('microsites.show.fields.editModal.translations.es')"
+                :error="editForm.errors.translation_es"
+            />
+            <InputField
+                id="field-translation_en"
+                type="text"
+                required
+                v-model="editForm.translation_en"
+                :label="t('microsites.show.fields.editModal.translations.en')"
+                :error="editForm.errors.translation_en"
+            />
+
         </form>
 
         <template #footerButtons>

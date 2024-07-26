@@ -27,6 +27,7 @@ export const esShow = {
         deletion: {
             success: "Campo eliminado con éxito",
         },
+        validationRulesHelp: "Ejemplo: required,numeric,min:10,max:100",
         creationModal: {
             title: "Crear Campo",
             name: "Nombre",
@@ -41,7 +42,7 @@ export const esShow = {
             success: "Campo creado con éxito",
             error: "Error al crear",
             options: "Opciones",
-            optionsPlaceholder: "Escribe las opciones separadas por comas, por ejemplo: Opción 1, Opción 2, Opción 3",
+            optionsPlaceholder: "Ejemplo: Opción 1, Opción 2, Opción 3",
         },
         editModal: {
             title: "Editar Campo",
