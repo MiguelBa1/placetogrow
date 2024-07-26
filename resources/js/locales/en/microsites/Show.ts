@@ -40,6 +40,8 @@ export const enShow = {
             cancel: "Cancel",
             success: "Field created successfully",
             error: "Error creating",
+            options: "Options",
+            optionsPlaceholder: "Write the options separated by commas, for example: Option 1, Option 2, Option 3",
         },
         editModal: {
             title: "Edit Field",
@@ -54,6 +56,8 @@ export const enShow = {
             cancel: "Cancel",
             success: "Field edited successfully",
             error: "Error editing",
+            options: "Options",
+            optionsPlaceholder: "Write the options separated by commas, for example: Option 1, Option 2, Option 3",
         },
     },
 }

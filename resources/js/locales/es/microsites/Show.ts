@@ -40,6 +40,8 @@ export const esShow = {
             cancel: "Cancelar",
             success: "Campo creado con éxito",
             error: "Error al crear",
+            options: "Opciones",
+            optionsPlaceholder: "Escribe las opciones separadas por comas, por ejemplo: Opción 1, Opción 2, Opción 3",
         },
         editModal: {
             title: "Editar Campo",
@@ -54,6 +56,8 @@ export const esShow = {
             cancel: "Cancelar",
             success: "Campo editado con éxito",
             error: "Error al editar",
+            options: "Opciones",
+            optionsPlaceholder: "Escribe las opciones separadas por comas, por ejemplo: Opción 1, Opción 2, Opción 3",
         },
     },
 }

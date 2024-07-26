@@ -30,6 +30,7 @@ const editForm = useForm({
     validation_rules: field?.validation_rules,
     translation_es: field?.translation_es,
     translation_en: field?.translation_en,
+    options: field?.options ?? '',
 });
 
 const editFormRef = ref<HTMLFormElement | null>(null);
@@ -46,19 +47,21 @@ const editField = () => {
         return;
     }
 
-    editForm.put(route('microsites.fields.update', [micrositeSlug, field?.id]), {
+    editForm.transform((data) => ({
+        ...data,
+        options: data.type === 'select' ? data.options.split(',').map(option => option.trim()) : null,
+    })).put(route('microsites.fields.update', [micrositeSlug, field?.id]), {
         onSuccess: () => {
             toast.success(t('microsites.show.fields.editModal.success'));
             emit('closeModal');
-        },
-        onError: () => {
-            toast.error(t('microsites.show.fields.editModal.error'));
-        },
-        onFinish: () => {
             editForm.reset();
+        },
+        onError: (error) => {
+            toast.error(t('microsites.show.fields.editModal.error'));
         },
         preserveScroll: true,
     });
+
 };
 </script>
 
@@ -100,6 +103,16 @@ const editField = () => {
                 :options="fieldTypes ?? []"
                 :isLoading="fieldTypesLoading"
                 :placeholder="fieldTypesLoading ? t('common.loading') : t('common.select')"
+            />
+            <InputField
+                v-if="editForm.type === 'select'"
+                id="field-options"
+                type="text"
+                v-model="editForm.options"
+                required
+                :label="t('microsites.show.fields.editModal.options')"
+                :placeholder="t('microsites.show.fields.editModal.optionsPlaceholder')"
+                :error="editForm.errors.options"
             />
             <InputField
                 id="field-validation_rules"

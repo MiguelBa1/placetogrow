@@ -24,6 +24,7 @@ class MicrositeFieldListResource extends JsonResource
             'validation_rules' => $this->validation_rules,
             'translation_en' => $this->translations->where('locale', 'en')->first()->label ?? '',
             'translation_es' => $this->translations->where('locale', 'es')->first()->label ?? '',
+            'options' => $this->options ? implode(', ', $this->options) : null,
         ];
     }
 }

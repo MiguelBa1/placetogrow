@@ -7,4 +7,5 @@ export type MicrositeField = {
     validation_rules: string;
     translation_es: string;
     translation_en: string;
+    options?: string;
 }

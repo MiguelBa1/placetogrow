@@ -4,7 +4,8 @@ namespace App\Http\Controllers\MicrositeField;
 
 use App\Constants\FieldType;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\MicrositeField\MicrositeFieldRequest;
+use App\Http\Requests\MicrositeField\CreateMicrositeFieldRequest;
+use App\Http\Requests\MicrositeField\UpdateMicrositeFieldRequest;
 use App\Models\FieldTranslation;
 use App\Models\Microsite;
 use App\Models\MicrositeField;
@@ -13,7 +14,7 @@ use Illuminate\Http\RedirectResponse;
 
 class MicrositeFieldController extends Controller
 {
-    public function store(MicrositeFieldRequest $request, Microsite $microsite): RedirectResponse
+    public function store(CreateMicrositeFieldRequest $request, Microsite $microsite): RedirectResponse
     {
         $micrositeField = MicrositeField::create([
             'name' => $request->validated('name'),
@@ -40,7 +41,7 @@ class MicrositeFieldController extends Controller
         return back();
     }
 
-    public function update(MicrositeFieldRequest $request, Microsite $microsite, MicrositeField $field): RedirectResponse
+    public function update(UpdateMicrositeFieldRequest $request, Microsite $microsite, MicrositeField $field): RedirectResponse
     {
         $pivot = $microsite->fields()->where('microsite_field_id', $field->id)->first()->pivot;
 
