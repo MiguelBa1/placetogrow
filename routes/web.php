@@ -5,6 +5,7 @@ use App\Constants\Role;
 use App\Http\Controllers\Category\CategoryController;
 use App\Http\Controllers\Home\HomeController;
 use App\Http\Controllers\Microsite\MicrositeController;
+use App\Http\Controllers\MicrositeField\MicrositeFieldController;
 use App\Http\Controllers\Payment\PaymentController;
 use App\Http\Controllers\Profile\ProfileController;
 use App\Http\Controllers\RolePermission\RolePermissionController;
@@ -47,10 +48,18 @@ Route::prefix('microsites')->name('microsites.')->middleware(['auth'])->group(fu
         Route::post('/', [MicrositeController::class, 'update'])->name('update');
         Route::delete('/', [MicrositeController::class, 'destroy'])->name('destroy');
         Route::put('/restore', [MicrositeController::class, 'restore'])->name('restore');
+
+        Route::prefix('fields')->name('fields.')->group(function () {
+            Route::post('/', [MicrositeFieldController::class, 'store'])->name('store');
+            Route::put('{field}', [MicrositeFieldController::class, 'update'])->name('update');
+            Route::delete('{field}', [MicrositeFieldController::class, 'destroy'])->name('destroy');
+        });
     });
 
     Route::get('/', [MicrositeController::class, 'index'])->name('index');
 });
+
+Route::get('/microsite-fields/types', [MicrositeFieldController::class, 'getFieldTypes'])->name('microsite.fields.types');
 
 Route::prefix('users')->name('users.')->middleware(['auth'])->group(function () {
     Route::get('/', [UserController::class, 'index'])->name('index');

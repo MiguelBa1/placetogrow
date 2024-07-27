@@ -7,6 +7,7 @@ use App\Constants\MicrositeType;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
@@ -36,6 +37,13 @@ class Microsite extends Model implements HasMedia
     public function category(): BelongsTo
     {
         return $this->belongsTo(Category::class);
+    }
+
+    public function fields(): BelongsToMany
+    {
+        return $this->belongsToMany(MicrositeField::class, 'microsite_field_microsite')
+            ->withPivot('modifiable')
+            ->withTimestamps();
     }
 
     public function registerMediaCollections(): void

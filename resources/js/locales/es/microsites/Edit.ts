@@ -14,7 +14,7 @@ export const esEdit = {
         logo: "Logo, (tamaño recomendado 400x400)",
         cancel: "Cancelar",
         success: "Micrositio editado con éxito",
-        error: "Error al editar el micrositio"
+        error: "Error al editar el micrositio",
     },
     back: "Volver",
 }
