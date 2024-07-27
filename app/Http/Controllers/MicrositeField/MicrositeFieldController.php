@@ -23,13 +23,16 @@ class MicrositeFieldController extends Controller
     {
         $this->authorize(PolicyName::CREATE->value, Microsite::class);
 
-        $micrositeField = MicrositeField::create([
+        $micrositeField = new MicrositeField([
             'name' => $request->validated('name'),
             'label' => $request->validated('name'),
             'type' => $request->validated('type'),
             'validation_rules' => $request->validated('validation_rules'),
             'options' => $request->validated('options'),
+            'modifiable' => true,
         ]);
+
+        $microsite->fields()->save($micrositeField);
 
         FieldTranslation::create([
             'field_id' => $micrositeField->id,
@@ -43,8 +46,6 @@ class MicrositeFieldController extends Controller
             'label' => $request->validated('translation_es'),
         ]);
 
-        $microsite->fields()->attach($micrositeField->id, ['modifiable' => true]);
-
         return back();
     }
 
@@ -55,9 +56,7 @@ class MicrositeFieldController extends Controller
     {
         $this->authorize(PolicyName::UPDATE->value, $microsite);
 
-        $pivot = $microsite->fields()->where('microsite_field_id', $field->id)->first()->pivot;
-
-        if (!$pivot->modifiable) {
+        if (!$field->modifiable) {
             return back()->withErrors(__('microsite_fields.not_modifiable'));
         }
 
@@ -69,17 +68,13 @@ class MicrositeFieldController extends Controller
             'options' => $request->validated('options'),
         ]);
 
-        FieldTranslation::updateOrCreate(
-            ['field_id' => $field->id, 'locale' => 'en'],
-            ['label' => $request->validated('translation_en')]
-        );
+        $field->translations->where('locale', 'en')->first()->update([
+            'label' => $request->validated('translation_en'),
+        ]);
 
-        FieldTranslation::updateOrCreate(
-            ['field_id' => $field->id, 'locale' => 'es'],
-            ['label' => $request->validated('translation_es')]
-        );
-
-        $microsite->fields()->updateExistingPivot($field->id, ['modifiable' => true]);
+        $field->translations->where('locale', 'es')->first()->update([
+            'label' => $request->validated('translation_es'),
+        ]);
 
         return back();
     }
@@ -91,18 +86,13 @@ class MicrositeFieldController extends Controller
     {
         $this->authorize(PolicyName::DELETE->value, $microsite);
 
-        $pivot = $microsite->fields()->where('microsite_field_id', $field->id)->first()->pivot;
-
-        if (!$pivot->modifiable) {
+        if (!$field->modifiable) {
             return back()->withErrors(__('microsite_fields.not_modifiable'));
         }
 
-        $microsite->fields()->detach($field->id);
+        $field->translations()->delete();
 
-        if ($field->microsites()->count() === 0) {
-            $field->translations()->delete();
-            $field->delete();
-        }
+        $field->delete();
 
         return back();
     }
