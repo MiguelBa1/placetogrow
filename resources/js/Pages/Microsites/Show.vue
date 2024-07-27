@@ -62,7 +62,9 @@ const goBack = () => {
                 <MicrositeDetails :microsite="microsite" />
             </Accordion>
 
-            <Accordion :title="t('microsites.show.fieldsTable')" :default-open="true">
+            <Accordion
+                v-if="$page.props.auth.permissions.includes('update_microsite')"
+                :title="t('microsites.show.fieldsTable')" :default-open="true">
                 <FieldsTable
                     v-if="fields.data.length > 0"
                     :fields="fields"

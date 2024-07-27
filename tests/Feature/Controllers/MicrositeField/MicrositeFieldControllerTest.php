@@ -25,7 +25,8 @@ class MicrositeFieldControllerTest extends TestCase
 
     public function test_get_field_types()
     {
-        $this->get(route('microsite.fields.types'))
+        $this->actingAs($this->adminUser)
+            ->get(route('microsite.fields.types'))
             ->assertOk()
             ->assertJson(FieldType::toSelectArray());
     }

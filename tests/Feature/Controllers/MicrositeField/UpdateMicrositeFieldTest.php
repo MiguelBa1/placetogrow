@@ -26,7 +26,6 @@ class UpdateMicrositeFieldTest extends TestCase
 
     public function test_update_microsite_field(): void
     {
-        $user = User::factory()->create();
         $microsite = Microsite::factory()->create();
         $field = MicrositeField::factory()->create([
             'name' => 'old_field',
@@ -36,7 +35,7 @@ class UpdateMicrositeFieldTest extends TestCase
 
         $microsite->fields()->attach($field->id, ['modifiable' => true]);
 
-        $this->actingAs($user)
+        $this->actingAs($this->adminUser)
             ->put(route('microsites.fields.update', [$microsite, $field]), [
                 'name' => 'updated_field',
                 'type' => 'email',
@@ -69,7 +68,6 @@ class UpdateMicrositeFieldTest extends TestCase
 
     public function test_update_not_modifiable_microsite_field(): void
     {
-        $user = User::factory()->create();
         $microsite = Microsite::factory()->create();
         $field = MicrositeField::factory()->create([
             'name' => 'old_field',
@@ -79,7 +77,7 @@ class UpdateMicrositeFieldTest extends TestCase
 
         $microsite->fields()->attach($field->id, ['modifiable' => false]);
 
-        $this->actingAs($user)
+        $this->actingAs($this->adminUser)
             ->put(route('microsites.fields.update', [$microsite, $field]), [
                 'name' => 'updated_field',
                 'type' => 'email',

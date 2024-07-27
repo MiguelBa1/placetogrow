@@ -26,7 +26,6 @@ class DestroyMicrositeFieldTest extends TestCase
 
     public function test_destroy_microsite_field(): void
     {
-        $user = User::factory()->create();
         $microsite = Microsite::factory()->create();
         $field = MicrositeField::factory()->create([
             'name' => 'field_to_delete',
@@ -36,7 +35,7 @@ class DestroyMicrositeFieldTest extends TestCase
 
         $microsite->fields()->attach($field->id, ['modifiable' => true]);
 
-        $this->actingAs($user)
+        $this->actingAs($this->adminUser)
             ->delete(route('microsites.fields.destroy', [$microsite, $field]))
             ->assertRedirect();
 
@@ -50,7 +49,6 @@ class DestroyMicrositeFieldTest extends TestCase
 
     public function test_destroy_not_modifiable_microsite_field(): void
     {
-        $user = User::factory()->create();
         $microsite = Microsite::factory()->create();
         $field = MicrositeField::factory()->create([
             'name' => 'field_to_delete',
@@ -60,7 +58,7 @@ class DestroyMicrositeFieldTest extends TestCase
 
         $microsite->fields()->attach($field->id, ['modifiable' => false]);
 
-        $response = $this->actingAs($user)
+        $this->actingAs($this->adminUser)
             ->delete(route('microsites.fields.destroy', [$microsite, $field]))
             ->assertRedirect()
             ->assertSessionHas('errors');
