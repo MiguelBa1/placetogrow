@@ -39,6 +39,7 @@ const deleteField = (field: MicrositeField) => {
         onError: (errors) => {
             toast.error(errors[0]);
         },
+        preserveScroll: true,
     });
 };
 

@@ -1,11 +1,10 @@
 <script setup lang="ts">
 import { ref } from 'vue';
-import { useForm, router } from '@inertiajs/vue3';
+import { useForm } from '@inertiajs/vue3';
 import { Modal, Button, InputField, Listbox } from '@/Components';
 import { useFieldTypesQuery } from '../index';
 import { useToast } from 'vue-toastification';
 import { useI18n } from 'vue-i18n';
-import {create} from "muggle-string";
 
 const { t } = useI18n();
 

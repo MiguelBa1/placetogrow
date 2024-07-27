@@ -4,6 +4,7 @@ namespace Tests\Feature\Controllers\Microsite;
 
 use App\Constants\Role;
 use App\Models\Microsite;
+use App\Models\MicrositeField;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Inertia\Testing\AssertableInertia;
@@ -63,6 +64,24 @@ class MicrositeViewsTest extends TestCase
                     ->component('Microsites/Edit')
                     ->has('microsite')
                     ->has('categories')
+            );
+    }
+
+    public function test_admin_can_view_show_page(): void
+    {
+        $microsite = Microsite::factory()->create();
+        $field = MicrositeField::factory()->create();
+
+        $microsite->fields()->attach($field->id, ['modifiable' => true]);
+
+        $response = $this->actingAs($this->adminUser)->get(route('microsites.show', $microsite));
+
+        $response->assertOk()
+            ->assertInertia(
+                fn (AssertableInertia $page) => $page
+                    ->component('Microsites/Show')
+                    ->has('microsite')
+                    ->has('fields')
             );
     }
 

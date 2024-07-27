@@ -13,13 +13,9 @@ class ValidValidationRule implements ValidationRule
         $testData = ['test_field' => 'test_value'];
 
         try {
-            $validator = Validator::make($testData, [
+            Validator::make($testData, [
                 'test_field' => $value
             ]);
-
-            if ($validator->fails()) {
-                $fail(__('validation.custom.validation_rules.invalid'));
-            }
         } catch (Exception) {
             $fail(__('validation.custom.validation_rules.invalid'));
         }
