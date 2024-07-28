@@ -30,6 +30,7 @@ class PaymentController extends Controller
     public function store(CreatePaymentRequest $request, Microsite $microsite): RedirectResponse|Response
     {
         $paymentData = $request->validated();
+        $paymentData['currency'] = $microsite->payment_currency->value;
         return (new PaymentService)->createPayment($paymentData, $request->ip(), $request->userAgent(), $microsite->slug);
     }
 
