@@ -32,13 +32,13 @@ enum MicrositeField: string
     public function defaultValidationRules(): array
     {
         return match($this) {
-            self::DOCUMENT_TYPE => ['required', 'string', 'max:20'],
-            self::PHONE => ['required', 'string', 'max:20'],
+            self::DOCUMENT_TYPE, self::DOCUMENT_NUMBER => ['required', 'string', 'max:20', 'alpha_num'],
             self::NAME, self::LAST_NAME => ['required', 'string', 'max:100'],
             self::EMAIL => ['required', 'email', 'max:100'],
             self::PAYMENT_DESCRIPTION => ['required', 'string', 'max:255'],
-            self::REFERENCE, self::DOCUMENT_NUMBER => ['nullable', 'string', 'max:50'],
-            self::AMOUNT => ['required', 'numeric', 'min:0'],
+            self::REFERENCE => ['required', 'string', 'max:50'],
+            self::PHONE => ['required', 'regex:/^(\+?\d{1,3}[- ]?)?\d{10}$/'],
+            self::AMOUNT => ['required', 'numeric', 'min:1', 'regex:/^\d+(\.\d{1,2})?$/'],
         };
     }
 
