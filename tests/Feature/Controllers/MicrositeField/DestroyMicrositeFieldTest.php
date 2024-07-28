@@ -30,10 +30,9 @@ class DestroyMicrositeFieldTest extends TestCase
         $field = MicrositeField::factory()->create([
             'name' => 'field_to_delete',
             'type' => 'text',
-            'validation_rules' => 'required|string|max:255'
+            'validation_rules' => 'required|string|max:255',
+            'microsite_id' => $microsite->id,
         ]);
-
-        $microsite->fields()->attach($field->id, ['modifiable' => true]);
 
         $this->actingAs($this->adminUser)
             ->delete(route('microsites.fields.destroy', [$microsite, $field]))
@@ -53,10 +52,10 @@ class DestroyMicrositeFieldTest extends TestCase
         $field = MicrositeField::factory()->create([
             'name' => 'field_to_delete',
             'type' => 'text',
-            'validation_rules' => 'required|string|max:255'
+            'validation_rules' => 'required|string|max:255',
+            'microsite_id' => $microsite->id,
+            'modifiable' => false,
         ]);
-
-        $microsite->fields()->attach($field->id, ['modifiable' => false]);
 
         $this->actingAs($this->adminUser)
             ->delete(route('microsites.fields.destroy', [$microsite, $field]))

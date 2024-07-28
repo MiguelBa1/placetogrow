@@ -104,7 +104,6 @@ const createField = () => {
             <InputField
                 id="field-validation-rules"
                 type="text"
-                required
                 v-model="createForm.validation_rules"
                 :label="t('microsites.show.fields.creationModal.validationRules')"
                 :error="createForm.errors.validation_rules"

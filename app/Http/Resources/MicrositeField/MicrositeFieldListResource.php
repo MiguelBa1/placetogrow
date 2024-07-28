@@ -20,7 +20,7 @@ class MicrositeFieldListResource extends JsonResource
             'name' => $this->name,
             'label' => $this->label,
             'type' => $this->type,
-            'modifiable' => (bool) $this->pivot->modifiable,
+            'modifiable' => (bool) $this->modifiable,
             'validation_rules' => $this->validation_rules,
             'translation_en' => $this->translations->where('locale', 'en')->first()->label ?? '',
             'translation_es' => $this->translations->where('locale', 'es')->first()->label ?? '',

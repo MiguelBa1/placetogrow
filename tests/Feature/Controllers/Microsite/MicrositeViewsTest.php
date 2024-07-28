@@ -70,9 +70,12 @@ class MicrositeViewsTest extends TestCase
     public function test_admin_can_view_show_page(): void
     {
         $microsite = Microsite::factory()->create();
-        $field = MicrositeField::factory()->create();
-
-        $microsite->fields()->attach($field->id, ['modifiable' => true]);
+        MicrositeField::factory()->create([
+            'name' => 'old_field',
+            'type' => 'text',
+            'validation_rules' => 'required|string|max:255',
+            'microsite_id' => $microsite->id,
+        ]);
 
         $response = $this->actingAs($this->adminUser)->get(route('microsites.show', $microsite));
 

@@ -63,12 +63,12 @@ class StoreMicrositeFieldTest extends TestCase
             ->post(route('microsites.fields.store', $microsite), [
                 'name' => 'custom_field',
                 'type' => 'text',
-                'validation_rules' => 'required|string|max:255',
+                'validation_rules' => 'invalid_validation_rules',
                 'translation_es' => 'Campo personalizado',
                 'translation_en' => 'Custom Field',
                 'options' => 'invalid_options'
             ])
-            ->assertSessionHasErrors('options');
+            ->assertSessionHasErrors('options', 'validation_rules');
 
         $this->assertDatabaseMissing('microsite_fields', [
             'name' => 'custom_field',

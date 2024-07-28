@@ -15,19 +15,19 @@ class AttachMicrositeFieldsAction
         $micrositeType = MicrositeType::from($microsite->type->value);
 
         $defaultFields = MicrositeField::defaultFieldsForMicrositeType($micrositeType);
+
         foreach ($defaultFields as $field) {
-            $micrositeField = MicrositeFieldModel::firstOrCreate(
-                ['name' => $field->value],
-                [
-                    'label' => $field->value,
-                    'type' => $field->type(),
-                    'validation_rules' => implode('|', $field->defaultValidationRules())
-                ]
-            );
+            $micrositeField = new MicrositeFieldModel([
+                'name' => $field->value,
+                'label' => $field->value,
+                'type' => $field->type(),
+                'validation_rules' => implode('|', $field->defaultValidationRules()),
+                'modifiable' => false,
+            ]);
+
+            $microsite->fields()->save($micrositeField);
 
             $this->addTranslations($micrositeField, $field->value);
-
-            $microsite->fields()->attach($micrositeField->id, ['modifiable' => false]);
         }
     }
 
@@ -39,10 +39,12 @@ class AttachMicrositeFieldsAction
         ];
 
         foreach ($translations as $locale => $label) {
-            FieldTranslation::firstOrCreate(
-                ['field_id' => $micrositeField->id, 'locale' => $locale],
-                ['label' => $label]
-            );
+            $fieldTranslation = new FieldTranslation([
+                'locale' => $locale,
+                'label' => $label,
+            ]);
+
+            $micrositeField->translations()->save($fieldTranslation);
         }
     }
 

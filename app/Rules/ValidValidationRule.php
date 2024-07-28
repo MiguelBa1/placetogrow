@@ -2,9 +2,10 @@
 
 namespace App\Rules;
 
-use Exception;
+use BadMethodCallException;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\ValidationException;
 
 class ValidValidationRule implements ValidationRule
 {
@@ -13,11 +14,15 @@ class ValidValidationRule implements ValidationRule
         $testData = ['test_field' => 'test_value'];
 
         try {
-            Validator::make($testData, [
+            $validator = Validator::make($testData, [
                 'test_field' => $value
             ]);
-        } catch (Exception) {
+
+            $validator->validate();
+        } catch (BadMethodCallException) {
             $fail(__('validation.custom.validation_rules.invalid'));
+        } catch (ValidationException) {
+            return;
         }
     }
 }

@@ -18,6 +18,7 @@ class MicrositeFieldFactory extends Factory
             'type' => $this->faker->randomElement(FieldType::toArray()),
             'validation_rules' => 'required|string|max:255',
             'options' => $this->faker->randomElement([null, ['Option 1', 'Option 2']]),
+            'modifiable' => true,
         ];
     }
 }

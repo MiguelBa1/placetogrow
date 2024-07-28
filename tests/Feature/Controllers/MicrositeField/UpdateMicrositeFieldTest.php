@@ -3,6 +3,7 @@
 namespace Tests\Feature\Controllers\MicrositeField;
 
 use App\Constants\Role;
+use App\Models\FieldTranslation;
 use App\Models\Microsite;
 use App\Models\MicrositeField;
 use App\Models\User;
@@ -30,10 +31,22 @@ class UpdateMicrositeFieldTest extends TestCase
         $field = MicrositeField::factory()->create([
             'name' => 'old_field',
             'type' => 'text',
-            'validation_rules' => 'required|string|max:255'
+            'validation_rules' => 'required|string|max:255',
+            'microsite_id' => $microsite->id,
+            'modifiable' => true,
         ]);
 
-        $microsite->fields()->attach($field->id, ['modifiable' => true]);
+        FieldTranslation::factory()->create([
+            'field_id' => $field->id,
+            'locale' => 'es',
+            'label' => 'Campo antiguo'
+        ]);
+
+        FieldTranslation::factory()->create([
+            'field_id' => $field->id,
+            'locale' => 'en',
+            'label' => 'Old Field'
+        ]);
 
         $this->actingAs($this->adminUser)
             ->put(route('microsites.fields.update', [$microsite, $field]), [
@@ -72,10 +85,10 @@ class UpdateMicrositeFieldTest extends TestCase
         $field = MicrositeField::factory()->create([
             'name' => 'old_field',
             'type' => 'text',
-            'validation_rules' => 'required|string|max:255'
+            'validation_rules' => 'required|string|max:255',
+            'microsite_id' => $microsite->id,
+            'modifiable' => false,
         ]);
-
-        $microsite->fields()->attach($field->id, ['modifiable' => false]);
 
         $this->actingAs($this->adminUser)
             ->put(route('microsites.fields.update', [$microsite, $field]), [
