@@ -17,12 +17,15 @@ class AttachMicrositeFieldsAction
         $defaultFields = MicrositeField::defaultFieldsForMicrositeType($micrositeType);
 
         foreach ($defaultFields as $field) {
+            $options = MicrositeField::optionsForField($field);
+
             $micrositeField = new MicrositeFieldModel([
                 'name' => $field->value,
                 'label' => $field->value,
                 'type' => $field->type(),
                 'validation_rules' => implode('|', $field->defaultValidationRules()),
                 'modifiable' => false,
+                'options' => $options ? array_column($options, 'value') : null,
             ]);
 
             $microsite->fields()->save($micrositeField);
@@ -47,5 +50,4 @@ class AttachMicrositeFieldsAction
             $micrositeField->translations()->save($fieldTranslation);
         }
     }
-
 }

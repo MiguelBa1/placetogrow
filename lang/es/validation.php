@@ -279,6 +279,8 @@ return [
         'payment_currency'         => 'moneda de pago',
         'category_id'              => 'categoría',
         'payment_expiration'       => 'vencimiento de pago',
+        'document_number'          => 'número de documento',
+        'document_type'            => 'tipo de documento',
         'responsible_name'         => 'nombre del responsable',
         'responsible_document_number' => 'número de documento del responsable',
         'responsible_document_type' => 'tipo de documento del responsable',
