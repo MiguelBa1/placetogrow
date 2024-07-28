@@ -16,8 +16,10 @@ class PaymentController extends Controller
 {
     public function show(Microsite $microsite): \Inertia\Response
     {
-        $micrositeData = (new micrositeService)->getMicrositeData($microsite);
-        $fields = MicrositeFieldDetailResource::collection($microsite->fields()->get());
+        $micrositeData = (new MicrositeService)->getMicrositeData($microsite);
+        $fields = MicrositeFieldDetailResource::collection(
+            $microsite->fields()->with('translations')->get()
+        );
 
         return Inertia::render('Payments/Show', [
             'microsite' => $micrositeData,
