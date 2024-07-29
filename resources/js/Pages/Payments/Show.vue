@@ -29,7 +29,7 @@ const goBack = () => {
 
     <MainLayout>
         <template #header>
-            <div class="flex justify-between">
+            <div class="flex justify-between items-center">
                 <div class="flex gap-4 items-center">
                     <img
                         class="h-20 w-auto"
@@ -40,16 +40,14 @@ const goBack = () => {
                         {{ microsite.name }}
                     </h2>
                 </div>
-                <div>
-                    <Button
-                        @click="goBack"
-                        type="button"
-                        variant="secondary"
-                        color="gray"
-                    >
-                        {{ t('common.back') }}
-                    </Button>
-                </div>
+                <Button
+                    @click="goBack"
+                    type="button"
+                    variant="secondary"
+                    color="gray"
+                >
+                    {{ t('common.back') }}
+                </Button>
             </div>
         </template>
 

@@ -57,6 +57,7 @@ Route::prefix('microsites')->name('microsites.')->middleware(['auth'])->group(fu
         });
 
         Route::prefix('invoices')->name('invoices.')->group(function () {
+            Route::get('/', [InvoiceController::class, 'index'])->name('index');
             Route::post('/', [InvoiceController::class, 'store'])->name('store');
         });
     });

@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import { PencilSquareIcon, TrashIcon, EyeIcon, ArrowUturnLeftIcon } from '@heroicons/vue/16/solid';
+import { DocumentTextIcon } from '@heroicons/vue/24/outline';
 import { Link, usePage } from '@inertiajs/vue3';
 import { DataTable, Pagination } from '@/Components';
 import {
@@ -51,6 +52,9 @@ const closeRestoreModal = () => {
 <template>
     <div class="w-full space-y-4">
         <DataTable :columns="micrositesColumns" :rows="microsites.data" class="rounded-lg">
+            <template #cell-type="{ row }">
+                {{ row.type.label }}
+            </template>
             <template #cell-category="{ row }">
                 {{ row.category.name }}
             </template>
@@ -73,6 +77,13 @@ const closeRestoreModal = () => {
                             class="text-blue-600 hover:text-blue-900"
                         >
                             <PencilSquareIcon class="w-5 h-5" />
+                        </Link>
+                        <Link
+                            v-if="row.type.value === 'invoice'"
+                            :href="route('microsites.invoices.index', { microsite: row.slug })"
+                            title="Invoices"
+                        >
+                            <DocumentTextIcon class="w-5 h-5" />
                         </Link>
                         <button
                             v-if="permissions.includes('delete_microsite')"

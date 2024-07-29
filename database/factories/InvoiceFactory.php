@@ -2,13 +2,12 @@
 
 namespace Database\Factories;
 
+use App\Constants\DocumentType;
+use App\Constants\MicrositeType;
 use App\Models\Invoice;
 use App\Models\Microsite;
-use App\Constants\DocumentType;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Carbon;
-use App\Constants\MicrositeType;
-
 
 class InvoiceFactory extends Factory
 {

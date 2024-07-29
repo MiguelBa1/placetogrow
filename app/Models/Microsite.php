@@ -44,6 +44,11 @@ class Microsite extends Model implements HasMedia
         return $this->hasMany(MicrositeField::class);
     }
 
+    public function invoices(): HasMany
+    {
+        return $this->hasMany(Invoice::class);
+    }
+
     public function registerMediaCollections(): void
     {
         $this->addMediaCollection('logos')

@@ -13,9 +13,21 @@ use Inertia\Response;
 
 class InvoiceController extends Controller
 {
-    public static function index(): Response
+    public static function index(Microsite $microsite): Response
     {
-        return Inertia::render('Invoices/Index');
+        $invoices = $microsite->invoices()->select(
+            'id',
+            'reference',
+            'document_number',
+            'name',
+            'amount',
+            'expiration_date',
+        )->get();
+
+        return Inertia::render('Invoices/Index', [
+            'invoices' => $invoices,
+            'micrositeName' => $microsite->name,
+        ]);
     }
 
     public function store(CreateInvoiceRequest $request, Microsite $microsite): RedirectResponse
