@@ -20,7 +20,7 @@ class CreateInvoiceRequest extends FormRequest
             'name' => ['required', 'string', 'max:100'],
             'last_name' => ['required', 'string', 'max:100'],
             'email' => ['required', 'email', 'max:100'],
-            'phone' => ['required', 'string', 'max:20'],
+            'phone' => ['required', 'min:10', 'regex:/^(\+?\d{1,3}[- ]?)?\d{10}$/'],
             'amount' => ['required', 'numeric', 'min:0'],
         ];
     }

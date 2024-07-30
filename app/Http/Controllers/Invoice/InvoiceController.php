@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Invoice;
 
 use App\Actions\Invoice\StoreInvoiceAction;
+use App\Constants\DocumentType;
 use App\Constants\MicrositeType;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Invoice\CreateInvoiceRequest;
@@ -22,11 +23,12 @@ class InvoiceController extends Controller
             'name',
             'amount',
             'expiration_date',
-        )->get();
+        )->orderBy('created_at', 'desc')->get();
 
         return Inertia::render('Invoices/Index', [
             'invoices' => $invoices,
-            'micrositeName' => $microsite->name,
+            'microsite' => $microsite->only('name', 'slug'),
+            'documentTypes' => DocumentType::toSelectArray(),
         ]);
     }
 

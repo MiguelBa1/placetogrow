@@ -15,4 +15,6 @@ export const enCommon = {
         submit: 'Submit',
         error: 'Please correct the errors.',
     },
+    create: 'Create',
+    cancel: 'Cancel',
 }
