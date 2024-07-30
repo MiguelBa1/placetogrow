@@ -14,10 +14,14 @@ return [
     'manage_roles' => 'Manage roles',
     'view_dashboard' => 'View dashboard',
 
+    'view_any_invoice' => 'View any invoice',
+    'create_invoice' => 'Create invoice',
+
     'group' => [
         'microsite' => 'Microsite',
         'user' => 'User',
         'role' => 'Role',
         'dashboard' => 'Dashboard',
+        'invoice' => 'Invoice',
     ],
 ];

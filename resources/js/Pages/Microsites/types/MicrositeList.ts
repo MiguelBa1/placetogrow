@@ -8,7 +8,10 @@ export type MicrositeListItem = {
         id: number;
         name: string;
     };
-    type: string;
+    type: {
+        value: string;
+        label: string;
+    };
     slug: string;
     payment_currency: string;
     payment_expiration?: string;

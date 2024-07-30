@@ -3,7 +3,9 @@
 namespace Database\Seeders;
 
 use App\Actions\MicrositeField\AttachMicrositeFieldsAction;
+use App\Constants\MicrositeType;
 use App\Models\Category;
+use App\Models\Invoice;
 use App\Models\Microsite;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Storage;
@@ -29,6 +31,10 @@ class CategoryMicrositeSeeder extends Seeder
 
         foreach ($microsites as $microsite) {
             $this->attachMicrositeFieldsAction->execute($microsite);
+
+            if ($microsite->type->value === MicrositeType::INVOICE->value) {
+                Invoice::factory()->count(5)->create(['microsite_id' => $microsite->id]);
+            }
         }
     }
 

@@ -15,4 +15,6 @@ export const esCommon = {
         submit: 'Enviar',
         error: 'Por favor, corrige los errores.',
     },
+    create: 'Crear',
+    cancel: 'Cancelar',
 }
