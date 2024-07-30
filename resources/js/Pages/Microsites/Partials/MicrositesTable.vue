@@ -79,7 +79,7 @@ const closeRestoreModal = () => {
                             <PencilSquareIcon class="w-5 h-5" />
                         </Link>
                         <Link
-                            v-if="row.type.value === 'invoice'"
+                            v-if="row.type.value === 'invoice' && permissions.includes('view_any_invoice')"
                             :href="route('microsites.invoices.index', { microsite: row.slug })"
                             title="Invoices"
                         >
