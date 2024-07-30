@@ -27,7 +27,7 @@ class MicrositeDetailResource extends JsonResource
             'responsible_document_type' => __("document_types.{$this->responsible_document_type}"),
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
-            'logo' => $this->getFirstMediaUrl('logos'),
+            'logo' => asset('images/categories/cat_'. random_int(1, 5) . '.svg'),
         ];
     }
 }

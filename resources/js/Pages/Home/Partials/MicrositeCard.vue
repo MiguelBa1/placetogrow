@@ -24,7 +24,7 @@ const handleImageError = (event: Event) => {
     >
         <div class="flex justify-center items-center">
             <img
-                class="h-24 w-24"
+                class="w-full bg-cover"
                 :src="microsite.logo"
                 :alt="microsite.name"
                 @error="handleImageError"

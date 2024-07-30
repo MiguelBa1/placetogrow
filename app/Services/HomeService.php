@@ -19,7 +19,7 @@ class HomeService
                 return [
                     'id' => $category->id,
                     'name' => $category->name,
-                    'logo' => $category->getFirstMediaUrl('logos')
+                    'logo' => asset('images/categories/cat_'. random_int(1, 5) . '.svg'),
                 ];
             });
     }
@@ -42,7 +42,7 @@ class HomeService
                 'id' => $microsite->id,
                 'name' => $microsite->name,
                 'slug' => $microsite->slug,
-                'logo' => $microsite->getFirstMediaUrl('logos')
+                'logo' => asset('images/microsites/logo_'. random_int(1, 7) . '.png'),
             ];
         });
 
