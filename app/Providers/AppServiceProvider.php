@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Factories\PaymentDataProviderFactory;
 use Illuminate\Support\ServiceProvider;
 use Inertia\Inertia;
 
@@ -12,7 +13,9 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        //
+        $this->app->singleton(PaymentDataProviderFactory::class, function () {
+            return new PaymentDataProviderFactory();
+        });
     }
 
     /**

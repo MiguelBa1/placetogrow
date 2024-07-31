@@ -2,12 +2,13 @@
 
 namespace App\Http\Controllers\Payment;
 
+use App\Factories\PaymentDataProviderFactory;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Payment\CreatePaymentRequest;
 use App\Http\Resources\MicrositeField\MicrositeFieldDetailResource;
 use App\Models\Microsite;
 use App\Services\MicrositeService;
-use App\Services\PaymentService;
+use App\Services\Payment\PaymentService;
 use Illuminate\Http\RedirectResponse;
 use Inertia\Inertia;
 use Symfony\Component\HttpFoundation\Response;
@@ -29,8 +30,12 @@ class PaymentController extends Controller
 
     public function store(CreatePaymentRequest $request, Microsite $microsite): RedirectResponse|Response
     {
-        $paymentData = $request->validated();
+        $paymentDataProvider = (new PaymentDataProviderFactory())->create($microsite->type);
+
+        $paymentData = $paymentDataProvider->getPaymentData($request->validated());
+        
         $paymentData['currency'] = $microsite->payment_currency->value;
+
         return (new PaymentService)->createPayment($paymentData, $request->ip(), $request->userAgent(), $microsite->slug);
     }
 

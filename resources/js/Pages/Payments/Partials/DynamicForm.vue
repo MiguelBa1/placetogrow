@@ -46,8 +46,8 @@ const handleSubmit = () => {
             formErrors.value = {};
         },
         onError: (error) => {
+            toast.error(error?.payment ?? t('common.form.error'));
             formErrors.value = error ?? {};
-            toast.error(t('common.form.error'));
         }
     });
 };

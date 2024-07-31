@@ -3,7 +3,7 @@
 namespace App\Console\Commands;
 
 use App\Models\Payment;
-use App\Services\PaymentService;
+use App\Services\Payment\PaymentService;
 use Illuminate\Console\Command;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Http;
