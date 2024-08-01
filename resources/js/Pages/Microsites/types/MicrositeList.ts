@@ -1,6 +1,6 @@
 import { type PaginationLink } from '@/Components';
 
-export type Microsite = {
+export type MicrositeListItem = {
     id: number;
     name: string;
     responsible_name: string;
@@ -8,10 +8,14 @@ export type Microsite = {
         id: number;
         name: string;
     };
-    type: string;
+    type: {
+        value: string;
+        label: string;
+    };
     slug: string;
     payment_currency: string;
     payment_expiration?: string;
+    deleted_at?: string;
 };
 
 export type ApiResourceLink = {
@@ -33,7 +37,7 @@ export type ApiResourceMeta = {
 };
 
 export type MicrositesPaginatedResponse = {
-    data: Microsite[];
+    data: MicrositeListItem[];
     links: ApiResourceLink;
     meta: ApiResourceMeta;
 };

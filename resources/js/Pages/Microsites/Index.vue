@@ -12,6 +12,8 @@ const { t } = useI18n();
 
 defineProps<{
     microsites: MicrositesPaginatedResponse;
+    categories: { id: number; name: string }[];
+    filters: { search: string; category: string };
 }>();
 
 </script>
@@ -24,7 +26,11 @@ defineProps<{
     </Head>
     <MainLayout>
         <template #header>
-            <IndexHeader :microsites="microsites" />
+            <IndexHeader
+                :microsites="microsites"
+                :categories="categories"
+                :filters="filters"
+            />
         </template>
 
         <MicrositesTable v-if="microsites.data.length > 0" :microsites="microsites" />

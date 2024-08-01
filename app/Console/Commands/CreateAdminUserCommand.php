@@ -68,8 +68,10 @@ class CreateAdminUserCommand extends Command
         $adminRole = Role::query()->firstOrCreate(['name' => \App\Constants\Role::ADMIN->value]);
         $user->assignRole($adminRole);
 
-        Log::info("Admin user {$name} created successfully.", [
+        Log::info("[COMMAND] Admin user created successfully.", [
+            'command' => 'create:admin',
             'user_id' => $user->id,
+            'name' => $name,
             'email' => $email,
         ]);
         $this->info("Admin user {$name} created successfully.");

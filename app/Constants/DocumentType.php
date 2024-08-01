@@ -7,7 +7,7 @@ enum DocumentType: string
     case CC = 'CC';
     case CE = 'CE';
     case NIT = 'NIT';
-    case PASSPORT = 'PASSPORT';
+    case PP = 'PP';
 
     public static function toSelectArray(): array
     {

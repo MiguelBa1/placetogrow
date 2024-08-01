@@ -4,4 +4,5 @@ export const enIndex = {
     searchPlaceholder: "Search",
     categories: "Categories",
     microsites: "Microsites",
+    noMicrosites: "No microsites",
 }

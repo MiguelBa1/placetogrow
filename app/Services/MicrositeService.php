@@ -10,12 +10,13 @@ use App\Http\Resources\Microsite\MicrositeListResource;
 use App\Models\Category;
 use App\Models\Microsite;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+use Illuminate\Support\Facades\Cache;
 
 class MicrositeService
 {
-    public function getAllMicrosites(?string $searchFilter): AnonymousResourceCollection
+    public function getAllMicrosites(?string $searchFilter, ?string $categoryFilter): AnonymousResourceCollection
     {
-        $microsites = Microsite::with('category:id,name')
+        $microsites = Microsite::withTrashed()->with('category:id,name')
             ->select(
                 'id',
                 'name',
@@ -24,9 +25,12 @@ class MicrositeService
                 'slug',
                 'responsible_name',
                 'payment_currency',
-                'payment_expiration'
+                'payment_expiration',
+                'deleted_at',
             )->when($searchFilter, function ($query, $searchFilter) {
                 return $query->where('name', 'like', '%' . $searchFilter . '%');
+            })->when($categoryFilter, function ($query, $categoryFilter) {
+                return $query->where('category_id', $categoryFilter);
             })->paginate(10)->onEachSide(1)->withQueryString();
 
         return MicrositeListResource::collection($microsites);
@@ -40,8 +44,12 @@ class MicrositeService
 
     public function getFormData(): array
     {
+        $categories = Cache::remember('categories', 86400, function () {
+            return Category::select('id', 'name')->get();
+        });
+
         return [
-            'categories' => Category::query()->select('id', 'name')->get(),
+            'categories' => $categories,
             'documentTypes' => DocumentType::toSelectArray(),
             'micrositeTypes' => MicrositeType::toSelectArray(),
             'currencyTypes' => CurrencyType::toSelectArray(),

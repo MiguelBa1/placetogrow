@@ -2,8 +2,7 @@
 
 namespace App\Http\Requests\Payment;
 
-use App\Constants\CurrencyType;
-use App\Constants\DocumentType;
+use App\Constants\FieldType;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
@@ -14,22 +13,22 @@ class CreatePaymentRequest extends FormRequest
         return true;
     }
 
-    /**
-     * Get the validation rules that apply to the request.
-     *
-     * @return array<string, array>
-     */
     public function rules(): array
     {
-        return [
-            'name' => ['required', 'string', 'regex:/^[a-zA-Z ]+$/'],
-            'last_name' => ['required', 'string', 'regex:/^[a-zA-Z ]+$/'],
-            'email' => ['required', 'email'],
-            'document_type' => ['required', Rule::in(array_column(DocumentType::cases(), 'value'))],
-            'document_number' => ['required', 'string'],
-            'phone' => ['required', 'string'],
-            'currency' => ['required', Rule::in(array_column(CurrencyType::cases(), 'value'))],
-            'amount' => ['required', 'numeric'],
-        ];
+        $fields = $this->route('microsite')->fields;
+
+        $rules = [];
+
+        foreach ($fields as $field) {
+            $fieldRules = explode('|', $field->validation_rules);
+
+            if ($field->type === FieldType::SELECT->value && !empty($field->options)) {
+                $fieldRules[] = Rule::in($field->options);
+            }
+
+            $rules[$field->name] = $fieldRules;
+        }
+
+        return $rules;
     }
 }

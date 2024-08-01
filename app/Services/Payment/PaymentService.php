@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Services;
+namespace App\Services\Payment;
 
 use App\Contracts\PaymentServiceInterface;
 use App\Models\Guest;
@@ -77,6 +77,11 @@ class PaymentService implements PaymentServiceInterface
             return to_route(route('payments.show', $microsite->slug))
                 ->withErrors($result['status']['message']);
         }
+
+        return Redirect::to(route('payments.show', $micrositeSlug))
+            ->withErrors(
+                $result['status']['message'] ?? 'An error occurred while processing the payment, please try again.'
+            );
     }
 
     public function checkPayment(string $reference, string $micrositeSlug): \Inertia\Response|RedirectResponse
