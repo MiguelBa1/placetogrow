@@ -21,7 +21,6 @@ class CheckPaymentsCommandTest extends TestCase
             'payment_reference' => 'test_reference',
             'request_id' => 'test_request_id',
             'status' => 'PENDING',
-            'expires_in' => now()->subMinutes(1),
         ]);
 
         Http::fake([
@@ -34,12 +33,10 @@ class CheckPaymentsCommandTest extends TestCase
                 'payment' => [
                     [
                         'internalReference' => 'internal_ref',
-                        'franchise' => 'Visa',
                         'paymentMethod' => 'Credit Card',
                         'paymentMethodName' => 'Visa Credit Card',
                         'issuerName' => 'Issuer',
                         'authorization' => 'auth_code',
-                        'receipt' => 'receipt_number',
                         'status' => [
                             'date' => now()->toIso8601String(),
                             'message' => 'Payment successful',
@@ -55,13 +52,8 @@ class CheckPaymentsCommandTest extends TestCase
         $payment->refresh();
 
         $this->assertEquals('APPROVED', $payment->status);
-        $this->assertEquals('internal_ref', $payment->internal_reference);
-        $this->assertEquals('Visa', $payment->franchise);
-        $this->assertEquals('Credit Card', $payment->payment_method);
         $this->assertEquals('Visa Credit Card', $payment->payment_method_name);
-        $this->assertEquals('Issuer', $payment->issuer_name);
         $this->assertEquals('auth_code', $payment->authorization);
-        $this->assertEquals('receipt_number', $payment->receipt);
         $this->assertNotNull($payment->payment_date);
     }
 }

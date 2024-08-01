@@ -126,12 +126,10 @@ class BasicPaymentTest extends TestCase
                 'payment' => [
                     [
                         'internalReference' => 'internal_ref',
-                        'franchise' => 'Visa',
                         'paymentMethod' => 'Credit Card',
                         'paymentMethodName' => 'Visa Credit Card',
                         'issuerName' => 'Issuer',
                         'authorization' => 'auth_code',
-                        'receipt' => 'receipt_number',
                         'status' => [
                             'date' => now()->toIso8601String(),
                             'message' => 'Payment successful',

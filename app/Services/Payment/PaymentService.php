@@ -70,7 +70,6 @@ class PaymentService implements PaymentServiceInterface
 
         $payment->update([
             'request_id' => $result->json()['requestId'],
-            'process_url' => $result->json()['processUrl'],
             'status' => $result->json()['status']['status'],
             'status_message' => $result->json()['status']['message'],
         ]);
@@ -115,13 +114,8 @@ class PaymentService implements PaymentServiceInterface
 
         if ($response['status']['status'] === 'APPROVED') {
             $payment->update([
-                'internal_reference' => $paymentResponse['internalReference'],
-                'franchise' => $paymentResponse['franchise'],
-                'payment_method' => $paymentResponse['paymentMethod'],
                 'payment_method_name' => $paymentResponse['paymentMethodName'],
-                'issuer_name' => $paymentResponse['issuerName'],
                 'authorization' => $paymentResponse['authorization'],
-                'receipt' => $paymentResponse['receipt'],
                 'payment_date' => $paymentResponse['status']['date'],
                 'status_message' => $paymentResponse['status']['message'],
                 'status' => $paymentResponse['status']['status'],

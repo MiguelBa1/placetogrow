@@ -32,7 +32,10 @@ class CheckPaymentsCommand extends Command
             'nonce' => $nonce,
         ];
 
-        $payments = Payment::query()->whereIn('status', ['PENDING', 'OK'])->where('expires_in', '<', Carbon::now())->get();
+        $payments = Payment::query()->whereIn('status', ['PENDING', 'OK'])
+            // TODO: replace this with created_at
+            //->where('expires_in', '<', Carbon::now())
+            ->get();
 
         foreach ($payments as $payment) {
             $this->info('Checking payment ' . $payment->request_id);

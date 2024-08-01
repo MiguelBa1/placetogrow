@@ -10,15 +10,8 @@ use Illuminate\Support\Carbon;
 /**
  * @property string reference
  * @property string request_id
- * @property string process_url
- * @property Carbon expires_in
- * @property string internal_reference
  * @property string description
- * @property string franchise
- * @property string payment_method
  * @property string payment_method_name
- * @property string issuer_name
- * @property string receipt
  * @property string authorization
  * @property string status
  * @property string status_message
@@ -36,14 +29,7 @@ class Payment extends Model
         'reference',
         'description',
         'request_id',
-        'process_url',
-        'expires_in',
-        'internal_reference',
-        'franchise',
-        'payment_method',
         'payment_method_name',
-        'issuer_name',
-        'receipt',
         'authorization',
         'status',
         'status_message',
@@ -53,7 +39,6 @@ class Payment extends Model
     ];
 
     protected $casts = [
-        'expires_in' => 'datetime',
         'payment_date' => 'datetime',
     ];
 
