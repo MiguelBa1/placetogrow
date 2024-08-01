@@ -8,6 +8,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Payment\CreatePaymentRequest;
 use App\Http\Resources\MicrositeField\MicrositeFieldDetailResource;
 use App\Models\Microsite;
+use App\Models\Payment;
 use App\Services\MicrositeService;
 use Illuminate\Http\RedirectResponse;
 use Inertia\Inertia;
@@ -43,11 +44,13 @@ class PaymentController extends Controller
 
         $paymentData['currency'] = $microsite->payment_currency->value;
 
-        return $this->paymentService->createPayment($paymentData, $microsite);
+        $paymentData['microsite_id'] = $microsite->id;
+
+        return $this->paymentService->createPayment($paymentData);
     }
 
-    public function return(Microsite $microsite, string $reference): \Inertia\Response|RedirectResponse
+    public function return(Payment $payment): \Inertia\Response|RedirectResponse
     {
-        return $this->paymentService->checkPayment($reference, $microsite->slug);
+        return $this->paymentService->checkPayment($payment);
     }
 }

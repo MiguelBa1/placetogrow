@@ -4,6 +4,7 @@ namespace Database\Factories;
 
 use App\Constants\PaymentStatus;
 use App\Models\Guest;
+use App\Models\Microsite;
 use App\Models\Payment;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
@@ -29,7 +30,8 @@ class PaymentFactory extends Factory
     {
         return [
             'guest_id' => Guest::factory(),
-            'reference' => Str::random(),
+            'microsite_id' => Microsite::factory(),
+            'reference' => $this->faker->unique()->word,
             'request_id' => Str::random(),
             'payment_method_name' => $this->faker->word,
             'description' => $this->faker->sentence,

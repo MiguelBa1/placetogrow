@@ -19,6 +19,7 @@ use Illuminate\Support\Carbon;
  * @property string currency
  * @property string amount
  * @property Guest guest
+ * @property Microsite microsite
  */
 class Payment extends Model
 {
@@ -26,6 +27,7 @@ class Payment extends Model
 
     protected $fillable = [
         'guest_id',
+        'microsite_id',
         'reference',
         'description',
         'request_id',
@@ -45,5 +47,15 @@ class Payment extends Model
     public function guest(): BelongsTo
     {
         return $this->belongsTo(Guest::class);
+    }
+
+    public function microsite(): BelongsTo
+    {
+        return $this->belongsTo(Microsite::class);
+    }
+
+    public function getRouteKeyName(): string
+    {
+        return 'reference';
     }
 }

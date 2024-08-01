@@ -5,7 +5,6 @@ namespace App\Services\Payment;
 use App\Constants\PaymentStatus;
 use App\Contracts\PaymentServiceInterface;
 use App\Models\Guest;
-use App\Models\Microsite;
 use App\Models\Payment;
 use App\Services\PlaceToPayService;
 use Illuminate\Http\RedirectResponse;
@@ -16,7 +15,7 @@ use Symfony\Component\HttpFoundation\Response;
 
 class PaymentService implements PaymentServiceInterface
 {
-    public function createPayment(array $paymentData, Microsite $microsite): Response
+    public function createPayment(array $paymentData): Response
     {
         $paymentReference = Str::random();
 
@@ -34,6 +33,7 @@ class PaymentService implements PaymentServiceInterface
 
         /** @var Payment $payment */
         $payment = $guest->payments()->create([
+            'microsite_id' => $paymentData['microsite_id'],
             'description' => $paymentData['payment_description'],
             'reference' => $paymentReference,
             'currency' => $paymentData['currency'],
@@ -58,10 +58,7 @@ class PaymentService implements PaymentServiceInterface
                 ],
             ],
             'expiration' => Carbon::now()->addMinutes(10)->toIso8601String(),
-            'returnUrl' => route('payments.return', [
-                'reference' => $payment->reference,
-                'microsite' => $microsite->slug,
-            ]),
+            'returnUrl' => route('payments.return', $payment->reference),
             'ipAddress' => request()->ip(),
             'userAgent' => request()->userAgent(),
         ];
@@ -77,39 +74,29 @@ class PaymentService implements PaymentServiceInterface
         if ($result->ok()) {
             return Inertia::location($result['processUrl']);
         } else {
-            return redirect(route('payments.show', $microsite->slug))
+            return redirect(route('payments.show', $payment->microsite->slug))
                 ->withErrors($result['status']['message']);
         }
     }
 
-    public function checkPayment(string $reference, string $micrositeSlug): \Inertia\Response|RedirectResponse
+    public function checkPayment(Payment $payment): \Inertia\Response|RedirectResponse
     {
-        /** @var Payment $payment */
-        $payment = Payment::query()->where('reference', $reference)->first();
-
-        if (!$payment) {
-            return redirect(route('payments.show', $micrositeSlug))
-                ->withErrors('Payment not found.');
-        }
-
         $result = (new PlaceToPayService)->checkPayment($payment->request_id);
 
         if ($result->ok()) {
-            $this->updatePayment($reference, $result->json());
+            $this->updatePayment($payment, $result->json());
 
             return Inertia::render('Payments/Return', [
                 'payment' => $payment->refresh(),
             ]);
         } else {
-            return redirect()->route('payments.show', $micrositeSlug)
+            return redirect()->route('payments.show', $payment->microsite->slug)
                 ->withErrors($result['status']['message']);
         }
     }
 
-    public function updatePayment(string $paymentReference, array $response): void
+    public function updatePayment(Payment $payment, array $response): void
     {
-        $payment = Payment::query()->where('reference', $paymentReference)->latest()->first();
-
         if ($response['status']['status'] === PaymentStatus::APPROVED->value) {
 
             $paymentResponse = $response['payment'][0];
@@ -122,19 +109,11 @@ class PaymentService implements PaymentServiceInterface
                 'status' => $paymentResponse['status']['status'],
             ]);
         } else {
-            if ($response['status']['status'] === PaymentStatus::REJECTED->value) {
-                $payment->update([
-                    'status_message' => $response['status']['message'],
-                    'payment_date' => $response['status']['date'],
-                    'status' => $response['status']['status'],
-                ]);
-            } else {
-                $payment->update([
-                    'status_message' => $response['status']['message'],
-                    'payment_date' => $response['status']['date'],
-                    'status' => $response['status']['status'],
-                ]);
-            }
+            $payment->update([
+                'status_message' => $response['status']['message'],
+                'payment_date' => $response['status']['date'],
+                'status' => $response['status']['status'],
+            ]);
         }
     }
 }
