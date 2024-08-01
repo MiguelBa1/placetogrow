@@ -25,14 +25,14 @@ const paymentForm = useForm({
     document_type: '',
     document_number: '',
     phone: '',
-    currency: microsite.payment_currency,
+    currency: 'COP',
     amount: '',
 });
 
 const documentTypeOptions = computed(() => documentTypes);
 
 const currencyOption = [
-    { label: microsite.payment_currency, value: microsite.payment_currency },
+    { label: microsite.payment_currency, value: 'COP'},
 ];
 
 const onSubmit = () => {
