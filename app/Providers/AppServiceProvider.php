@@ -13,7 +13,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        $this->app->singleton(PaymentDataProviderFactory::class, function () {
+        $this->app->bind(PaymentDataProviderFactory::class, function () {
             return new PaymentDataProviderFactory();
         });
     }
