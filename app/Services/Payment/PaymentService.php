@@ -10,7 +10,6 @@ use App\Models\Payment;
 use App\Services\PlaceToPayService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Carbon;
-use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Str;
 use Inertia\Inertia;
 use Symfony\Component\HttpFoundation\Response;
@@ -78,7 +77,7 @@ class PaymentService implements PaymentServiceInterface
         if ($result->ok()) {
             return Inertia::location($result['processUrl']);
         } else {
-            return to_route(route('payments.show', $microsite->slug))
+            return redirect(route('payments.show', $microsite->slug))
                 ->withErrors($result['status']['message']);
         }
     }
@@ -89,7 +88,7 @@ class PaymentService implements PaymentServiceInterface
         $payment = Payment::query()->where('reference', $reference)->first();
 
         if (!$payment) {
-            return to_route(route('payments.show', $micrositeSlug))
+            return redirect(route('payments.show', $micrositeSlug))
                 ->withErrors('Payment not found.');
         }
 
@@ -102,7 +101,7 @@ class PaymentService implements PaymentServiceInterface
                 'payment' => $payment->refresh(),
             ]);
         } else {
-            return Redirect::to(route('payments.show', $micrositeSlug))
+            return redirect()->route('payments.show', $micrositeSlug)
                 ->withErrors($result['status']['message']);
         }
     }
@@ -111,9 +110,10 @@ class PaymentService implements PaymentServiceInterface
     {
         $payment = Payment::query()->where('reference', $paymentReference)->latest()->first();
 
-        $paymentResponse = $response['payment'][0];
-
         if ($response['status']['status'] === PaymentStatus::APPROVED->value) {
+
+            $paymentResponse = $response['payment'][0];
+
             $payment->update([
                 'payment_method_name' => $paymentResponse['paymentMethodName'],
                 'authorization' => $paymentResponse['authorization'],
@@ -122,10 +122,10 @@ class PaymentService implements PaymentServiceInterface
                 'status' => $paymentResponse['status']['status'],
             ]);
         } else {
-            if (isset($paymentResponse)) {
+            if ($response['status']['status'] === PaymentStatus::REJECTED->value) {
                 $payment->update([
-                    'status_message' => $paymentResponse['status']['message'],
-                    'payment_date' => $paymentResponse['status']['date'],
+                    'status_message' => $response['status']['message'],
+                    'payment_date' => $response['status']['date'],
                     'status' => $response['status']['status'],
                 ]);
             } else {

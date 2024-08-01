@@ -88,8 +88,9 @@ class BasicPaymentTest extends TestCase
     {
         Http::fake([
             config('placetopay.url') . '/*' => Http::response([
+                'requestId' => 'test_request_id',
                 'status' => [
-                    'status' => 'ERROR',
+                    'status' => PaymentStatus::ERROR->value,
                     'message' => 'An error occurred while processing the payment',
                 ],
             ], 500)
@@ -163,7 +164,7 @@ class BasicPaymentTest extends TestCase
         Http::fake([
             config('placetopay.url') . '/*' => Http::response([
                 'status' => [
-                    'status' => 'ERROR',
+                    'status' => PaymentStatus::ERROR->value,
                     'message' => 'An error occurred while completing the payment',
                 ],
             ], 500)
@@ -198,8 +199,9 @@ class BasicPaymentTest extends TestCase
 
         Http::fake([
             config('placetopay.url') . '/*' => Http::response([
+                'requestId' => 'test_request_id',
                 'status' => [
-                    'status' => 'REJECTED',
+                    'status' => PaymentStatus::REJECTED->value,
                     'message' => 'Payment rejected',
                     'date' => now()->toIso8601String(),
                 ],
@@ -213,7 +215,7 @@ class BasicPaymentTest extends TestCase
 
         $this->assertDatabaseHas('payments', [
             'id' => $payment->id,
-            'status' => 'REJECTED',
+            'status' => PaymentStatus::REJECTED->value,
         ]);
     }
 

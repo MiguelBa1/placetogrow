@@ -32,6 +32,7 @@ class PaymentFactory extends Factory
             'reference' => Str::random(),
             'request_id' => Str::random(),
             'payment_method_name' => $this->faker->word,
+            'description' => $this->faker->sentence,
             'authorization' => Str::random(),
             'status' => PaymentStatus::PENDING->value,
             'status_message' => $this->faker->sentence,
