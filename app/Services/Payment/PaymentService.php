@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Services;
+namespace App\Services\Payment;
 
 use App\Contracts\PaymentServiceInterface;
 use App\Models\Guest;
@@ -47,7 +47,7 @@ class PaymentService implements PaymentServiceInterface
                 'email' => $paymentData['email'],
                 'document' => $paymentData['document_number'],
                 'documentType' => $paymentData['document_type'],
-                'mobile' => '+57' . $paymentData['phone'],
+                'mobile' => $paymentData['phone'],
             ],
             'payment' => [
                 'reference' => $paymentReference,
@@ -72,12 +72,12 @@ class PaymentService implements PaymentServiceInterface
             $this->createPaymentRecord($paymentData, $paymentReference, $result->json());
 
             return Inertia::location($result['processUrl']);
-        } else {
-            return Redirect::to(route('payments.show', $micrositeSlug))
-                ->withErrors(
-                    $result['status']['message'] ?? 'An error occurred while processing the payment, please try again.'
-                );
         }
+
+        return Redirect::to(route('payments.show', $micrositeSlug))
+            ->withErrors(
+                $result['status']['message'] ?? 'An error occurred while processing the payment, please try again.'
+            );
     }
 
     public function checkPayment(string $reference, string $micrositeSlug): \Inertia\Response|RedirectResponse
@@ -113,14 +113,16 @@ class PaymentService implements PaymentServiceInterface
 
     public function createPaymentRecord(array $paymentData, string $paymentReference, array $response): void
     {
-        $guestUser = Guest::query()->create([
-            'name' => $paymentData['name'],
-            'last_name' => $paymentData['last_name'],
-            'document_type' => $paymentData['document_type'],
-            'document_number' => $paymentData['document_number'],
-            'phone' => $paymentData['phone'],
-            'email' => $paymentData['email'],
-        ]);
+        $guestUser = Guest::query()->firstOrCreate(
+            ['document_number' => $paymentData['document_number']],
+            [
+                'name' => $paymentData['name'],
+                'last_name' => $paymentData['last_name'],
+                'document_type' => $paymentData['document_type'],
+                'phone' => $paymentData['phone'],
+                'email' => $paymentData['email'],
+            ]
+        );
 
         Payment::query()->create([
             'guest_id' => $guestUser->id,

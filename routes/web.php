@@ -40,32 +40,35 @@ Route::prefix('roles-permissions')->name('roles-permissions.')
         });
     });
 
-Route::prefix('microsites')->name('microsites.')->middleware(['auth'])->group(function () {
-    Route::get('/create', [MicrositeController::class, 'create'])->name('create');
-    Route::post('/', [MicrositeController::class, 'store'])->name('store');
-    Route::prefix('{microsite}')->group(function () {
-        Route::get('/', [MicrositeController::class, 'show'])->name('show');
-        Route::get('/edit', [MicrositeController::class, 'edit'])->name('edit');
-        Route::post('/', [MicrositeController::class, 'update'])->name('update');
-        Route::delete('/', [MicrositeController::class, 'destroy'])->name('destroy');
-        Route::put('/restore', [MicrositeController::class, 'restore'])->name('restore');
+Route::prefix('microsites')->name('microsites.')->group(function () {
+    Route::middleware(['auth'])->group(function () {
 
-        Route::prefix('fields')->name('fields.')->group(function () {
-            Route::post('/', [MicrositeFieldController::class, 'store'])->name('store');
-            Route::put('{field}', [MicrositeFieldController::class, 'update'])->name('update');
-            Route::delete('{field}', [MicrositeFieldController::class, 'destroy'])->name('destroy');
+        Route::get('field-types', [MicrositeFieldController::class, 'getFieldTypes'])->name('fields.types');
+
+        Route::get('/create', [MicrositeController::class, 'create'])->name('create');
+        Route::post('/', [MicrositeController::class, 'store'])->name('store');
+        Route::prefix('{microsite}')->group(function () {
+            Route::get('/', [MicrositeController::class, 'show'])->name('show');
+            Route::get('/edit', [MicrositeController::class, 'edit'])->name('edit');
+            Route::post('/', [MicrositeController::class, 'update'])->name('update');
+            Route::delete('/', [MicrositeController::class, 'destroy'])->name('destroy');
+            Route::put('/restore', [MicrositeController::class, 'restore'])->name('restore');
+
+            Route::prefix('fields')->name('fields.')->group(function () {
+                Route::post('/', [MicrositeFieldController::class, 'store'])->name('store');
+                Route::put('{field}', [MicrositeFieldController::class, 'update'])->name('update');
+                Route::delete('{field}', [MicrositeFieldController::class, 'destroy'])->name('destroy');
+            });
+
+            Route::prefix('invoices')->name('invoices.')->group(function () {
+                Route::get('/', [InvoiceController::class, 'index'])->name('index');
+                Route::post('/', [InvoiceController::class, 'store'])->name('store');
+            });
         });
 
-        Route::prefix('invoices')->name('invoices.')->group(function () {
-            Route::get('/', [InvoiceController::class, 'index'])->name('index');
-            Route::post('/', [InvoiceController::class, 'store'])->name('store');
-        });
+        Route::get('/', [MicrositeController::class, 'index'])->name('index');
     });
-
-    Route::get('/', [MicrositeController::class, 'index'])->name('index');
 });
-
-Route::get('/microsite-fields/types', [MicrositeFieldController::class, 'getFieldTypes'])->name('microsite.fields.types');
 
 Route::prefix('users')->name('users.')->middleware(['auth'])->group(function () {
     Route::get('/', [UserController::class, 'index'])->name('index');

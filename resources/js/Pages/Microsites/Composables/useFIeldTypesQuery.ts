@@ -14,7 +14,7 @@ export function useFieldTypesQuery({ enabled = true }: UseFieldTypesQueryProps =
     return useQuery<FieldType[]>({
         queryKey: ['fieldTypes'],
         queryFn: async () => {
-            const { data } = await axios.get<FieldType[]>(route('microsite.fields.types'));
+            const { data } = await axios.get<FieldType[]>(route('microsites.fields.types'));
 
             return data;
         },
