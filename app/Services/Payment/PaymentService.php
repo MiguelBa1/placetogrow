@@ -2,6 +2,7 @@
 
 namespace App\Services\Payment;
 
+use App\Constants\PaymentStatus;
 use App\Contracts\PaymentServiceInterface;
 use App\Models\Guest;
 use App\Models\Microsite;
@@ -112,7 +113,7 @@ class PaymentService implements PaymentServiceInterface
 
         $paymentResponse = $response['payment'][0];
 
-        if ($response['status']['status'] === 'APPROVED') {
+        if ($response['status']['status'] === PaymentStatus::APPROVED->value) {
             $payment->update([
                 'payment_method_name' => $paymentResponse['paymentMethodName'],
                 'authorization' => $paymentResponse['authorization'],

@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use App\Constants\PaymentStatus;
 use App\Models\Payment;
 use App\Services\Payment\PaymentService;
 use Illuminate\Console\Command;
@@ -32,7 +33,7 @@ class CheckPaymentsCommand extends Command
             'nonce' => $nonce,
         ];
 
-        $payments = Payment::query()->whereIn('status', ['PENDING', 'OK'])
+        $payments = Payment::query()->where('status', PaymentStatus::PENDING->value)
             // TODO: replace this with created_at
             //->where('expires_in', '<', Carbon::now())
             ->get();

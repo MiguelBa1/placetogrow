@@ -4,6 +4,7 @@ namespace Tests\Feature\Controllers\Payment;
 
 use App\Constants\DocumentType;
 use App\Constants\MicrositeType;
+use App\Constants\PaymentStatus;
 use App\Models\Microsite;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Http;
@@ -60,7 +61,7 @@ class InvoicePaymentTest extends TestCase
                 'processUrl' => '/success',
                 'requestId' => 'test_request_id',
                 'status' => [
-                    'status' => 'PENDING',
+                    'status' => PaymentStatus::PENDING->value,
                     'message' => 'Payment pending',
                     'date' => now()->toIso8601String(),
                 ],
@@ -83,7 +84,7 @@ class InvoicePaymentTest extends TestCase
 
         $this->assertDatabaseHas('payments', [
             'request_id' => 'test_request_id',
-            'status' => 'PENDING',
+            'status' => PaymentStatus::PENDING->value,
             'amount' => 1000,
         ]);
     }

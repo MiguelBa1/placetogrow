@@ -2,6 +2,7 @@
 
 namespace Feature\Commands;
 
+use App\Constants\PaymentStatus;
 use App\Models\Guest;
 use App\Models\Payment;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -20,13 +21,13 @@ class CheckPaymentsCommandTest extends TestCase
             'guest_id' => $guest->id,
             'payment_reference' => 'test_reference',
             'request_id' => 'test_request_id',
-            'status' => 'PENDING',
+            'status' => PaymentStatus::PENDING->value,
         ]);
 
         Http::fake([
             env('P2P_URL') . '/*' => Http::response([
                 'status' => [
-                    'status' => 'APPROVED',
+                    'status' => PaymentStatus::APPROVED->value,
                     'message' => 'Payment approved',
                     'date' => now()->toIso8601String(),
                 ],
@@ -40,7 +41,7 @@ class CheckPaymentsCommandTest extends TestCase
                         'status' => [
                             'date' => now()->toIso8601String(),
                             'message' => 'Payment successful',
-                            'status' => 'APPROVED',
+                            'status' => PaymentStatus::APPROVED->value,
                         ],
                     ],
                 ],
@@ -51,7 +52,7 @@ class CheckPaymentsCommandTest extends TestCase
 
         $payment->refresh();
 
-        $this->assertEquals('APPROVED', $payment->status);
+        $this->assertEquals(PaymentStatus::APPROVED->value, $payment->status);
         $this->assertEquals('Visa Credit Card', $payment->payment_method_name);
         $this->assertEquals('auth_code', $payment->authorization);
         $this->assertNotNull($payment->payment_date);

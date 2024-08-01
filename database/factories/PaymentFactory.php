@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Constants\PaymentStatus;
 use App\Models\Guest;
 use App\Models\Payment;
 use Illuminate\Database\Eloquent\Factories\Factory;
@@ -32,7 +33,7 @@ class PaymentFactory extends Factory
             'request_id' => Str::random(),
             'payment_method_name' => $this->faker->word,
             'authorization' => Str::random(),
-            'status' => 'PENDING',
+            'status' => PaymentStatus::PENDING->value,
             'status_message' => $this->faker->sentence,
             'payment_date' => $this->faker->dateTimeBetween('-1 month', 'now'),
             'currency' => $this->faker->randomElement(['USD', 'COP']),

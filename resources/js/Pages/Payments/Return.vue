@@ -1,9 +1,11 @@
 <script setup>
 import { Link } from '@inertiajs/vue3';
+import { PaymentStatus } from "./index";
 
 defineProps({
     payment: Object,
 });
+
 </script>
 
 <template>
@@ -24,19 +26,16 @@ defineProps({
                 </dl>
                 <div
                     :class="{
-                        'bg-red-200': payment.status === 'REJECTED',
-                        'bg-orange-200':
-                            payment.status === 'PENDING' ||
-                            payment.status === 'OK',
-                        'bg-green-200': payment.status === 'APPROVED',
+                        'bg-red-200': payment.status === PaymentStatus.REJECTED,
+                        'bg-orange-200': payment.status === PaymentStatus.PENDING,
+                        'bg-green-200': payment.status === PaymentStatus.APPROVED,
                     }"
                     class="ml-10 text-xl font-bold text-gray-700 px-7 py-2 rounded-2xl"
                 >
                     {{
-                        payment.status === 'REJECTED'
+                        payment.status === PaymentStatus.REJECTED
                             ? 'RECHAZADO'
-                            : payment.status === 'PENDING' ||
-                                payment.status === 'OK'
+                            : payment.status === PaymentStatus.PENDING
                               ? 'PENDIENTE'
                               : 'APROBADO'
                     }}
@@ -49,7 +48,7 @@ defineProps({
                         Referencia de pago
                     </dt>
                     <dd class="mt-1 text-sm text-gray-900 font-semibold">
-                        {{ payment.payment_reference }}
+                        {{ payment.reference }}
                     </dd>
                 </div>
 
@@ -61,7 +60,7 @@ defineProps({
                     </dd>
                 </div>
 
-                <div v-if="payment.status === 'APPROVED'">
+                <div v-if="payment.status === PaymentStatus.APPROVED">
                     <dt class="text-md font-medium text-gray-500">
                         Método de pago
                     </dt>
@@ -70,7 +69,7 @@ defineProps({
                     </dd>
                 </div>
 
-                <div v-if="payment.status === 'APPROVED'">
+                <div v-if="payment.status === PaymentStatus.APPROVED">
                     <dt class="text-md font-medium text-gray-500">
                         Autorización
                     </dt>
@@ -88,7 +87,7 @@ defineProps({
                     </dd>
                 </div>
 
-                <div v-if="payment.status === 'APPROVED'">
+                <div v-if="payment.status === PaymentStatus.APPROVED">
                     <dt class="text-md font-medium text-gray-500">
                         Fecha de pago
                     </dt>
@@ -102,7 +101,7 @@ defineProps({
         <div class="mt-32 text-center">
             <Link
                 class="w-full sm:w-auto items-center p-3 bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 focus:bg-gray-700 active:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150"
-                href="/site1"
+                :href="route('home')"
             >
                 Realizar otro pago
             </Link>

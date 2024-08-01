@@ -4,6 +4,7 @@ namespace Tests\Feature\Controllers\Payment;
 
 use App\Constants\DocumentType;
 use App\Constants\MicrositeType;
+use App\Constants\PaymentStatus;
 use App\Models\Microsite;
 use App\Models\Payment;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -49,7 +50,7 @@ class BasicPaymentTest extends TestCase
                 'processUrl' => '/success',
                 'requestId' => 'test_request_id',
                 'status' => [
-                    'status' => 'PENDING',
+                    'status' => PaymentStatus::PENDING->value,
                     'message' => 'Payment pending',
                     'date' => now()->toIso8601String(),
                 ],
@@ -78,7 +79,7 @@ class BasicPaymentTest extends TestCase
         ]);
         $this->assertDatabaseHas('payments', [
             'request_id' => 'test_request_id',
-            'status' => 'PENDING',
+            'status' => PaymentStatus::PENDING->value,
             'amount' => 10000,
         ]);
     }
@@ -119,7 +120,7 @@ class BasicPaymentTest extends TestCase
         Http::fake([
             config('placetopay.url') . '/*' => Http::response([
                 'status' => [
-                    'status' => 'APPROVED',
+                    'status' => PaymentStatus::APPROVED->value,
                     'message' => 'Payment approved',
                     'date' => now()->toIso8601String(),
                 ],
@@ -133,7 +134,7 @@ class BasicPaymentTest extends TestCase
                         'status' => [
                             'date' => now()->toIso8601String(),
                             'message' => 'Payment successful',
-                            'status' => 'APPROVED',
+                            'status' => PaymentStatus::APPROVED->value,
                         ],
                     ],
                 ],
