@@ -64,7 +64,7 @@ class PaymentController extends Controller
                 'payment' => $result['payment'],
             ]);
         } else {
-            return redirect()->route('payments.show', $result['microsite_slug'])
+            return redirect()->route('payments.show', $payment->microsite->slug)
                 ->withErrors($result['message']);
         }
     }

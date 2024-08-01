@@ -3,46 +3,87 @@
 namespace App\Services;
 
 use Illuminate\Http\Client\Response;
-use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Str;
 
 class PlaceToPayService
 {
+    private array $data;
 
-    private function generateAuthData(): array
+    private array $config;
+
+    public function __construct()
     {
-        $login = config('placetopay.login');
-        $secretKey = config('placetopay.tranKey');
-        $seed = Carbon::now()->toIso8601String();
-        $rawNonce = Str::random();
+        $this->config = config('placetopay');
 
-        $tranKey = base64_encode(hash('sha256', $rawNonce . $seed . $secretKey, true));
-        $nonce = base64_encode($rawNonce);
-
-        return [
-            'login' => $login,
-            'tranKey' => $tranKey,
-            'seed' => $seed,
-            'nonce' => $nonce,
+        $this->data = [
+            'expiration' => $this->config['expiration'],
+            'ipAddress' => request()->ip(),
+            'userAgent' => request()->userAgent(),
         ];
+
     }
 
-    public function createPayment(array $data): Response
+    public function prepare(): self
     {
-        $authData = $this->generateAuthData();
+        $login = $this->config['login'];
+        $secretKey = $this->config['tranKey'];
+        $seed = date('c');
+        $rawNonce = Str::random();
+        $nonce = base64_encode($rawNonce);
 
-        $data['auth'] = $authData;
+        $tranKey = base64_encode(hash('sha256', $nonce . $seed . $secretKey, true));
+        $nonce = base64_encode($nonce);
 
-        return Http::post(config('placetopay.url') . '/api/session', $data);
+        $this->data['auth'] = [
+            'login' => $login,
+            'tranKey' => $tranKey,
+            'nonce' => $nonce,
+            'seed' => $seed,
+        ];
+
+        return $this;
+    }
+
+    public function buyer(array $data): self
+    {
+        $this->data['buyer'] = [
+            'name' => $data['name'],
+            'surname' => $data['last_name'],
+            'email' => $data['email'],
+            'documentType' => $data['document_type'],
+            'document' => $data['document_number'],
+            'mobile' => $data['phone'],
+        ];
+
+        return $this;
+    }
+
+    public function payment(array $data): self
+    {
+        $this->data['payment'] = [
+            'reference' => $data['reference'],
+            'description' => $data['description'],
+            'amount' => [
+                'currency' => $data['currency'],
+                'total' => $data['amount'],
+            ],
+        ];
+
+        $this->data['returnUrl'] = route('payments.return', $data['reference']);
+
+        return $this;
+    }
+
+    public function createPayment(): Response
+    {
+        return Http::post(config('placetopay.url') . '/api/session', $this->data);
     }
 
     public function checkPayment(string $sessionId): Response
     {
-        $authData = $this->generateAuthData();
-
         return Http::post(config('placetopay.url') . '/api/session/' . $sessionId, [
-            'auth' => $authData,
+            'auth' => $this->data['auth'],
         ]);
     }
 }

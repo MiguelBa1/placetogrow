@@ -7,7 +7,6 @@ use App\Contracts\PaymentServiceInterface;
 use App\Models\Guest;
 use App\Models\Payment;
 use App\Services\PlaceToPayService;
-use Illuminate\Support\Carbon;
 use Illuminate\Support\Str;
 
 class PaymentService implements PaymentServiceInterface
@@ -36,30 +35,10 @@ class PaymentService implements PaymentServiceInterface
             'amount' => $paymentData['amount'],
         ]);
 
-        $data = [
-            'buyer' => [
-                'name' => $guest->name,
-                'surname' => $guest->last_name,
-                'email' => $guest->email,
-                'document' => $guest->document_number,
-                'documentType' => $guest->document_type,
-                'mobile' => $guest->phone,
-            ],
-            'payment' => [
-                'reference' => $payment->reference,
-                'description' => $payment->description,
-                'amount' => [
-                    'currency' => $payment->currency,
-                    'total' => $payment->amount,
-                ],
-            ],
-            'expiration' => Carbon::now()->addMinutes(10)->toIso8601String(),
-            'returnUrl' => route('payments.return', $payment->reference),
-            'ipAddress' => request()->ip(),
-            'userAgent' => request()->userAgent(),
-        ];
-
-        $result = (new PlaceToPayService)->createPayment($data);
+        $result = (new PlaceToPayService)->buyer($guest->toArray())
+            ->prepare()
+            ->payment($payment->toArray())
+            ->createPayment();
 
         $payment->update([
             'request_id' => $result->json()['requestId'],
@@ -77,7 +56,7 @@ class PaymentService implements PaymentServiceInterface
 
     public function checkPayment(Payment $payment): array
     {
-        $result = (new PlaceToPayService)->checkPayment($payment->request_id);
+        $result = (new PlaceToPayService)->prepare()->checkPayment($payment->request_id);
 
         if ($result->ok()) {
             $this->updatePayment($payment, $result->json());
@@ -90,7 +69,6 @@ class PaymentService implements PaymentServiceInterface
             return [
                 'success' => false,
                 'message' => $result['status']['message'],
-                'microsite_slug' => $payment->microsite->slug,
             ];
         }
     }

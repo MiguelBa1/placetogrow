@@ -33,10 +33,7 @@ class CheckPaymentsCommandTest extends TestCase
                 ],
                 'payment' => [
                     [
-                        'internalReference' => 'internal_ref',
-                        'paymentMethod' => 'Credit Card',
                         'paymentMethodName' => 'Visa Credit Card',
-                        'issuerName' => 'Issuer',
                         'authorization' => 'auth_code',
                         'status' => [
                             'date' => now()->toIso8601String(),
