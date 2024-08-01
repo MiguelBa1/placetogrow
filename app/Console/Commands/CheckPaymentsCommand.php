@@ -44,7 +44,7 @@ class CheckPaymentsCommand extends Command
             $result = Http::post(env('P2P_URL') . '/api/session/' . $payment->request_id, ['auth' => $authData]);
 
             if ($result->ok()) {
-                (new PaymentService())->updatePayment($payment->payment_reference, $result->json());
+                (new PaymentService())->updatePayment($payment->reference, $result->json());
             }
         }
     }

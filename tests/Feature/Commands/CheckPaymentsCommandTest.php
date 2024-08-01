@@ -19,7 +19,7 @@ class CheckPaymentsCommandTest extends TestCase
         $guest = Guest::factory()->create();
         $payment = Payment::factory()->create([
             'guest_id' => $guest->id,
-            'payment_reference' => 'test_reference',
+            'reference' => 'test_reference',
             'request_id' => 'test_request_id',
             'status' => PaymentStatus::PENDING->value,
         ]);

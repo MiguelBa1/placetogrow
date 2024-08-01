@@ -2,19 +2,26 @@
 
 namespace App\Http\Controllers\Payment;
 
+use App\Contracts\PaymentServiceInterface;
 use App\Factories\PaymentDataProviderFactory;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Payment\CreatePaymentRequest;
 use App\Http\Resources\MicrositeField\MicrositeFieldDetailResource;
 use App\Models\Microsite;
 use App\Services\MicrositeService;
-use App\Services\Payment\PaymentService;
 use Illuminate\Http\RedirectResponse;
 use Inertia\Inertia;
 use Symfony\Component\HttpFoundation\Response;
 
 class PaymentController extends Controller
 {
+    private PaymentServiceInterface $paymentService;
+
+    public function __construct(PaymentServiceInterface $paymentService)
+    {
+        $this->paymentService = $paymentService;
+    }
+
     public function show(Microsite $microsite): \Inertia\Response
     {
         $micrositeData = (new MicrositeService)->getMicrositeData($microsite);
@@ -36,11 +43,11 @@ class PaymentController extends Controller
 
         $paymentData['currency'] = $microsite->payment_currency->value;
 
-        return (new PaymentService)->createPayment($paymentData, $microsite);
+        return $this->paymentService->createPayment($paymentData, $microsite);
     }
 
     public function return(Microsite $microsite, string $reference): \Inertia\Response|RedirectResponse
     {
-        return (new PaymentService)->checkPayment($reference, $microsite->slug);
+        return $this->paymentService->checkPayment($reference, $microsite->slug);
     }
 }

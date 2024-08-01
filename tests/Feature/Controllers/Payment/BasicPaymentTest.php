@@ -113,7 +113,7 @@ class BasicPaymentTest extends TestCase
     public function test_return_after_payment(): void
     {
         Payment::factory()->create([
-            'payment_reference' => 'test_reference',
+            'reference' => 'test_reference',
             'request_id' => 'test_request_id',
         ]);
 
@@ -156,7 +156,7 @@ class BasicPaymentTest extends TestCase
     public function test_return_after_payment_error(): void
     {
         Payment::factory()->create([
-            'payment_reference' => 'test_reference',
+            'reference' => 'test_reference',
             'request_id' => 'test_request_id',
         ]);
 
@@ -192,7 +192,7 @@ class BasicPaymentTest extends TestCase
     public function test_payment_not_approved(): void
     {
         $payment = Payment::factory()->create([
-            'payment_reference' => 'test_reference',
+            'reference' => 'test_reference',
             'request_id' => 'test_request_id',
         ]);
 

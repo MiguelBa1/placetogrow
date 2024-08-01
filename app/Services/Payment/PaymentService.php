@@ -109,7 +109,7 @@ class PaymentService implements PaymentServiceInterface
 
     public function updatePayment(string $paymentReference, array $response): void
     {
-        $payment = Payment::query()->where('payment_reference', $paymentReference)->latest()->first();
+        $payment = Payment::query()->where('reference', $paymentReference)->latest()->first();
 
         $paymentResponse = $response['payment'][0];
 

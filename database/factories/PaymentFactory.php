@@ -29,7 +29,7 @@ class PaymentFactory extends Factory
     {
         return [
             'guest_id' => Guest::factory(),
-            'payment_reference' => Str::random(),
+            'reference' => Str::random(),
             'request_id' => Str::random(),
             'payment_method_name' => $this->faker->word,
             'authorization' => Str::random(),

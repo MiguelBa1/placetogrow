@@ -41,6 +41,8 @@ class PlaceToPayService
     {
         $authData = $this->generateAuthData();
 
-        return Http::get(config('placetopay.url') . '/api/session/' . $sessionId, $authData);
+        return Http::post(config('placetopay.url') . '/api/session/' . $sessionId, [
+            'auth' => $authData,
+        ]);
     }
 }
