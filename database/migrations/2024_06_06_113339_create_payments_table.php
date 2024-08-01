@@ -14,9 +14,14 @@ return new class extends Migration {
             $table->id();
             $table->foreignId('guest_id')->constrained('guests')->onDelete('cascade');
             $table->string('reference');
-            $table->string('request_id');
-            $table->string('process_url');
-            $table->dateTime('expires_in');
+            $table->string('description');
+            $table->string('currency');
+            $table->integer('amount');
+            $table->string('status')->nullable();
+            $table->string('status_message')->nullable();
+            $table->dateTime('expires_in')->nullable();
+            $table->string('request_id')->nullable();
+            $table->string('process_url')->nullable();
             $table->string('internal_reference')->nullable();
             $table->string('franchise')->nullable();
             $table->string('payment_method')->nullable();
@@ -24,11 +29,7 @@ return new class extends Migration {
             $table->string('issuer_name')->nullable();
             $table->string('receipt')->nullable();
             $table->string('authorization')->nullable();
-            $table->string('status');
-            $table->string('status_message');
             $table->dateTime('payment_date')->nullable();
-            $table->string('currency');
-            $table->integer('amount');
             $table->timestamps();
         });
     }

@@ -13,6 +13,7 @@ use Illuminate\Support\Carbon;
  * @property string process_url
  * @property Carbon expires_in
  * @property string internal_reference
+ * @property string description
  * @property string franchise
  * @property string payment_method
  * @property string payment_method_name
@@ -33,6 +34,7 @@ class Payment extends Model
     protected $fillable = [
         'guest_id',
         'reference',
+        'description',
         'request_id',
         'process_url',
         'expires_in',

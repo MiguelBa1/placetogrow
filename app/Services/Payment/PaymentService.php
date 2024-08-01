@@ -6,6 +6,7 @@ use App\Contracts\PaymentServiceInterface;
 use App\Models\Guest;
 use App\Models\Microsite;
 use App\Models\Payment;
+use App\Services\PlaceToPayService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Redirect;
@@ -15,22 +16,25 @@ use Symfony\Component\HttpFoundation\Response;
 
 class PaymentService implements PaymentServiceInterface
 {
-    public function createPayment(array $paymentData, string $ipAddress, string $userAgent, Microsite $microsite): Response
+    public function createPayment(array $paymentData, Microsite $microsite): Response
     {
         $paymentReference = Str::random();
 
         /** @var Guest $guest */
-        $guest = Guest::query()->create([
-            'name' => $paymentData['name'],
-            'last_name' => $paymentData['last_name'],
-            'document_type' => $paymentData['document_type'],
-            'document_number' => $paymentData['document_number'],
-            'phone' => $paymentData['phone'],
-            'email' => $paymentData['email'],
-        ]);
+        $guest = Guest::query()->firstOrCreate(
+            ['document_number' => $paymentData['document_number']],
+            [
+                'name' => $paymentData['name'],
+                'last_name' => $paymentData['last_name'],
+                'document_type' => $paymentData['document_type'],
+                'phone' => $paymentData['phone'],
+                'email' => $paymentData['email'],
+            ]
+        );
 
         /** @var Payment $payment */
         $payment = $guest->payments()->create([
+            'description' => $paymentData['payment_description'],
             'reference' => $paymentReference,
             'currency' => $paymentData['currency'],
             'amount' => $paymentData['amount'],
@@ -43,11 +47,11 @@ class PaymentService implements PaymentServiceInterface
                 'email' => $guest->email,
                 'document' => $guest->document_number,
                 'documentType' => $guest->document_type,
-                'mobile' => '+57' . $guest->phone,
+                'mobile' => $guest->phone,
             ],
             'payment' => [
                 'reference' => $payment->reference,
-                'description' => $microsite->name,
+                'description' => $payment->description,
                 'amount' => [
                     'currency' => $payment->currency,
                     'total' => $payment->amount,
@@ -58,8 +62,8 @@ class PaymentService implements PaymentServiceInterface
                 'reference' => $payment->reference,
                 'microsite' => $microsite->slug,
             ]),
-            'ipAddress' => $ipAddress,
-            'userAgent' => $userAgent,
+            'ipAddress' => request()->ip(),
+            'userAgent' => request()->userAgent(),
         ];
 
         $result = (new PlaceToPayService)->createPayment($data);
@@ -77,11 +81,6 @@ class PaymentService implements PaymentServiceInterface
             return to_route(route('payments.show', $microsite->slug))
                 ->withErrors($result['status']['message']);
         }
-
-        return Redirect::to(route('payments.show', $micrositeSlug))
-            ->withErrors(
-                $result['status']['message'] ?? 'An error occurred while processing the payment, please try again.'
-            );
     }
 
     public function checkPayment(string $reference, string $micrositeSlug): \Inertia\Response|RedirectResponse

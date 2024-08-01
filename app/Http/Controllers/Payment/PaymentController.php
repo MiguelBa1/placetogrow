@@ -33,10 +33,10 @@ class PaymentController extends Controller
         $paymentDataProvider = (new PaymentDataProviderFactory())->create($microsite->type);
 
         $paymentData = $paymentDataProvider->getPaymentData($request->validated());
-        
+
         $paymentData['currency'] = $microsite->payment_currency->value;
 
-        return (new PaymentService)->createPayment($paymentData, $request->ip(), $request->userAgent(), $microsite->slug);
+        return (new PaymentService)->createPayment($paymentData, $microsite);
     }
 
     public function return(Microsite $microsite, string $reference): \Inertia\Response|RedirectResponse

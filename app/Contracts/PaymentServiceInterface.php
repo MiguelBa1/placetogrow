@@ -6,7 +6,7 @@ use App\Models\Microsite;
 
 interface PaymentServiceInterface
 {
-    public function createPayment(array $paymentData, string $ipAddress, string $userAgent, Microsite $microsite);
+    public function createPayment(array $paymentData, Microsite $microsite);
 
     public function checkPayment(string $reference, string $micrositeSlug);
 
