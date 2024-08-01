@@ -43,14 +43,29 @@ class PaymentController extends Controller
         $paymentData = $paymentDataProvider->getPaymentData($request->validated());
 
         $paymentData['currency'] = $microsite->payment_currency->value;
-
         $paymentData['microsite_id'] = $microsite->id;
 
-        return $this->paymentService->createPayment($paymentData);
+        $result = $this->paymentService->createPayment($paymentData);
+
+        if ($result['success']) {
+            return Inertia::location($result['url']);
+        } else {
+            return redirect()->route('payments.show', $result['microsite_slug'])
+                ->withErrors($result['message']);
+        }
     }
 
     public function return(Payment $payment): \Inertia\Response|RedirectResponse
     {
-        return $this->paymentService->checkPayment($payment);
+        $result = $this->paymentService->checkPayment($payment);
+
+        if ($result['success']) {
+            return Inertia::render('Payments/Return', [
+                'payment' => $result['payment'],
+            ]);
+        } else {
+            return redirect()->route('payments.show', $result['microsite_slug'])
+                ->withErrors($result['message']);
+        }
     }
 }

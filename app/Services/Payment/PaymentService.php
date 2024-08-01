@@ -7,18 +7,13 @@ use App\Contracts\PaymentServiceInterface;
 use App\Models\Guest;
 use App\Models\Payment;
 use App\Services\PlaceToPayService;
-use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Str;
-use Inertia\Inertia;
-use Symfony\Component\HttpFoundation\Response;
 
 class PaymentService implements PaymentServiceInterface
 {
-    public function createPayment(array $paymentData): Response
+    public function createPayment(array $paymentData): array
     {
-        $paymentReference = Str::random();
-
         /** @var Guest $guest */
         $guest = Guest::query()->firstOrCreate(
             ['document_number' => $paymentData['document_number']],
@@ -26,6 +21,7 @@ class PaymentService implements PaymentServiceInterface
                 'name' => $paymentData['name'],
                 'last_name' => $paymentData['last_name'],
                 'document_type' => $paymentData['document_type'],
+                'document_number' => $paymentData['document_number'],
                 'phone' => $paymentData['phone'],
                 'email' => $paymentData['email'],
             ]
@@ -35,7 +31,7 @@ class PaymentService implements PaymentServiceInterface
         $payment = $guest->payments()->create([
             'microsite_id' => $paymentData['microsite_id'],
             'description' => $paymentData['payment_description'],
-            'reference' => $paymentReference,
+            'reference' => date('ymdHis').'-'.strtoupper(Str::random(4)),
             'currency' => $paymentData['currency'],
             'amount' => $paymentData['amount'],
         ]);
@@ -71,27 +67,31 @@ class PaymentService implements PaymentServiceInterface
             'status_message' => $result->json()['status']['message'],
         ]);
 
-        if ($result->ok()) {
-            return Inertia::location($result['processUrl']);
-        } else {
-            return redirect(route('payments.show', $payment->microsite->slug))
-                ->withErrors($result['status']['message']);
-        }
+        return [
+            'success' => $result->ok(),
+            'url' => $result['processUrl'] ?? null,
+            'message' => $result['status']['message'] ?? null,
+            'microsite_slug' => $payment->microsite->slug,
+        ];
     }
 
-    public function checkPayment(Payment $payment): \Inertia\Response|RedirectResponse
+    public function checkPayment(Payment $payment): array
     {
         $result = (new PlaceToPayService)->checkPayment($payment->request_id);
 
         if ($result->ok()) {
             $this->updatePayment($payment, $result->json());
 
-            return Inertia::render('Payments/Return', [
+            return [
+                'success' => true,
                 'payment' => $payment->refresh(),
-            ]);
+            ];
         } else {
-            return redirect()->route('payments.show', $payment->microsite->slug)
-                ->withErrors($result['status']['message']);
+            return [
+                'success' => false,
+                'message' => $result['status']['message'],
+                'microsite_slug' => $payment->microsite->slug,
+            ];
         }
     }
 
