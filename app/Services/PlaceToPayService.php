@@ -2,11 +2,14 @@
 
 namespace App\Services;
 
+use App\Contracts\PlaceToPayServiceInterface;
+use App\Models\Guest;
+use App\Models\Payment;
 use Illuminate\Http\Client\Response;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Str;
 
-class PlaceToPayService
+class PlaceToPayService implements PlaceToPayServiceInterface
 {
     private array $data;
 
@@ -45,7 +48,7 @@ class PlaceToPayService
         return $this;
     }
 
-    public function buyer(array $data): self
+    public function buyer(Guest $data): self
     {
         $this->data['buyer'] = [
             'name' => $data['name'],
@@ -59,7 +62,7 @@ class PlaceToPayService
         return $this;
     }
 
-    public function payment(array $data): self
+    public function payment(Payment $data): self
     {
         $this->data['payment'] = [
             'reference' => $data['reference'],
@@ -75,13 +78,19 @@ class PlaceToPayService
         return $this;
     }
 
-    public function createPayment(): Response
+    public function createPayment(Guest $guest, Payment $payment): Response
     {
+        $this->prepare();
+        $this->payment($payment);
+        $this->buyer($guest);
+
         return Http::post($this->config['url'] . '/api/session', $this->data);
     }
 
     public function checkPayment(string $sessionId): Response
     {
+        $this->prepare();
+
         return Http::post($this->config['url'] . '/api/session/' . $sessionId, [
             'auth' => $this->data['auth'],
         ]);

@@ -4,6 +4,7 @@ namespace App\Services\Payment;
 
 use App\Constants\PaymentStatus;
 use App\Contracts\PaymentServiceInterface;
+use App\Contracts\PlaceToPayServiceInterface;
 use App\Models\Guest;
 use App\Models\Payment;
 use App\Services\PlaceToPayService;
@@ -35,11 +36,7 @@ class PaymentService implements PaymentServiceInterface
             'amount' => $paymentData['amount'],
         ]);
 
-        $result = (new PlaceToPayService)
-            ->prepare()
-            ->buyer($guest->toArray())
-            ->payment($payment->toArray())
-            ->createPayment();
+        $result = app(PlaceToPayServiceInterface::class)->createPayment($guest, $payment);
 
         if (!$result->ok()) {
             return [
@@ -64,7 +61,7 @@ class PaymentService implements PaymentServiceInterface
 
     public function checkPayment(Payment $payment): array
     {
-        $result = (new PlaceToPayService)->prepare()->checkPayment($payment->request_id);
+        $result = app(PlaceToPayServiceInterface::class)->checkPayment($payment->request_id);
 
         if ($result->ok()) {
             $this->updatePayment($payment, $result->json());
