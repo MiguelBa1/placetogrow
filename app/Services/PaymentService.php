@@ -113,14 +113,21 @@ class PaymentService implements PaymentServiceInterface
 
     public function createPaymentRecord(array $paymentData, string $paymentReference, array $response): void
     {
-        $guestUser = Guest::query()->create([
-            'name' => $paymentData['name'],
-            'last_name' => $paymentData['last_name'],
-            'document_type' => $paymentData['document_type'],
-            'document_number' => $paymentData['document_number'],
-            'phone' => $paymentData['phone'],
-            'email' => $paymentData['email'],
-        ]);
+        $guestUser = Guest::query()->where('email', $paymentData['email'])->get()->first();
+
+        if(! $guestUser->exists()) {
+            $guestUser = Guest::query()->create([
+                'name' => $paymentData['name'],
+                'last_name' => $paymentData['last_name'],
+                'document_type' => $paymentData['document_type'],
+                'document_number' => $paymentData['document_number'],
+                'phone' => $paymentData['phone'],
+                'email' => $paymentData['email'],
+            ]);
+        } else {
+            $guestUser =  $guestUser->get()->first();
+        }
+
 
         Payment::query()->create([
             'guest_id' => $guestUser->id,
