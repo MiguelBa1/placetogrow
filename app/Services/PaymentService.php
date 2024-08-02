@@ -115,7 +115,7 @@ class PaymentService implements PaymentServiceInterface
     {
         $guestUser = Guest::query()->where('email', $paymentData['email'])->get()->first();
 
-        if(! $guestUser->exists()) {
+        if(! $guestUser?->exists()) {
             $guestUser = Guest::query()->create([
                 'name' => $paymentData['name'],
                 'last_name' => $paymentData['last_name'],
