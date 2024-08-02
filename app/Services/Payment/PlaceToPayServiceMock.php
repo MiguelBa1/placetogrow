@@ -5,9 +5,8 @@ namespace App\Services\Payment;
 use App\Contracts\PlaceToPayServiceInterface;
 use App\Models\Guest;
 use App\Models\Payment;
-use Illuminate\Http\Client\Response;
 use GuzzleHttp\Psr7\Response as GuzzleResponse;
-use App\Constants\PaymentStatus;
+use Illuminate\Http\Client\Response;
 
 class PlaceToPayServiceMock implements PlaceToPayServiceInterface
 {

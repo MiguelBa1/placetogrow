@@ -7,7 +7,6 @@ use App\Contracts\PaymentServiceInterface;
 use App\Contracts\PlaceToPayServiceInterface;
 use App\Models\Guest;
 use App\Models\Payment;
-use App\Services\PlaceToPayService;
 use Illuminate\Support\Str;
 
 class PaymentService implements PaymentServiceInterface

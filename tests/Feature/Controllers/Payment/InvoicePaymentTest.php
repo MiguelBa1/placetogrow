@@ -7,7 +7,6 @@ use App\Constants\MicrositeType;
 use App\Constants\PaymentStatus;
 use App\Models\Microsite;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Storage;
 use Inertia\Testing\AssertableInertia as Assert;
 use Tests\TestCase;

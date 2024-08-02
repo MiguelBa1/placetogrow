@@ -6,7 +6,6 @@ use App\Contracts\PaymentServiceInterface;
 use App\Contracts\PlaceToPayServiceInterface;
 use App\Factories\PaymentDataProviderFactory;
 use App\Services\Payment\PaymentService;
-use App\Services\Payment\PlaceToPayServiceMock;
 use App\Services\PlaceToPayService;
 use Illuminate\Support\ServiceProvider;
 use Inertia\Inertia;
