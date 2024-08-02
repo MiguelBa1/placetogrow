@@ -30,15 +30,23 @@ class PaymentService implements PaymentServiceInterface
         $payment = $guest->payments()->create([
             'microsite_id' => $paymentData['microsite_id'],
             'description' => $paymentData['payment_description'],
-            'reference' => date('ymdHis').'-'.strtoupper(Str::random(4)),
+            'reference' => date('ymdHis') . '-' . strtoupper(Str::random(4)),
             'currency' => $paymentData['currency'],
             'amount' => $paymentData['amount'],
         ]);
 
-        $result = (new PlaceToPayService)->buyer($guest->toArray())
+        $result = (new PlaceToPayService)
             ->prepare()
+            ->buyer($guest->toArray())
             ->payment($payment->toArray())
             ->createPayment();
+
+        if (!$result->ok()) {
+            return [
+                'success' => false,
+                'message' => $result->json()['status']['message'],
+            ];
+        }
 
         $payment->update([
             'request_id' => $result->json()['requestId'],
@@ -89,7 +97,6 @@ class PaymentService implements PaymentServiceInterface
         } else {
             $payment->update([
                 'status_message' => $response['status']['message'],
-                'payment_date' => $response['status']['date'],
                 'status' => $response['status']['status'],
             ]);
         }

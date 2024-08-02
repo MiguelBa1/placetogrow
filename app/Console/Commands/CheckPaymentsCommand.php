@@ -25,7 +25,7 @@ class CheckPaymentsCommand extends Command
     public function handle(): void
     {
         $payments = Payment::query()->where('status', PaymentStatus::PENDING->value)
-            ->where('created_at', '<', config('placetopay.expiration'))
+            ->where('created_at', '<', now()->subMinutes(config('payments.check_interval_minutes')))
             ->get();
 
         foreach ($payments as $payment) {

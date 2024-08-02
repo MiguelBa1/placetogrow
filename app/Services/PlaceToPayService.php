@@ -14,7 +14,7 @@ class PlaceToPayService
 
     public function __construct()
     {
-        $this->config = config('placetopay');
+        $this->config = config('payments.placetopay');
 
         $this->data = [
             'expiration' => $this->config['expiration'],
@@ -77,12 +77,12 @@ class PlaceToPayService
 
     public function createPayment(): Response
     {
-        return Http::post(config('placetopay.url') . '/api/session', $this->data);
+        return Http::post($this->config['url'] . '/api/session', $this->data);
     }
 
     public function checkPayment(string $sessionId): Response
     {
-        return Http::post(config('placetopay.url') . '/api/session/' . $sessionId, [
+        return Http::post($this->config['url'] . '/api/session/' . $sessionId, [
             'auth' => $this->data['auth'],
         ]);
     }

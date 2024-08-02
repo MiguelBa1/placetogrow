@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Constants\CurrencyType;
 use App\Constants\PaymentStatus;
 use App\Models\Guest;
 use App\Models\Microsite;
@@ -38,8 +39,8 @@ class PaymentFactory extends Factory
             'authorization' => Str::random(),
             'status' => PaymentStatus::PENDING->value,
             'status_message' => $this->faker->sentence,
-            'payment_date' => $this->faker->dateTimeBetween('-1 month', 'now'),
-            'currency' => $this->faker->randomElement(['USD', 'COP']),
+            'payment_date' => $this->faker->dateTimeBetween('-1 month'),
+            'currency' => $this->faker->randomElement(array_column(CurrencyType::cases(), 'value')),
             'amount' => $this->faker->numberBetween(1000, 100000),
         ];
     }

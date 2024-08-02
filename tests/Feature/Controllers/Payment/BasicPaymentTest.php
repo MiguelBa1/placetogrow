@@ -92,7 +92,7 @@ class BasicPaymentTest extends TestCase
             config('placetopay.url') . '/*' => Http::response([
                 'requestId' => $paymentReference,
                 'status' => [
-                    'status' => PaymentStatus::ERROR->value,
+                    'status' => PaymentStatus::FAILED->value,
                     'message' => 'An error occurred while processing the payment',
                 ],
             ], 500)
@@ -123,7 +123,7 @@ class BasicPaymentTest extends TestCase
         ]);
 
         Http::fake([
-            config('placetopay.url') . '/*' => Http::response([
+            config('payments.placetopay.url') . '/*' => Http::response([
                 'status' => [
                     'status' => PaymentStatus::APPROVED->value,
                     'message' => 'Payment approved',
@@ -162,9 +162,9 @@ class BasicPaymentTest extends TestCase
         ]);
 
         Http::fake([
-            config('placetopay.url') . '/*' => Http::response([
+            config('payments.placetopay.url') . '/*' => Http::response([
                 'status' => [
-                    'status' => PaymentStatus::ERROR->value,
+                    'status' => PaymentStatus::FAILED->value,
                     'message' => 'An error occurred while completing the payment',
                 ],
             ], 500)
@@ -185,7 +185,7 @@ class BasicPaymentTest extends TestCase
         ]);
 
         Http::fake([
-            config('placetopay.url') . '/*' => Http::response([
+            config('payments.placetopay.url') . '/*' => Http::response([
                 'requestId' => 'test_request_id',
                 'status' => [
                     'status' => PaymentStatus::REJECTED->value,

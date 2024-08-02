@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Payment;
 
+use App\Constants\PaymentStatus;
 use App\Contracts\PaymentServiceInterface;
 use App\Factories\PaymentDataProviderFactory;
 use App\Http\Controllers\Controller;
@@ -50,14 +51,21 @@ class PaymentController extends Controller
         if ($result['success']) {
             return Inertia::location($result['url']);
         } else {
-            return redirect()->route('payments.show', $result['microsite_slug'])
+            return redirect()->route('payments.show', $microsite->slug)
                 ->withErrors($result['message']);
         }
     }
 
     public function return(Payment $payment): \Inertia\Response|RedirectResponse
     {
-        $result = $this->paymentService->checkPayment($payment);
+        if ($payment->status->value === PaymentStatus::PENDING->value) {
+            $result = $this->paymentService->checkPayment($payment);
+        } else {
+            $result = [
+                'success' => false,
+                'message' => 'Payment already processed',
+            ];
+        }
 
         if ($result['success']) {
             return Inertia::render('Payments/Return', [

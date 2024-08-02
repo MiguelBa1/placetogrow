@@ -57,7 +57,7 @@ class InvoicePaymentTest extends TestCase
     public function test_store_payment(): void
     {
         Http::fake([
-            config('placetopay.url') . '/*' => Http::response([
+            config('payment.placetopay.url') . '/*' => Http::response([
                 'processUrl' => '/success',
                 'requestId' => 'test_request_id',
                 'status' => [

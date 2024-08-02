@@ -1,5 +1,6 @@
 <?php
 
+use App\Constants\PaymentStatus;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -18,7 +19,7 @@ return new class extends Migration {
             $table->string('description');
             $table->string('currency');
             $table->integer('amount');
-            $table->string('status')->nullable();
+            $table->enum('status', array_column(PaymentStatus::cases(), 'value'))->default(PaymentStatus::PENDING);
             $table->string('status_message')->nullable();
             $table->string('request_id')->nullable();
             $table->string('payment_method_name')->nullable();

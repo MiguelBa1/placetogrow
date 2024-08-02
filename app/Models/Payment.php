@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Constants\PaymentStatus;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -13,7 +14,7 @@ use Illuminate\Support\Carbon;
  * @property string description
  * @property string payment_method_name
  * @property string authorization
- * @property string status
+ * @property PaymentStatus status
  * @property string status_message
  * @property Carbon payment_date
  * @property string currency
