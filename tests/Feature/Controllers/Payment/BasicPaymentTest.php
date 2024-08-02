@@ -13,10 +13,11 @@ use Illuminate\Support\Facades\Storage;
 use Inertia\Testing\AssertableInertia as Assert;
 use Tests\TestCase;
 use Tests\Traits\CreatesMicrosites;
+use Tests\Traits\PlaceToPayMockTrait;
 
 class BasicPaymentTest extends TestCase
 {
-    use RefreshDatabase, CreatesMicrosites;
+    use RefreshDatabase, CreatesMicrosites, PlaceToPayMockTrait;
 
     private Microsite $basicMicrosite;
 
@@ -45,17 +46,7 @@ class BasicPaymentTest extends TestCase
 
     public function test_store_payment(): void
     {
-        Http::fake([
-            config('placetopay.url') . '/*' => Http::response([
-                'processUrl' => '/success',
-                'requestId' => 'test_request_id',
-                'status' => [
-                    'status' => PaymentStatus::PENDING->value,
-                    'message' => 'Payment pending',
-                    'date' => now()->toIso8601String(),
-                ],
-            ])
-        ]);
+        $this->fakeCreatePaymentSuccess();
 
         $response = $this->post(route('payments.store', $this->basicMicrosite), [
             'name' => 'John',
@@ -79,24 +70,14 @@ class BasicPaymentTest extends TestCase
         ]);
         $this->assertDatabaseHas('payments', [
             'request_id' => 'test_request_id',
-            'status' => PaymentStatus::PENDING->value,
+            'status' => PaymentStatus::OK->value,
             'amount' => 10000,
         ]);
     }
 
     public function test_store_payment_error(): void
     {
-        $paymentReference = 'test_reference';
-
-        Http::fake([
-            config('placetopay.url') . '/*' => Http::response([
-                'requestId' => $paymentReference,
-                'status' => [
-                    'status' => PaymentStatus::FAILED->value,
-                    'message' => 'An error occurred while processing the payment',
-                ],
-            ], 500)
-        ]);
+        $this->fakeCreatePaymentFailed();
 
         $response = $this->post(route('payments.store', $this->basicMicrosite), [
             'name' => 'John',
@@ -122,26 +103,7 @@ class BasicPaymentTest extends TestCase
             'request_id' => 'test_request_id',
         ]);
 
-        Http::fake([
-            config('payments.placetopay.url') . '/*' => Http::response([
-                'status' => [
-                    'status' => PaymentStatus::APPROVED->value,
-                    'message' => 'Payment approved',
-                    'date' => now()->toIso8601String(),
-                ],
-                'payment' => [
-                    [
-                        'paymentMethodName' => 'Visa Credit Card',
-                        'authorization' => '123456',
-                        'status' => [
-                            'date' => now()->toIso8601String(),
-                            'message' => 'Payment successful',
-                            'status' => PaymentStatus::APPROVED->value,
-                        ],
-                    ],
-                ],
-            ])
-        ]);
+        $this->fakeCheckApprovedPayment();
 
         $response = $this->get(route('payments.return', $paymentReference));
 
@@ -161,14 +123,7 @@ class BasicPaymentTest extends TestCase
             'microsite_id' => $this->basicMicrosite->id,
         ]);
 
-        Http::fake([
-            config('payments.placetopay.url') . '/*' => Http::response([
-                'status' => [
-                    'status' => PaymentStatus::FAILED->value,
-                    'message' => 'An error occurred while completing the payment',
-                ],
-            ], 500)
-        ]);
+        $this->fakeCheckFailedPayment();
 
         $response = $this->get(route('payments.return', $paymentReference));
 
@@ -184,16 +139,7 @@ class BasicPaymentTest extends TestCase
             'request_id' => 'test_request_id',
         ]);
 
-        Http::fake([
-            config('payments.placetopay.url') . '/*' => Http::response([
-                'requestId' => 'test_request_id',
-                'status' => [
-                    'status' => PaymentStatus::REJECTED->value,
-                    'message' => 'Payment rejected',
-                    'date' => now()->toIso8601String(),
-                ],
-            ])
-        ]);
+        $this->fakeCheckRejectedPayment();
 
         $this->get(route('payments.return', $paymentReference));
 

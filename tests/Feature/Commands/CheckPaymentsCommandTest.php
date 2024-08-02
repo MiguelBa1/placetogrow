@@ -1,21 +1,23 @@
 <?php
 
-namespace Feature\Commands;
+namespace Tests\Feature\Commands;
 
 use App\Constants\PaymentStatus;
 use App\Models\Guest;
 use App\Models\Payment;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Artisan;
-use Illuminate\Support\Facades\Http;
 use Tests\TestCase;
+use Tests\Traits\PlaceToPayMockTrait;
 
 class CheckPaymentsCommandTest extends TestCase
 {
-    use RefreshDatabase;
+    use RefreshDatabase, PlaceToPayMockTrait;
 
     public function testCheckPaymentsCommand()
     {
+        $this->fakeCheckApprovedPayment();
+
         $guest = Guest::factory()->create();
         $payment = Payment::factory()->create([
             'guest_id' => $guest->id,
@@ -25,32 +27,11 @@ class CheckPaymentsCommandTest extends TestCase
             'created_at' => now()->subMinutes(config('payments.check_interval_minutes'))->subSecond(),
         ]);
 
-        Http::fake([
-            config('payments.placetopay.url') . '/*' => Http::response([
-                'status' => [
-                    'status' => PaymentStatus::APPROVED->value,
-                    'message' => 'Payment approved',
-                    'date' => now()->toIso8601String(),
-                ],
-                'payment' => [
-                    [
-                        'paymentMethodName' => 'Visa Credit Card',
-                        'authorization' => 'auth_code',
-                        'status' => [
-                            'date' => now()->toIso8601String(),
-                            'message' => 'Payment successful',
-                            'status' => PaymentStatus::APPROVED->value,
-                        ],
-                    ],
-                ],
-            ])
-        ]);
-
         Artisan::call('app:check-payments');
 
         $payment->refresh();
 
-        $this->assertEquals(PaymentStatus::APPROVED->value, $payment->status);
+        $this->assertEquals(PaymentStatus::APPROVED->value, $payment->status->value);
         $this->assertEquals('Visa Credit Card', $payment->payment_method_name);
         $this->assertEquals('auth_code', $payment->authorization);
         $this->assertNotNull($payment->payment_date);
@@ -58,6 +39,9 @@ class CheckPaymentsCommandTest extends TestCase
 
     public function testOnlyCheckPendingPaymentsAfterInterval()
     {
+
+        $this->fakeCheckApprovedPayment();
+
         $guest = Guest::factory()->create();
         $payment = Payment::factory()->create([
             'guest_id' => $guest->id,
@@ -77,38 +61,17 @@ class CheckPaymentsCommandTest extends TestCase
             'payment_date' => null,
         ]);
 
-        Http::fake([
-             config('payments.placetopay.url') . '/*' => Http::response([
-                'status' => [
-                    'status' => PaymentStatus::APPROVED->value,
-                    'message' => 'Payment approved',
-                    'date' => now()->toIso8601String(),
-                ],
-                'payment' => [
-                    [
-                        'paymentMethodName' => 'Visa Credit Card',
-                        'authorization' => 'auth_code',
-                        'status' => [
-                            'date' => now()->toIso8601String(),
-                            'message' => 'Payment successful',
-                            'status' => PaymentStatus::APPROVED->value,
-                        ],
-                    ],
-                ],
-            ])
-        ]);
-
         Artisan::call('app:check-payments');
 
         $payment->refresh();
         $payment2->refresh();
 
-        $this->assertEquals(PaymentStatus::APPROVED->value, $payment->status);
+        $this->assertEquals(PaymentStatus::APPROVED->value, $payment->status->value);
         $this->assertEquals('Visa Credit Card', $payment->payment_method_name);
         $this->assertEquals('auth_code', $payment->authorization);
         $this->assertNotNull($payment->payment_date);
 
-        $this->assertEquals(PaymentStatus::PENDING->value, $payment2->status);
+        $this->assertEquals(PaymentStatus::PENDING->value, $payment2->status->value);
         $this->assertNull($payment2->payment_date);
     }
 }

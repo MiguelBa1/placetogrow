@@ -8,8 +8,8 @@ enum PaymentStatus: string
 {
     use EnumToArray;
 
-    case FAILED = 'ERROR';
-
+    case FAILED = 'FAILED';
+    case OK = 'OK';
     case PENDING = 'PENDING';
     case APPROVED = 'APPROVED';
     case REJECTED = 'REJECTED';

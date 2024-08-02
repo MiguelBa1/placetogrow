@@ -12,10 +12,11 @@ use Illuminate\Support\Facades\Storage;
 use Inertia\Testing\AssertableInertia as Assert;
 use Tests\TestCase;
 use Tests\Traits\CreatesMicrosites;
+use Tests\Traits\PlaceToPayMockTrait;
 
 class InvoicePaymentTest extends TestCase
 {
-    use RefreshDatabase, CreatesMicrosites;
+    use RefreshDatabase, CreatesMicrosites, PlaceToPayMockTrait;
 
     private Microsite $invoiceMicrosite;
 
@@ -56,17 +57,7 @@ class InvoicePaymentTest extends TestCase
 
     public function test_store_payment(): void
     {
-        Http::fake([
-            config('payment.placetopay.url') . '/*' => Http::response([
-                'processUrl' => '/success',
-                'requestId' => 'test_request_id',
-                'status' => [
-                    'status' => PaymentStatus::PENDING->value,
-                    'message' => 'Payment pending',
-                    'date' => now()->toIso8601String(),
-                ],
-            ])
-        ]);
+        $this->fakeCreatePaymentSuccess();
 
         $response = $this->post(route('payments.store', $this->invoiceMicrosite), [
             'reference' => 'test_reference',
@@ -84,7 +75,7 @@ class InvoicePaymentTest extends TestCase
 
         $this->assertDatabaseHas('payments', [
             'request_id' => 'test_request_id',
-            'status' => PaymentStatus::PENDING->value,
+            'status' => PaymentStatus::OK->value,
             'amount' => 1000,
         ]);
     }
