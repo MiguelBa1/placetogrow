@@ -3,8 +3,8 @@
 namespace App\Http\Controllers\Transaction;
 
 use App\Http\Controllers\Controller;
-use App\Models\Payment;
 use App\Http\Resources\Transaction\TransactionListResource;
+use App\Models\Payment;
 use Inertia\Inertia;
 use Inertia\Response;
 
