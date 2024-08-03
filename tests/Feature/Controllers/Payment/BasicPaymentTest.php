@@ -69,7 +69,7 @@ class BasicPaymentTest extends TestCase
         ]);
         $this->assertDatabaseHas('payments', [
             'request_id' => 'test_request_id',
-            'status' => PaymentStatus::OK->value,
+            'status' => PaymentStatus::PENDING->value,
             'amount' => 10000,
         ]);
     }

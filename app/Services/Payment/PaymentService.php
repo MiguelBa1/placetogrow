@@ -46,7 +46,7 @@ class PaymentService implements PaymentServiceInterface
 
         $payment->update([
             'request_id' => $result->json()['requestId'],
-            'status' => $result->json()['status']['status'],
+            'status' => PaymentStatus::PENDING->value,
             'status_message' => $result->json()['status']['message'],
         ]);
 

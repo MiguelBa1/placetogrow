@@ -56,24 +56,25 @@ class PaymentController extends Controller
         }
     }
 
+
     public function return(Payment $payment): \Inertia\Response|RedirectResponse
     {
-        if ($payment->status->value === PaymentStatus::PENDING->value) {
-            $result = $this->paymentService->checkPayment($payment);
-        } else {
-            $result = [
-                'success' => false,
-                'message' => 'Payment already processed',
-            ];
+
+        if (!in_array($payment->status->value, [PaymentStatus::PENDING->value, PaymentStatus::OK->value])) {
+            return Inertia::render('Payments/Return', [
+                'payment' => $payment,
+            ]);
         }
+
+        $result = $this->paymentService->checkPayment($payment);
 
         if ($result['success']) {
             return Inertia::render('Payments/Return', [
                 'payment' => $result['payment'],
             ]);
-        } else {
-            return redirect()->route('payments.show', $payment->microsite->slug)
-                ->withErrors($result['message']);
         }
+
+        return redirect()->route('payments.show', $payment->microsite->slug)
+            ->withErrors($result['message']);
     }
 }

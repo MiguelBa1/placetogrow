@@ -22,6 +22,8 @@ const {microsite, fields} = defineProps<{
     microsite: MicrositeInformation;
 }>();
 
+const isSubmitting = ref(false);
+
 const getComponent = (type: string) => {
     switch (type) {
         case 'text':
@@ -37,6 +39,8 @@ const getComponent = (type: string) => {
 };
 
 const handleSubmit = () => {
+    isSubmitting.value = true;
+
     router.post(route('payments.store', {
         microsite: microsite.slug
     }), formData.value, {
@@ -48,6 +52,9 @@ const handleSubmit = () => {
         onError: (error) => {
             toast.error(error?.payment ?? t('common.form.error'));
             formErrors.value = error ?? {};
+        },
+        onFinish: () => {
+            isSubmitting.value = false;
         }
     });
 };
@@ -80,6 +87,7 @@ const handleSubmit = () => {
             </p>
             <Button
                 type="submit"
+                :disabled="isSubmitting"
             >
                 {{ t('payments.show.form.pay') }}
             </Button>
