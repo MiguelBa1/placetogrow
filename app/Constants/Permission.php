@@ -19,6 +19,8 @@ enum Permission: string
     case VIEW_ANY_INVOICE = 'view_any_invoice';
     case CREATE_INVOICE = 'create_invoice';
 
+    case VIEW_ANY_TRANSACTION = 'view_any_transaction';
+
     public static function grouped(): array
     {
         return [
