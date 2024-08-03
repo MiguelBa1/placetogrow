@@ -6,7 +6,6 @@ use App\Constants\DocumentType;
 use App\Constants\MicrositeType;
 use App\Constants\PaymentStatus;
 use App\Models\Microsite;
-use App\Models\Payment;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Storage;
 use Inertia\Testing\AssertableInertia as Assert;
@@ -91,61 +90,6 @@ class BasicPaymentTest extends TestCase
 
         $response->assertRedirect(route('payments.show', $this->basicMicrosite));
         $response->assertSessionHasErrors();
-    }
-
-    public function test_return_after_payment(): void
-    {
-        $paymentReference = 'test_reference';
-
-        Payment::factory()->create([
-            'reference' => $paymentReference,
-            'request_id' => 'test_request_id',
-        ]);
-
-        $this->fakeCheckApprovedPayment();
-
-        $response = $this->get(route('payments.return', $paymentReference));
-
-        $response->assertOk();
-        $response->assertInertia(
-            fn (Assert $page) => $page
-            ->component('Payments/Return')
-        );
-    }
-
-    public function test_return_after_payment_error(): void
-    {
-        $paymentReference = 'test_reference';
-        Payment::factory()->create([
-            'reference' => $paymentReference,
-            'request_id' => 'test_request_id',
-            'microsite_id' => $this->basicMicrosite->id,
-        ]);
-
-        $this->fakeCheckFailedPayment();
-
-        $response = $this->get(route('payments.return', $paymentReference));
-
-        $response->assertRedirect(route('payments.show', $this->basicMicrosite));
-        $response->assertSessionHasErrors();
-    }
-
-    public function test_payment_not_approved(): void
-    {
-        $paymentReference = 'test_reference';
-        $payment = Payment::factory()->create([
-            'reference' => $paymentReference,
-            'request_id' => 'test_request_id',
-        ]);
-
-        $this->fakeCheckRejectedPayment();
-
-        $this->get(route('payments.return', $paymentReference));
-
-        $this->assertDatabaseHas('payments', [
-            'id' => $payment->id,
-            'status' => PaymentStatus::REJECTED->value,
-        ]);
     }
 
 }

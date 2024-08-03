@@ -60,9 +60,11 @@ class PaymentController extends Controller
     public function return(Payment $payment): \Inertia\Response|RedirectResponse
     {
 
-        if (!in_array($payment->status->value, [PaymentStatus::PENDING->value, PaymentStatus::OK->value])) {
+        if ($payment->status->value !== PaymentStatus::PENDING->value) {
             return Inertia::render('Payments/Return', [
                 'payment' => $payment,
+                'customerName' => $payment->guest->name . ' ' . $payment->guest->last_name,
+                'micrositeName' => $payment->microsite->name,
             ]);
         }
 
@@ -71,6 +73,8 @@ class PaymentController extends Controller
         if ($result['success']) {
             return Inertia::render('Payments/Return', [
                 'payment' => $result['payment'],
+                'customerName' => $result['customerName'],
+                'micrositeName' => $result['micrositeName'],
             ]);
         }
 

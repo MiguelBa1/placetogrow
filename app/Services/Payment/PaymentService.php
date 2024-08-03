@@ -68,6 +68,8 @@ class PaymentService implements PaymentServiceInterface
             return [
                 'success' => true,
                 'payment' => $payment->refresh(),
+                'customerName' => $payment->guest->name . ' ' . $payment->guest->last_name,
+                'micrositeName' => $payment->microsite->name,
             ];
         } else {
             return [

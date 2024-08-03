@@ -14,7 +14,7 @@ class CheckPaymentsCommandTest extends TestCase
 {
     use RefreshDatabase, PlaceToPayMockTrait;
 
-    public function testCheckPaymentsCommand()
+    public function test_can_check_payments()
     {
         $this->fakeCheckApprovedPayment();
 
@@ -37,7 +37,7 @@ class CheckPaymentsCommandTest extends TestCase
         $this->assertNotNull($payment->payment_date);
     }
 
-    public function testOnlyCheckPendingPaymentsAfterInterval()
+    public function test_only_check_pending_payments_after_interval()
     {
 
         $this->fakeCheckApprovedPayment();
