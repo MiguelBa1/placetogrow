@@ -1,7 +1,7 @@
 import { esShow } from './Show';
-import { esResult } from './EsResult';
+import { result } from './Result';
 
 export default {
     show: esShow,
-    result: esResult,
+    result: result,
 }

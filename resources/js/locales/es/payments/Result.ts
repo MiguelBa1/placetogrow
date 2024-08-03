@@ -1,4 +1,4 @@
-export const esResult = {
+export const result = {
     title: 'Detalles del pago',
     payment: {
         reference: 'Referencia',

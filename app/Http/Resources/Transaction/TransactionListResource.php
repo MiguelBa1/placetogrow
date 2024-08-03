@@ -13,9 +13,11 @@ class TransactionListResource extends JsonResource
         return [
             'id' => $this->id,
             'reference' => $this->reference,
-            'description' => $this->description,
             'microsite' => $this->microsite->name,
-            'status' => __("payment.statuses.{$this->status->value}"),
+            'status' => [
+                'value' => $this->status->value,
+                'label' => __("payment.statuses.{$this->status->value}")
+            ],
             'amount' => $this->amount,
             'payment_date' => $this->payment_date,
         ];

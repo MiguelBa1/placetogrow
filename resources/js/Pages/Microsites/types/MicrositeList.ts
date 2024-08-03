@@ -1,4 +1,4 @@
-import { type PaginationLink } from '@/Components';
+import { ApiResourceLink, ApiResourceMeta } from '@/types';
 
 export type MicrositeListItem = {
     id: number;
@@ -16,24 +16,6 @@ export type MicrositeListItem = {
     payment_currency: string;
     payment_expiration?: string;
     deleted_at?: string;
-};
-
-export type ApiResourceLink = {
-    first: string;
-    last: string;
-    prev: string | null;
-    next: string | null;
-};
-
-export type ApiResourceMeta = {
-    current_page: number;
-    from: number;
-    last_page: number;
-    path: string;
-    per_page: number;
-    to: number;
-    total: number;
-    links: PaginationLink[];
 };
 
 export type MicrositesPaginatedResponse = {

@@ -1,8 +1,9 @@
 <script setup lang="ts">
-import { Link, Head, usePage } from '@inertiajs/vue3';
+import { Link, Head } from '@inertiajs/vue3';
 import { MainLayout } from '@/Layouts';
 import { Button } from "@/Components";
-import { PaymentStatus, formattedPaymentStatus } from "./index";
+import { formattedPaymentStatus } from "./index";
+import { PaymentStatus } from "@/types/enums";
 import { useI18n } from "vue-i18n";
 
 const { t } = useI18n();
