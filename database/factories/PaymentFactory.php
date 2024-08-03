@@ -2,7 +2,10 @@
 
 namespace Database\Factories;
 
+use App\Constants\CurrencyType;
+use App\Constants\PaymentStatus;
 use App\Models\Guest;
+use App\Models\Microsite;
 use App\Models\Payment;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
@@ -28,21 +31,16 @@ class PaymentFactory extends Factory
     {
         return [
             'guest_id' => Guest::factory(),
-            'payment_reference' => Str::random(),
+            'microsite_id' => Microsite::factory(),
+            'reference' => $this->faker->unique()->word,
             'request_id' => Str::random(),
-            'process_url' => $this->faker->url,
-            'expires_in' => $this->faker->dateTimeBetween('now', '+1 week'),
-            'internal_reference' => Str::random(),
-            'franchise' => $this->faker->word,
-            'payment_method' => $this->faker->creditCardType,
             'payment_method_name' => $this->faker->word,
-            'issuer_name' => $this->faker->company,
-            'receipt' => Str::random(),
+            'description' => $this->faker->sentence,
             'authorization' => Str::random(),
-            'status' => 'PENDING',
+            'status' => PaymentStatus::PENDING->value,
             'status_message' => $this->faker->sentence,
-            'payment_date' => $this->faker->dateTimeBetween('-1 month', 'now'),
-            'currency' => $this->faker->randomElement(['USD', 'COP']),
+            'payment_date' => $this->faker->dateTimeBetween('-1 month'),
+            'currency' => $this->faker->randomElement(array_column(CurrencyType::cases(), 'value')),
             'amount' => $this->faker->numberBetween(1000, 100000),
         ];
     }

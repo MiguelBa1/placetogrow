@@ -81,8 +81,8 @@ Route::prefix('payments')->name('payments.')->group(function () {
     Route::prefix('{microsite}')->group(function () {
         Route::get('/', [PaymentController::class, 'show'])->name('show');
         Route::post('/payment', [PaymentController::class, 'store'])->name('store');
-        Route::get('/return/{reference}', [PaymentController::class, 'return'])->name('return');
     });
+    Route::get('/return/{payment}', [PaymentController::class, 'return'])->name('return');
 });
 
 Route::prefix('categories')->name('categories.')->middleware(['auth', 'role:' . Role::ADMIN->value])->group(function () {

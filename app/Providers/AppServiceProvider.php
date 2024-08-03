@@ -2,7 +2,11 @@
 
 namespace App\Providers;
 
+use App\Contracts\PaymentServiceInterface;
+use App\Contracts\PlaceToPayServiceInterface;
 use App\Factories\PaymentDataProviderFactory;
+use App\Services\Payment\PaymentService;
+use App\Services\PlaceToPayService;
 use Illuminate\Support\ServiceProvider;
 use Inertia\Inertia;
 
@@ -16,6 +20,10 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(PaymentDataProviderFactory::class, function () {
             return new PaymentDataProviderFactory();
         });
+
+        $this->app->bind(PaymentServiceInterface::class, PaymentService::class);
+
+        $this->app->bind(PlaceToPayServiceInterface::class, PlaceToPayService::class);
     }
 
     /**

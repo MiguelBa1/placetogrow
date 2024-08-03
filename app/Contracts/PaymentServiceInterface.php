@@ -2,13 +2,12 @@
 
 namespace App\Contracts;
 
+use App\Models\Payment;
+
 interface PaymentServiceInterface
 {
-    public function createPayment(array $paymentData, string $ipAddress, string $userAgent, string $micrositeSlug);
+    public function createPayment(array $paymentData);
 
-    public function checkPayment(string $reference, string $micrositeSlug);
+    public function checkPayment(Payment $payment);
 
-    public function createPaymentRecord(array $paymentData, string $paymentReference, array $response);
-
-    public function updatePayment(string $paymentReference, array $response);
 }
