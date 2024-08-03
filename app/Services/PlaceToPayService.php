@@ -7,6 +7,7 @@ use App\Models\Guest;
 use App\Models\Payment;
 use Illuminate\Http\Client\Response;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 
 class PlaceToPayService implements PlaceToPayServiceInterface
@@ -84,6 +85,8 @@ class PlaceToPayService implements PlaceToPayServiceInterface
         $this->payment($payment);
         $this->buyer($guest);
 
+        Log::info('PlaceToPayService: Creating payment', array_merge($this->data['payment'], $this->data['buyer']));
+
         return Http::post($this->config['url'] . '/api/session', $this->data);
     }
 
@@ -91,8 +94,12 @@ class PlaceToPayService implements PlaceToPayServiceInterface
     {
         $this->prepare();
 
-        return Http::post($this->config['url'] . '/api/session/' . $sessionId, [
+        $result = Http::post($this->config['url'] . '/api/session/' . $sessionId, [
             'auth' => $this->data['auth'],
         ]);
+
+        Log::info('PlaceToPayService: Checking payment', $result->json());
+
+        return $result;
     }
 }

@@ -12,6 +12,7 @@ use App\Models\Microsite;
 use App\Models\Payment;
 use App\Services\MicrositeService;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Log;
 use Inertia\Inertia;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -59,6 +60,10 @@ class PaymentController extends Controller
 
     public function return(Payment $payment): \Inertia\Response|RedirectResponse
     {
+        Log::withContext([
+            'payment_id' => $payment->id,
+            'request_id' => $payment->request_id,
+        ]);
 
         if ($payment->status->value === PaymentStatus::PENDING->value) {
             $result = $this->paymentService->checkPayment($payment);
