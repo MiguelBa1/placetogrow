@@ -42,7 +42,7 @@ const columns = getTransactionTableColumns(t);
         <template #cell-actions="{ row }">
             <div class="flex justify-center">
                 <Link
-                    href="#"
+                    :href="route('transactions.show', row.reference)"
                     class="text-gray-700 hover:text-black"
                 >
                     <EyeIcon class="h-5 w-5" />

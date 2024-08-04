@@ -88,6 +88,7 @@ Route::prefix('payments')->name('payments.')->group(function () {
 
 Route::prefix('transactions')->name('transactions.')->group(function () {
     Route::get('/', [TransactionController::class, 'index'])->name('index');
+    Route::get('/{payment}', [TransactionController::class, 'show'])->name('show');
 });
 
 Route::prefix('categories')->name('categories.')->middleware(['auth', 'role:' . Role::ADMIN->value])->group(function () {

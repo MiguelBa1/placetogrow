@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Transaction;
 use App\Constants\PaymentStatus;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Transaction\FilterTransactionsRequest;
+use App\Http\Resources\Transaction\TransactionDetailResource;
 use App\Http\Resources\Transaction\TransactionListResource;
 use App\Models\Payment;
 use Inertia\Inertia;
@@ -30,7 +31,8 @@ class TransactionController extends Controller
                 'payment_date',
                 'currency',
                 'amount',
-                'microsite_id'
+                'microsite_id',
+                'customer_id',
             )
             ->when($micrositeName, function ($query, $micrositeSlug) {
                 return $query->whereHas('microsite', function ($query) use ($micrositeSlug) {
@@ -44,7 +46,9 @@ class TransactionController extends Controller
                 return $query->where('reference', 'like', '%' . $reference . '%');
             })
             ->when($document, function ($query, $document) {
-                return $query->where('document', 'like', '%' . $document . '%');
+                return $query->whereHas('customer', function ($query) use ($document) {
+                    return $query->where('document_number', 'like', '%' . $document . '%');
+                });
             })
             ->orderBy('created_at', 'desc')
             ->paginate(10)
@@ -62,6 +66,15 @@ class TransactionController extends Controller
                 'reference' => $reference,
                 'document' => $document,
             ],
+        ]);
+    }
+
+    public function show(Payment $payment): Response
+    {
+        $transaction = new TransactionDetailResource($payment);
+
+        return Inertia::render('Transactions/Show', [
+            'transaction' => $transaction,
         ]);
     }
 
