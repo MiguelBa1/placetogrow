@@ -8,6 +8,7 @@ use App\Constants\MicrositeType;
 use App\Constants\PolicyName;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Invoice\CreateInvoiceRequest;
+use App\Http\Resources\Invoice\InvoiceListResource;
 use App\Models\Invoice;
 use App\Models\Microsite;
 use Illuminate\Auth\Access\AuthorizationException;
@@ -27,14 +28,15 @@ class InvoiceController extends Controller
         $invoices = $microsite->invoices()->select(
             'id',
             'reference',
-            'document_number',
             'name',
+            'status',
+            'document_number',
             'amount',
             'expiration_date',
         )->orderBy('created_at', 'desc')->get();
 
         return Inertia::render('Invoices/Index', [
-            'invoices' => $invoices,
+            'invoices' => InvoiceListResource::collection($invoices),
             'microsite' => $microsite->only('name', 'slug'),
             'documentTypes' => DocumentType::toSelectArray(),
         ]);
