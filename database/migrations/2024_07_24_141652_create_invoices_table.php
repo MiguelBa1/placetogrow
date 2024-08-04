@@ -12,7 +12,6 @@ return new class extends Migration {
         Schema::create('invoices', function (Blueprint $table) {
             $table->id();
             $table->foreignId('microsite_id')->constrained()->onDelete('cascade');
-            $table->foreignId('payment_id')->nullable()->constrained()->onDelete('cascade');
             $table->string('reference', 100);
             $table->enum('document_type', array_column(DocumentType::cases(), 'value'));
             $table->string('document_number', 20);

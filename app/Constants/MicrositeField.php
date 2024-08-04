@@ -38,7 +38,7 @@ enum MicrositeField: string
             self::PAYMENT_DESCRIPTION => ['required', 'string', 'max:255'],
             self::REFERENCE => ['required', 'string', 'max:50'],
             self::PHONE => ['required', 'regex:/^(\+?\d{1,3}[- ]?)?\d{10}$/'],
-            self::AMOUNT => ['required', 'numeric', 'min:1', 'regex:/^\d+(\.\d{1,2})?$/'],
+            self::AMOUNT => ['required', 'numeric', 'min:1', 'regex:/^\d+(\.\d{1,2})?$/', 'max:999999.99'],
         };
     }
 

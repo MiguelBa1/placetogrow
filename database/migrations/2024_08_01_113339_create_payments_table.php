@@ -15,6 +15,7 @@ return new class extends Migration {
             $table->id();
             $table->foreignId('customer_id')->constrained('customers')->onDelete('cascade');
             $table->foreignId('microsite_id')->constrained('microsites')->onDelete('cascade');
+            $table->foreignId('invoice_id')->nullable()->constrained('invoices')->onDelete('cascade');
             $table->string('reference')->unique();
             $table->string('description');
             $table->string('currency');

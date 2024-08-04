@@ -34,6 +34,7 @@ class InvoicePaymentDataProvider implements PaymentDataProviderInterface
         }
 
         return [
+            'invoice_id' => $invoice->id,
             'name' => $invoice->name,
             'last_name' => $invoice->last_name,
             'email' => $invoice->email,

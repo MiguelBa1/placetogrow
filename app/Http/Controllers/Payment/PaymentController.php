@@ -54,7 +54,9 @@ class PaymentController extends Controller
             return Inertia::location($result['url']);
         } else {
             return redirect()->route('payments.show', $microsite->slug)
-                ->withErrors($result['message']);
+                ->withErrors([
+                    'payment' => $result['message'],
+                ]);
         }
     }
 
@@ -70,7 +72,9 @@ class PaymentController extends Controller
 
             if (!$result['success']) {
                 return redirect()->route('payments.show', $payment->microsite->slug)
-                    ->withErrors($result['message']);
+                    ->withErrors([
+                        'payment' => $result['message'],
+                    ]);
             }
 
             /** @var Payment $payment */

@@ -3,6 +3,7 @@
 namespace App\Services\Payment;
 
 use App\Constants\InvoiceStatus;
+use App\Constants\MicrositeType;
 use App\Constants\PaymentStatus;
 use App\Contracts\PaymentServiceInterface;
 use App\Contracts\PlaceToPayServiceInterface;
@@ -31,6 +32,7 @@ class PaymentService implements PaymentServiceInterface
         /** @var Payment $payment */
         $payment = $customer->payments()->create([
             'microsite_id' => $paymentData['microsite_id'],
+            'invoice_id' => $paymentData['invoice_id'] ?? null,
             'description' => $paymentData['payment_description'],
             'reference' => date('ymdHis') . '-' . strtoupper(Str::random(4)),
             'currency' => $paymentData['currency'],
@@ -41,6 +43,12 @@ class PaymentService implements PaymentServiceInterface
         $result = app(PlaceToPayServiceInterface::class)->createPayment($customer, $payment);
 
         if (!$result->ok()) {
+
+            $payment->update([
+                'status' => PaymentStatus::REJECTED->value,
+                'status_message' => $result->json()['status']['message'],
+            ]);
+
             return [
                 'success' => false,
                 'message' => $result->json()['status']['message'],
@@ -95,9 +103,11 @@ class PaymentService implements PaymentServiceInterface
                 'status' => $paymentResponse['status']['status'],
             ]);
 
-            $payment->invoice()->update([
-                'status' => InvoiceStatus::PAID->value,
-            ]);
+            if ($payment->microsite->type === MicrositeType::INVOICE && $payment->invoice) {
+                $payment->invoice->update([
+                    'status' => InvoiceStatus::PAID->value,
+                ]);
+            }
 
         } else {
             $payment->update([
