@@ -2,6 +2,7 @@
 
 namespace App\Services\Payment;
 
+use App\Constants\InvoiceStatus;
 use App\Constants\PaymentStatus;
 use App\Contracts\PaymentServiceInterface;
 use App\Contracts\PlaceToPayServiceInterface;
@@ -82,7 +83,6 @@ class PaymentService implements PaymentServiceInterface
     public function updatePayment(Payment $payment, array $response): Payment
     {
         if ($response['status']['status'] === PaymentStatus::APPROVED->value) {
-
             $paymentResponse = $response['payment'][0];
 
             $payment->update([
@@ -92,6 +92,11 @@ class PaymentService implements PaymentServiceInterface
                 'status_message' => $paymentResponse['status']['message'],
                 'status' => $paymentResponse['status']['status'],
             ]);
+
+            $payment->invoice()->update([
+                'status' => InvoiceStatus::PAID->value,
+            ]);
+
         } else {
             $payment->update([
                 'status_message' => $response['status']['message'],
