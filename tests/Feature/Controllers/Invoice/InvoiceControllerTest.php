@@ -29,6 +29,7 @@ class InvoiceControllerTest extends TestCase
 
     public function test_admin_can_view_invoices_index()
     {
+        /** @var Microsite $microsite */
         $microsite = Microsite::factory()->create();
 
         Invoice::factory()->count(5)->create([
@@ -42,7 +43,7 @@ class InvoiceControllerTest extends TestCase
         $response->assertInertia(
             fn ($page) => $page
                 ->component('Invoices/Index')
-                ->has('invoices', 5)
+                ->has('invoices.data', 5)
                 ->has('microsite')
                 ->has('documentTypes')
         );

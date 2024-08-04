@@ -19,8 +19,10 @@ use Illuminate\Support\Carbon;
  * @property Carbon payment_date
  * @property string currency
  * @property string amount
+ * @property array additional_data
  * @property Customer customer
  * @property Microsite microsite
+ * @property Invoice invoice
  */
 class Payment extends Model
 {
@@ -29,6 +31,7 @@ class Payment extends Model
     protected $fillable = [
         'customer_id',
         'microsite_id',
+        'invoice_id',
         'reference',
         'description',
         'request_id',
@@ -39,6 +42,7 @@ class Payment extends Model
         'payment_date',
         'currency',
         'amount',
+        'additional_data',
     ];
 
     protected $casts = [

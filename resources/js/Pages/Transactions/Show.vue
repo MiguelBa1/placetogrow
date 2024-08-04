@@ -24,7 +24,7 @@ const goBack = () => {
             {{ t('transactions.show.title', { reference: transaction.data.reference }) }}
         </title>
     </Head>
-    
+
     <MainLayout>
         <template #header>
             <div class="flex items-center justify-between">
@@ -43,8 +43,8 @@ const goBack = () => {
             </div>
         </template>
 
-        <div class="w-full p-4 sm:p-8 bg-white shadow sm:rounded-lg space-y-6">
-            <div class="grid md:grid-cols-3 gap-8">
+        <div class="w-full p-6 sm:p-8 bg-white shadow rounded-lg space-y-6">
+            <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
                 <div>
                     <h3 class="font-semibold text-lg text-gray-800 leading-tight">
                         {{ t('transactions.show.details.title') }}
@@ -115,8 +115,24 @@ const goBack = () => {
                             <dt class="font-semibold text-gray-600">
                                 {{ t('transactions.show.customer.email') }}
                             </dt>
-                            <dd class="mb-2">
+                            <dd class="mb-2 break-words">
                                 {{ transaction.data.customer.email }}
+                            </dd>
+                        </div>
+                    </dl>
+                </div>
+
+                <div>
+                    <h3 class="font-semibold text-lg text-gray-800 leading-tight">
+                        {{ t('transactions.show.details.additionalData') }}
+                    </h3>
+                    <dl class="mt-4">
+                        <div v-for="(value, key) in transaction.data.additional_data" :key="key" class="flex flex-col">
+                            <dt class="font-semibold text-gray-600">
+                                {{ key }}
+                            </dt>
+                            <dd class="mb-2">
+                                {{ value }}
                             </dd>
                         </div>
                     </dl>
@@ -154,6 +170,7 @@ const goBack = () => {
                         </div>
                     </dl>
                 </div>
+
             </div>
         </div>
     </MainLayout>

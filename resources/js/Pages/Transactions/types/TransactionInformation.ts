@@ -15,6 +15,9 @@ export type TransactionInformation = {
         updated_at: string;
         currency: string;
         microsite: string;
+        additional_data: {
+            [key: string]: string;
+        } | null;
         customer: {
             id: number;
             name: string;

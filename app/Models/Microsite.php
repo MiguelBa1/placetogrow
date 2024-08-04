@@ -14,6 +14,22 @@ use Spatie\MediaLibrary\InteractsWithMedia;
 use Spatie\Sluggable\HasSlug;
 use Spatie\Sluggable\SlugOptions;
 
+/**
+ * @property int id
+ * @property string name
+ * @property string slug
+ * @property int category_id
+ * @property CurrencyType payment_currency
+ * @property int payment_expiration
+ * @property MicrositeType type
+ * @property string responsible_name
+ * @property string responsible_document_number
+ * @property string responsible_document_type
+ * @property Category category
+ * @property MicrositeField[] fields
+ * @property Invoice[] invoices
+ * @property Payment[] payments
+ */
 class Microsite extends Model implements HasMedia
 {
     use HasFactory, InteractsWithMedia, HasSlug, SoftDeletes;

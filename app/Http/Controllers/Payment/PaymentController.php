@@ -11,6 +11,7 @@ use App\Http\Resources\MicrositeField\MicrositeFieldDetailResource;
 use App\Models\Microsite;
 use App\Models\Payment;
 use App\Services\MicrositeService;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Log;
 use Inertia\Inertia;
@@ -42,7 +43,7 @@ class PaymentController extends Controller
     {
         $paymentDataProvider = (new PaymentDataProviderFactory())->create($microsite->type);
 
-        $paymentData = $paymentDataProvider->getPaymentData($request->validated());
+        $paymentData = $paymentDataProvider->getPaymentData($request->validated(), Collection::make($microsite->fields));
 
         $paymentData['currency'] = $microsite->payment_currency->value;
         $paymentData['microsite_id'] = $microsite->id;
@@ -56,7 +57,6 @@ class PaymentController extends Controller
                 ->withErrors($result['message']);
         }
     }
-
 
     public function return(Payment $payment): \Inertia\Response|RedirectResponse
     {

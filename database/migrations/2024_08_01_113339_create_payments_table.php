@@ -25,6 +25,7 @@ return new class extends Migration {
             $table->string('payment_method_name')->nullable();
             $table->string('authorization')->nullable();
             $table->dateTime('payment_date')->nullable();
+            $table->json('additional_data')->nullable();
             $table->timestamps();
         });
     }

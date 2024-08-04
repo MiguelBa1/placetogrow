@@ -9,6 +9,7 @@ export const esShow = {
         currency: 'Moneda',
         description: 'Descripción',
         date: 'Fecha de transacción',
+        additionalData: 'Datos adicionales',
         total: 'Total',
     },
     timestamps: {

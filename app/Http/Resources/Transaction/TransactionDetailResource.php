@@ -23,6 +23,7 @@ class TransactionDetailResource extends JsonResource
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
             'currency' => __('currency_types.' . $this->currency),
+            'additional_data' => $this->additional_data ? json_decode($this->additional_data) : null,
             'microsite' => $this->microsite->name,
             'customer' => $this->customer->only('id', 'name', 'last_name', 'email', 'document_number', 'document_type'),
         ];
