@@ -8,6 +8,7 @@ export const esIndex = {
         amount: 'Monto',
         payment_date: 'Fecha de pago',
         actions: 'Acciones',
+        no_transactions: 'No hay transacciones',
     },
     filters: {
         status: 'Estado',

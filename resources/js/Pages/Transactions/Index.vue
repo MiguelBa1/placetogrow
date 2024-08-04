@@ -33,7 +33,7 @@ defineProps<{
         <TransactionsTable v-if="transactions.data.length > 0" :transactions="transactions" />
         <div v-else class="flex justify-center items-center h-96">
             <p class="text-gray-500">
-                No transactions found.
+                {{ t('transactions.index.table.no_transactions') }}
             </p>
         </div>
 

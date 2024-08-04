@@ -3,19 +3,26 @@
 namespace App\Http\Controllers\Transaction;
 
 use App\Constants\PaymentStatus;
+use App\Constants\PolicyName;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Transaction\FilterTransactionsRequest;
 use App\Http\Resources\Transaction\TransactionDetailResource;
 use App\Http\Resources\Transaction\TransactionListResource;
 use App\Models\Payment;
+use Illuminate\Auth\Access\AuthorizationException;
 use Inertia\Inertia;
 use Inertia\Response;
 
 class TransactionController extends Controller
 {
 
+    /**
+     * @throws AuthorizationException
+     */
     public function index(FilterTransactionsRequest $request): Response
     {
+        $this->authorize(PolicyName::VIEW_ANY->value, Payment::class);
+
         $micrositeName = $request->input('microsite');
         $status = $request->input('status');
         $reference = $request->input('reference');
@@ -69,8 +76,13 @@ class TransactionController extends Controller
         ]);
     }
 
+    /**
+     * @throws AuthorizationException
+     */
     public function show(Payment $payment): Response
     {
+        $this->authorize(PolicyName::VIEW->value, $payment);
+
         $transaction = new TransactionDetailResource($payment);
 
         return Inertia::render('Transactions/Show', [
