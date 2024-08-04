@@ -13,7 +13,7 @@ return new class extends Migration {
     {
         Schema::create('payments', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('guest_id')->constrained('guests')->onDelete('cascade');
+            $table->foreignId('customer_id')->constrained('customers')->onDelete('cascade');
             $table->foreignId('microsite_id')->constrained('microsites')->onDelete('cascade');
             $table->string('reference')->unique();
             $table->string('description');

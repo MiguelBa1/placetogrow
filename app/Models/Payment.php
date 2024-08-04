@@ -19,7 +19,7 @@ use Illuminate\Support\Carbon;
  * @property Carbon payment_date
  * @property string currency
  * @property string amount
- * @property Guest guest
+ * @property Customer customer
  * @property Microsite microsite
  */
 class Payment extends Model
@@ -27,7 +27,7 @@ class Payment extends Model
     use HasFactory;
 
     protected $fillable = [
-        'guest_id',
+        'customer_id',
         'microsite_id',
         'reference',
         'description',
@@ -46,9 +46,9 @@ class Payment extends Model
         'status' => PaymentStatus::class,
     ];
 
-    public function guest(): BelongsTo
+    public function customer(): BelongsTo
     {
-        return $this->belongsTo(Guest::class);
+        return $this->belongsTo(Customer::class);
     }
 
     public function microsite(): BelongsTo

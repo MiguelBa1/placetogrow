@@ -3,7 +3,7 @@
 namespace Tests\Feature\Commands;
 
 use App\Constants\PaymentStatus;
-use App\Models\Guest;
+use App\Models\Customer;
 use App\Models\Payment;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Artisan;
@@ -18,9 +18,9 @@ class CheckPaymentsCommandTest extends TestCase
     {
         $this->fakeCheckApprovedPayment();
 
-        $guest = Guest::factory()->create();
+        $customer = Customer::factory()->create();
         $payment = Payment::factory()->create([
-            'guest_id' => $guest->id,
+            'customer_id' => $customer->id,
             'reference' => 'test_reference',
             'request_id' => 'test_request_id',
             'status' => PaymentStatus::PENDING->value,
@@ -42,9 +42,9 @@ class CheckPaymentsCommandTest extends TestCase
 
         $this->fakeCheckApprovedPayment();
 
-        $guest = Guest::factory()->create();
+        $customer = Customer::factory()->create();
         $payment = Payment::factory()->create([
-            'guest_id' => $guest->id,
+            'customer_id' => $customer->id,
             'reference' => 'test_reference',
             'request_id' => 'test_request_id',
             'status' => PaymentStatus::PENDING->value,
@@ -53,7 +53,7 @@ class CheckPaymentsCommandTest extends TestCase
         ]);
 
         $payment2 = Payment::factory()->create([
-            'guest_id' => $guest->id,
+            'customer_id' => $customer->id,
             'reference' => 'test_reference2',
             'request_id' => 'test_request_id2',
             'status' => PaymentStatus::PENDING->value,

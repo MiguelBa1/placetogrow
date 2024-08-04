@@ -23,7 +23,7 @@ class MicrositeViewsTest extends TestCase
 
         $this->seedRolesAndPermissions();
         $this->adminUser = User::factory()->create()->assignRole(Role::ADMIN);
-        $this->guestUser = User::factory()->create()->assignRole(Role::GUEST);
+        $this->customerUser = User::factory()->create()->assignRole(Role::CUSTOMER);
     }
 
     public function test_admin_can_view_microsites_index()
@@ -102,18 +102,18 @@ class MicrositeViewsTest extends TestCase
         );
     }
 
-    public function test_guest_cannot_view_create_page()
+    public function test_customer_cannot_view_create_page()
     {
-        $response = $this->actingAs($this->guestUser)->get(route('microsites.create'));
+        $response = $this->actingAs($this->customerUser)->get(route('microsites.create'));
 
         $response->assertForbidden();
     }
 
-    public function test_guest_cannot_view_edit_page()
+    public function test_customer_cannot_view_edit_page()
     {
         $microsite = Microsite::factory()->create();
 
-        $response = $this->actingAs($this->guestUser)->get(route('microsites.edit', $microsite));
+        $response = $this->actingAs($this->customerUser)->get(route('microsites.edit', $microsite));
 
         $response->assertForbidden();
     }

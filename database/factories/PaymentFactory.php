@@ -4,7 +4,7 @@ namespace Database\Factories;
 
 use App\Constants\CurrencyType;
 use App\Constants\PaymentStatus;
-use App\Models\Guest;
+use App\Models\Customer;
 use App\Models\Microsite;
 use App\Models\Payment;
 use Illuminate\Database\Eloquent\Factories\Factory;
@@ -30,7 +30,7 @@ class PaymentFactory extends Factory
     public function definition(): array
     {
         return [
-            'guest_id' => Guest::factory(),
+            'customer_id' => Customer::factory(),
             'microsite_id' => Microsite::factory(),
             'reference' => $this->faker->unique()->word,
             'request_id' => Str::random(),
