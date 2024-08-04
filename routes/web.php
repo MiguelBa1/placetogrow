@@ -1,8 +1,6 @@
 <?php
 
 use App\Constants\Permission;
-use App\Constants\Role;
-use App\Http\Controllers\Category\CategoryController;
 use App\Http\Controllers\Home\HomeController;
 use App\Http\Controllers\Invoice\InvoiceController;
 use App\Http\Controllers\Microsite\MicrositeController;
@@ -89,13 +87,6 @@ Route::prefix('payments')->name('payments.')->group(function () {
 Route::prefix('transactions')->name('transactions.')->group(function () {
     Route::get('/', [TransactionController::class, 'index'])->name('index');
     Route::get('/{payment}', [TransactionController::class, 'show'])->name('show');
-});
-
-Route::prefix('categories')->name('categories.')->middleware(['auth', 'role:' . Role::ADMIN->value])->group(function () {
-    Route::post('/', [CategoryController::class, 'store'])->name('store');
-    Route::put('/{category}', [CategoryController::class, 'update'])->name('update');
-    Route::delete('/{category}', [CategoryController::class, 'destroy'])->name('destroy');
-    Route::get('/', [CategoryController::class, 'index'])->name('index');
 });
 
 require __DIR__ . '/auth.php';
