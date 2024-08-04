@@ -5,7 +5,7 @@ namespace Tests\Unit\Services;
 use App\Constants\CurrencyType;
 use App\Constants\DocumentType;
 use App\Constants\PaymentStatus;
-use App\Models\Guest;
+use App\Models\Customer;
 use App\Models\Payment;
 use App\Services\PlaceToPayService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -23,7 +23,7 @@ class PlaceToPayServiceTest extends TestCase
             config('payments.placetopay.url') => Http::response(['status' => PaymentStatus::OK->value]),
         ]);
 
-        $guest = Guest::factory()->create([
+        $customer = Customer::factory()->create([
             'name' => 'John',
             'last_name' => 'Doe',
             'email' => 'john@example.com',
@@ -41,7 +41,7 @@ class PlaceToPayServiceTest extends TestCase
 
         $service = new PlaceToPayService();
 
-        $response = $service->createPayment($guest, $payment);
+        $response = $service->createPayment($customer, $payment);
 
         $this->assertEquals(200, $response->status());
 

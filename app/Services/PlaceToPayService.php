@@ -3,7 +3,7 @@
 namespace App\Services;
 
 use App\Contracts\PlaceToPayServiceInterface;
-use App\Models\Guest;
+use App\Models\Customer;
 use App\Models\Payment;
 use Illuminate\Http\Client\Response;
 use Illuminate\Support\Facades\Http;
@@ -49,7 +49,7 @@ class PlaceToPayService implements PlaceToPayServiceInterface
         return $this;
     }
 
-    public function buyer(Guest $data): self
+    public function buyer(Customer $data): self
     {
         $this->data['buyer'] = [
             'name' => $data['name'],
@@ -79,11 +79,11 @@ class PlaceToPayService implements PlaceToPayServiceInterface
         return $this;
     }
 
-    public function createPayment(Guest $guest, Payment $payment): Response
+    public function createPayment(Customer $customer, Payment $payment): Response
     {
         $this->prepare();
         $this->payment($payment);
-        $this->buyer($guest);
+        $this->buyer($customer);
 
         Log::info('PlaceToPayService: Creating payment', array_merge($this->data['payment'], $this->data['buyer']));
 

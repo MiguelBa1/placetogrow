@@ -3,7 +3,7 @@
 namespace App\Services\Payment;
 
 use App\Contracts\PlaceToPayServiceInterface;
-use App\Models\Guest;
+use App\Models\Customer;
 use App\Models\Payment;
 use GuzzleHttp\Psr7\Response as GuzzleResponse;
 use Illuminate\Http\Client\Response;
@@ -16,7 +16,7 @@ class PlaceToPayServiceMock implements PlaceToPayServiceInterface
 
     private int $statusCode = 200;
 
-    public function createPayment(Guest $guest, Payment $payment): Response
+    public function createPayment(Customer $customer, Payment $payment): Response
     {
         $data = json_decode(file_get_contents(app_path("../tests/Stubs/$this->createPaymentFile")), true);
 
