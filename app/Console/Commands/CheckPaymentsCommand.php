@@ -6,10 +6,10 @@ use App\Constants\PaymentStatus;
 use App\Contracts\PaymentServiceInterface;
 use App\Models\Payment;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Cache;
 
 class CheckPaymentsCommand extends Command
 {
-
     private PaymentServiceInterface $paymentService;
 
     public function __construct()
@@ -30,7 +30,11 @@ class CheckPaymentsCommand extends Command
 
         foreach ($payments as $payment) {
             $this->info('Checking payment ' . $payment->request_id);
-            $this->paymentService->checkPayment($payment);
+            $result = $this->paymentService->checkPayment($payment);
+
+            if ($result['success']) {
+                Cache::forget('payment_status_' . $payment->id);
+            }
         }
     }
 }

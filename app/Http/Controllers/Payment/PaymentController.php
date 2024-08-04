@@ -13,6 +13,7 @@ use App\Models\Payment;
 use App\Services\MicrositeService;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
 use Inertia\Inertia;
 use Symfony\Component\HttpFoundation\Response;
@@ -67,18 +68,27 @@ class PaymentController extends Controller
             'request_id' => $payment->request_id,
         ]);
 
+        $cacheKey = 'payment_status_' . $payment->id;
+
+        $cachedStatus = Cache::get($cacheKey);
+
         if ($payment->status->value === PaymentStatus::PENDING->value) {
-            $result = $this->paymentService->checkPayment($payment);
+            if (!$cachedStatus) {
+                $result = $this->paymentService->checkPayment($payment);
 
-            if (!$result['success']) {
-                return redirect()->route('payments.show', $payment->microsite->slug)
-                    ->withErrors([
-                        'payment' => $result['message'],
-                    ]);
+                if (!$result['success']) {
+                    return redirect()->route('payments.show', $payment->microsite->slug)
+                        ->withErrors([
+                            'payment' => $result['message'],
+                        ]);
+                }
+
+                $payment = $result['payment'];
+
+                Cache::put($cacheKey, $payment->status->value, now()->addMinutes(10));
+            } else {
+                $payment->status = $cachedStatus;
             }
-
-            /** @var Payment $payment */
-            $payment = $result['payment']; // updated payment
         }
 
         return Inertia::render('Payments/Return', [
