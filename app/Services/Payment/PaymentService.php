@@ -5,7 +5,7 @@ namespace App\Services\Payment;
 use App\Constants\PaymentStatus;
 use App\Contracts\PaymentServiceInterface;
 use App\Contracts\PlaceToPayServiceInterface;
-use App\Models\Guest;
+use App\Models\Customer;
 use App\Models\Payment;
 use Illuminate\Support\Str;
 
@@ -13,8 +13,8 @@ class PaymentService implements PaymentServiceInterface
 {
     public function createPayment(array $paymentData): array
     {
-        /** @var Guest $guest */
-        $guest = Guest::query()->firstOrCreate(
+        /** @var Customer $customer */
+        $customer = Customer::query()->firstOrCreate(
             ['document_number' => $paymentData['document_number']],
             [
                 'name' => $paymentData['name'],
@@ -27,7 +27,7 @@ class PaymentService implements PaymentServiceInterface
         );
 
         /** @var Payment $payment */
-        $payment = $guest->payments()->create([
+        $payment = $customer->payments()->create([
             'microsite_id' => $paymentData['microsite_id'],
             'description' => $paymentData['payment_description'],
             'reference' => date('ymdHis') . '-' . strtoupper(Str::random(4)),
@@ -35,7 +35,7 @@ class PaymentService implements PaymentServiceInterface
             'amount' => $paymentData['amount'],
         ]);
 
-        $result = app(PlaceToPayServiceInterface::class)->createPayment($guest, $payment);
+        $result = app(PlaceToPayServiceInterface::class)->createPayment($customer, $payment);
 
         if (!$result->ok()) {
             return [
@@ -68,7 +68,7 @@ class PaymentService implements PaymentServiceInterface
             return [
                 'success' => true,
                 'payment' => $payment->refresh(),
-                'customerName' => $payment->guest->name . ' ' . $payment->guest->last_name,
+                'customerName' => $payment->customer->name . ' ' . $payment->customer->last_name,
                 'micrositeName' => $payment->microsite->name,
             ];
         } else {

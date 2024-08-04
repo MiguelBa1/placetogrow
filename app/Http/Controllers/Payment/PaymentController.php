@@ -63,7 +63,7 @@ class PaymentController extends Controller
         if ($payment->status->value !== PaymentStatus::PENDING->value) {
             return Inertia::render('Payments/Return', [
                 'payment' => $payment,
-                'customerName' => $payment->guest->name . ' ' . $payment->guest->last_name,
+                'customerName' => $payment->customer->name . ' ' . $payment->customer->last_name,
                 'micrositeName' => $payment->microsite->name,
             ]);
         }

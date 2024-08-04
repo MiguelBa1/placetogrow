@@ -41,7 +41,7 @@ class InvoicePaymentTest extends TestCase
         ]);
     }
 
-    public function test_guest_can_view_payment_page(): void
+    public function test_customer_can_view_payment_page(): void
     {
         $response = $this->get(route('payments.show', $this->invoiceMicrosite));
 
@@ -64,7 +64,7 @@ class InvoicePaymentTest extends TestCase
         ]);
 
         $response->assertRedirect('/success');
-        $this->assertDatabaseHas('guests', [
+        $this->assertDatabaseHas('customers', [
             'name' => 'test_name',
             'last_name' => 'test_last_name',
             'document_type' => 'CC',

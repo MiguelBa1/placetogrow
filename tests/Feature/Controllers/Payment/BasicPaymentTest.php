@@ -29,7 +29,7 @@ class BasicPaymentTest extends TestCase
         $this->basicMicrosite = $this->createMicrositeWithFields(MicrositeType::BASIC);
     }
 
-    public function test_guest_can_view_payment_page(): void
+    public function test_customer_can_view_payment_page(): void
     {
         $response = $this->get(route('payments.show', $this->basicMicrosite));
 
@@ -58,7 +58,7 @@ class BasicPaymentTest extends TestCase
         ]);
 
         $response->assertRedirect('/success');
-        $this->assertDatabaseHas('guests', [
+        $this->assertDatabaseHas('customers', [
             'name' => 'John',
             'last_name' => 'Doe',
             'document_type' => 'CC',

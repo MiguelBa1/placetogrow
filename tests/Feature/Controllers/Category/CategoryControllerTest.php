@@ -16,7 +16,7 @@ class CategoryControllerTest extends TestCase
     use RefreshDatabase;
 
     private User $adminUser;
-    private User $guestUser;
+    private User $customerUser;
 
     protected function setUp(): void
     {
@@ -26,7 +26,7 @@ class CategoryControllerTest extends TestCase
 
         $this->seed(RoleSeeder::class);
         $this->adminUser = User::factory()->create()->assignRole(Role::ADMIN);
-        $this->guestUser = User::factory()->create()->assignRole(Role::GUEST);
+        $this->customerUser = User::factory()->create()->assignRole(Role::CUSTOMER);
     }
 
     public function test_admin_can_view_categories_index()
@@ -74,9 +74,9 @@ class CategoryControllerTest extends TestCase
         $this->assertDatabaseMissing('categories', ['id' => $category->id]);
     }
 
-    public function test_guest_cannot_create_category()
+    public function test_customer_cannot_create_category()
     {
-        $response = $this->actingAs($this->guestUser)->post(route('categories.store'), [
+        $response = $this->actingAs($this->customerUser)->post(route('categories.store'), [
             'name' => 'Test Category',
             'logo' => 'https://example.com/logo.png',
         ]);
