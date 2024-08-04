@@ -12,6 +12,14 @@ defineProps<{
     transaction: TransactionInformation;
 }>();
 
+const formatDate = (date?: string) => {
+    if (!date) {
+        return "-";
+    }
+
+    return dayjs(date).format("DD/MM/YYYY HH:mm");
+};
+
 const goBack = () => {
     history.back();
 };
@@ -122,7 +130,7 @@ const goBack = () => {
                     </dl>
                 </div>
 
-                <div>
+                <div v-if="transaction.data.additional_data === null">
                     <h3 class="font-semibold text-lg text-gray-800 leading-tight">
                         {{ t('transactions.show.details.additionalData') }}
                     </h3>
@@ -148,7 +156,7 @@ const goBack = () => {
                                 {{ t('transactions.show.timestamps.paymentDate') }}
                             </dt>
                             <dd class="mb-2">
-                                {{ dayjs(transaction.data.payment_date).format('DD/MM/YYYY HH:mm') }}
+                                {{ formatDate(transaction.data.payment_date) }}
                             </dd>
                         </div>
                         <div class="flex flex-col">
@@ -156,7 +164,7 @@ const goBack = () => {
                                 {{ t('transactions.show.timestamps.createdAt') }}
                             </dt>
                             <dd class="mb-2">
-                                {{ dayjs(transaction.data.created_at).format('DD/MM/YYYY HH:mm') }}
+                                {{ formatDate(transaction.data.created_at) }}
                             </dd>
                         </div>
 
@@ -165,7 +173,7 @@ const goBack = () => {
                                 {{ t('transactions.show.timestamps.updatedAt') }}
                             </dt>
                             <dd class="mb-2">
-                                {{ dayjs(transaction.data.updated_at).format('DD/MM/YYYY HH:mm') }}
+                                {{ formatDate(transaction.data.updated_at) }}
                             </dd>
                         </div>
                     </dl>
