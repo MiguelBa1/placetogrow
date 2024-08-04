@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Carbon;
 
 /**
+ * @property int id
  * @property string reference
  * @property string request_id
  * @property string description

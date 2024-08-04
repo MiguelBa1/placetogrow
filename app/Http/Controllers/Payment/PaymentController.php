@@ -87,7 +87,7 @@ class PaymentController extends Controller
 
                 Cache::put($cacheKey, $payment->status->value, now()->addMinutes(10));
             } else {
-                $payment->status = $cachedStatus;
+                $payment->status = $cachedStatus; // Use the cached status
             }
         }
 

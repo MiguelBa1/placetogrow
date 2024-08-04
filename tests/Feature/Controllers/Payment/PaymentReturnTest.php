@@ -10,6 +10,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Storage;
 use Inertia\Testing\AssertableInertia as Assert;
+use Mockery;
 use Tests\TestCase;
 use Tests\Traits\CreatesMicrosites;
 use Tests\Traits\PlaceToPayMockTrait;
@@ -56,7 +57,7 @@ class PaymentReturnTest extends TestCase
 
         Cache::shouldHaveReceived('put')
             ->once()
-            ->with('payment_status_' . $payment->id, PaymentStatus::APPROVED->value, \Mockery::any());
+            ->with('payment_status_' . $payment->id, PaymentStatus::APPROVED->value, Mockery::any());
     }
 
     public function test_return_after_payment_error(): void
@@ -97,7 +98,7 @@ class PaymentReturnTest extends TestCase
 
         Cache::shouldHaveReceived('put')
             ->once()
-            ->with('payment_status_' . $payment->id, PaymentStatus::REJECTED->value, \Mockery::any());
+            ->with('payment_status_' . $payment->id, PaymentStatus::REJECTED->value, Mockery::any());
     }
 
     public function test_already_approved_payment(): void
@@ -117,5 +118,36 @@ class PaymentReturnTest extends TestCase
             'id' => $payment->id,
             'status' => PaymentStatus::APPROVED->value,
         ]);
+    }
+
+    public function test_return_after_payment_using_cache(): void
+    {
+        $paymentReference = 'test_reference';
+        $cachedStatus = PaymentStatus::PENDING->value;
+
+        /** @var Payment $payment */
+        $payment = Payment::factory()->create([
+            'reference' => $paymentReference,
+            'request_id' => 'test_request_id',
+            'status' => PaymentStatus::PENDING->value,
+        ]);
+
+        Cache::shouldReceive('get')
+            ->once()
+            ->with('payment_status_' . $payment->id)
+            ->andReturn($cachedStatus);
+
+        $response = $this->get(route('payments.return', $paymentReference));
+
+        $response->assertOk();
+        $response->assertInertia(
+            fn (Assert $page) => $page
+                ->component('Payments/Return')
+                ->has('payment')
+                ->has('customerName')
+                ->has('micrositeName')
+        );
+
+        $this->assertEquals($cachedStatus, $payment->status->value);
     }
 }
