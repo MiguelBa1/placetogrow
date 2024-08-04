@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Carbon;
 
 /**
+ * @property int id
  * @property string reference
  * @property string request_id
  * @property string description
@@ -19,8 +20,10 @@ use Illuminate\Support\Carbon;
  * @property Carbon payment_date
  * @property string currency
  * @property string amount
+ * @property array additional_data
  * @property Customer customer
  * @property Microsite microsite
+ * @property Invoice invoice
  */
 class Payment extends Model
 {
@@ -29,6 +32,7 @@ class Payment extends Model
     protected $fillable = [
         'customer_id',
         'microsite_id',
+        'invoice_id',
         'reference',
         'description',
         'request_id',
@@ -39,6 +43,7 @@ class Payment extends Model
         'payment_date',
         'currency',
         'amount',
+        'additional_data',
     ];
 
     protected $casts = [
@@ -54,6 +59,11 @@ class Payment extends Model
     public function microsite(): BelongsTo
     {
         return $this->belongsTo(Microsite::class);
+    }
+
+    public function invoice(): BelongsTo
+    {
+        return $this->belongsTo(Invoice::class);
     }
 
     public function getRouteKeyName(): string

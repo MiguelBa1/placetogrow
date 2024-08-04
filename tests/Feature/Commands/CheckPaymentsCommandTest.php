@@ -7,6 +7,7 @@ use App\Models\Customer;
 use App\Models\Payment;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\Cache;
 use Tests\TestCase;
 use Tests\Traits\PlaceToPayMockTrait;
 
@@ -27,6 +28,8 @@ class CheckPaymentsCommandTest extends TestCase
             'created_at' => now()->subMinutes(config('payments.check_interval_minutes'))->subSecond(),
         ]);
 
+        Cache::shouldReceive('forget')->once()->with('payment_status_' . $payment->id);
+
         Artisan::call('app:check-payments');
 
         $payment->refresh();
@@ -39,7 +42,6 @@ class CheckPaymentsCommandTest extends TestCase
 
     public function test_only_check_pending_payments_after_interval()
     {
-
         $this->fakeCheckApprovedPayment();
 
         $customer = Customer::factory()->create();
@@ -60,6 +62,8 @@ class CheckPaymentsCommandTest extends TestCase
             'created_at' => now()->subMinutes(config('payments.check_interval_minutes'))->addSecond(),
             'payment_date' => null,
         ]);
+
+        Cache::shouldReceive('forget')->once()->with('payment_status_' . $payment->id);
 
         Artisan::call('app:check-payments');
 

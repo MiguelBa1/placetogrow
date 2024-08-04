@@ -11,7 +11,9 @@ use App\Http\Resources\MicrositeField\MicrositeFieldDetailResource;
 use App\Models\Microsite;
 use App\Models\Payment;
 use App\Services\MicrositeService;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
 use Inertia\Inertia;
 use Symfony\Component\HttpFoundation\Response;
@@ -42,7 +44,7 @@ class PaymentController extends Controller
     {
         $paymentDataProvider = (new PaymentDataProviderFactory())->create($microsite->type);
 
-        $paymentData = $paymentDataProvider->getPaymentData($request->validated());
+        $paymentData = $paymentDataProvider->getPaymentData($request->validated(), Collection::make($microsite->fields));
 
         $paymentData['currency'] = $microsite->payment_currency->value;
         $paymentData['microsite_id'] = $microsite->id;
@@ -53,10 +55,11 @@ class PaymentController extends Controller
             return Inertia::location($result['url']);
         } else {
             return redirect()->route('payments.show', $microsite->slug)
-                ->withErrors($result['message']);
+                ->withErrors([
+                    'payment' => $result['message'],
+                ]);
         }
     }
-
 
     public function return(Payment $payment): \Inertia\Response|RedirectResponse
     {
@@ -65,16 +68,27 @@ class PaymentController extends Controller
             'request_id' => $payment->request_id,
         ]);
 
+        $cacheKey = 'payment_status_' . $payment->id;
+
+        $cachedStatus = Cache::get($cacheKey);
+
         if ($payment->status->value === PaymentStatus::PENDING->value) {
-            $result = $this->paymentService->checkPayment($payment);
+            if (!$cachedStatus) {
+                $result = $this->paymentService->checkPayment($payment);
 
-            if (!$result['success']) {
-                return redirect()->route('payments.show', $payment->microsite->slug)
-                    ->withErrors($result['message']);
+                if (!$result['success']) {
+                    return redirect()->route('payments.show', $payment->microsite->slug)
+                        ->withErrors([
+                            'payment' => $result['message'],
+                        ]);
+                }
+
+                $payment = $result['payment'];
+
+                Cache::put($cacheKey, $payment->status->value, now()->addMinutes(10));
+            } else {
+                $payment->status = $cachedStatus; // Use the cached status
             }
-
-            /** @var Payment $payment */
-            $payment = $result['payment']; // updated payment
         }
 
         return Inertia::render('Payments/Return', [

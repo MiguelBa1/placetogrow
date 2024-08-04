@@ -5,6 +5,7 @@ export const enIndex = {
     table: {
         reference: "Reference",
         name: "Name",
+        status: "Status",
         document_number: "Document number",
         amount: "Amount",
         expiration_date: "Expiration date",

@@ -8,5 +8,12 @@ export const enIndex = {
         amount: 'Amount',
         payment_date: 'Payment date',
         actions: 'Actions',
-    }
+        no_transactions: 'No transactions',
+    },
+    filters: {
+        status: 'Status',
+        microsite: 'Microsite',
+        document: 'Document',
+        reference: 'Reference',
+    },
 }

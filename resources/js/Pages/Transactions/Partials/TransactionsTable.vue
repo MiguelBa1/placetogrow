@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import dayjs from "dayjs";
-import { Link } from "@inertiajs/vue3";
+import { Link, usePage } from "@inertiajs/vue3";
 import { DataTable, Pagination } from "@/Components";
 import { TransactionsPaginatedResponse, getTransactionTableColumns, getStatusClass } from "../index";
 import { EyeIcon } from '@heroicons/vue/16/solid';
@@ -13,6 +13,8 @@ defineProps<{
 }>();
 
 const columns = getTransactionTableColumns(t);
+
+const { auth: { permissions } } = usePage().props;
 
 </script>
 
@@ -42,6 +44,7 @@ const columns = getTransactionTableColumns(t);
         <template #cell-actions="{ row }">
             <div class="flex justify-center">
                 <Link
+                    v-if="permissions.includes('view_transaction')"
                     :href="route('transactions.show', row.reference)"
                     class="text-gray-700 hover:text-black"
                 >

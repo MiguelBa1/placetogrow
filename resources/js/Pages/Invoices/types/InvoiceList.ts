@@ -7,4 +7,6 @@ export type InvoiceItem = {
     expiration_date: string;
 }
 
-export type InvoiceList = InvoiceItem[];
+export type InvoiceList = {
+    data: InvoiceItem[];
+};

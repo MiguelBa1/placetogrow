@@ -20,6 +20,7 @@ enum Permission: string
     case CREATE_INVOICE = 'create_invoice';
 
     case VIEW_ANY_TRANSACTION = 'view_any_transaction';
+    case VIEW_TRANSACTION = 'view_transaction';
 
     public static function grouped(): array
     {
@@ -35,6 +36,10 @@ enum Permission: string
             'invoice' => [
                 self::VIEW_ANY_INVOICE,
                 self::CREATE_INVOICE,
+            ],
+            'transaction' => [
+                self::VIEW_ANY_TRANSACTION,
+                self::VIEW_TRANSACTION,
             ],
             'user' => [
                 self::VIEW_ANY_USER,

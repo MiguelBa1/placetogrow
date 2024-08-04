@@ -3,6 +3,7 @@
 namespace Database\Factories;
 
 use App\Constants\DocumentType;
+use App\Constants\InvoiceStatus;
 use App\Constants\MicrositeType;
 use App\Models\Invoice;
 use App\Models\Microsite;
@@ -27,6 +28,7 @@ class InvoiceFactory extends Factory
             'last_name' => $this->faker->lastName,
             'email' => $this->faker->safeEmail,
             'phone' => $this->faker->phoneNumber,
+            'status' => $this->faker->randomElement(InvoiceStatus::cases())->value,
             'amount' => $this->faker->randomFloat(2, 10, 1000),
             'expiration_date' => Carbon::now()->addDays($paymentExpiration),
         ];

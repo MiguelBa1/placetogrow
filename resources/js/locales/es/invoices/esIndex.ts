@@ -5,6 +5,7 @@ export const esIndex = {
     table: {
         reference: "Referencia",
         name: "Nombre",
+        status: "Estado",
         document_number: "Número de documento",
         amount: "Monto",
         expiration_date: "Fecha de vencimiento",

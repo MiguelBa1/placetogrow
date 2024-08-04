@@ -9,6 +9,7 @@ export const enShow = {
         currency: 'Currency',
         description: 'Description',
         date: 'Transaction date',
+        additionalData: 'Additional data',
         total: 'Total',
     },
     timestamps: {
