@@ -1,7 +1,7 @@
+import { enIndex } from './enIndex'
 import { enShow } from './Show'
-import { enResult } from './Result'
 
 export default {
+    index: enIndex,
     show: enShow,
-    result: enResult,
 }

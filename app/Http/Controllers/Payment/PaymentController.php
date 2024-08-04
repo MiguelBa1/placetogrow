@@ -12,6 +12,7 @@ use App\Models\Microsite;
 use App\Models\Payment;
 use App\Services\MicrositeService;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Log;
 use Inertia\Inertia;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -59,26 +60,27 @@ class PaymentController extends Controller
 
     public function return(Payment $payment): \Inertia\Response|RedirectResponse
     {
+        Log::withContext([
+            'payment_id' => $payment->id,
+            'request_id' => $payment->request_id,
+        ]);
 
-        if ($payment->status->value !== PaymentStatus::PENDING->value) {
-            return Inertia::render('Payments/Return', [
-                'payment' => $payment,
-                'customerName' => $payment->customer->name . ' ' . $payment->customer->last_name,
-                'micrositeName' => $payment->microsite->name,
-            ]);
+        if ($payment->status->value === PaymentStatus::PENDING->value) {
+            $result = $this->paymentService->checkPayment($payment);
+
+            if (!$result['success']) {
+                return redirect()->route('payments.show', $payment->microsite->slug)
+                    ->withErrors($result['message']);
+            }
+
+            /** @var Payment $payment */
+            $payment = $result['payment']; // updated payment
         }
 
-        $result = $this->paymentService->checkPayment($payment);
-
-        if ($result['success']) {
-            return Inertia::render('Payments/Return', [
-                'payment' => $result['payment'],
-                'customerName' => $result['customerName'],
-                'micrositeName' => $result['micrositeName'],
-            ]);
-        }
-
-        return redirect()->route('payments.show', $payment->microsite->slug)
-            ->withErrors($result['message']);
+        return Inertia::render('Payments/Return', [
+            'payment' => $payment,
+            'customerName' => $payment->customer->name . ' ' . $payment->customer->last_name,
+            'micrositeName' => $payment->microsite->name,
+        ]);
     }
 }

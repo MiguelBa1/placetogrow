@@ -15,4 +15,11 @@ enum PaymentStatus: string
     case REJECTED = 'REJECTED';
     case UNKNOWN = 'UNKNOWN';
 
+    public static function toSelectArray(): array
+    {
+        return array_map(fn ($case) => [
+            'label' => __("payment.statuses.{$case->value}"),
+            'value' => $case->value
+        ], self::cases());
+    }
 }

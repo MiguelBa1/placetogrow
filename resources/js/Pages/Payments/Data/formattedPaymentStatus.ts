@@ -1,4 +1,5 @@
-import { PaymentStatus } from '../index';
+import { PaymentStatus } from "@/types/enums";
+
 export const formattedPaymentStatus = (t: (key: string) => string, status: PaymentStatus) => {
     switch (status) {
         case PaymentStatus.PENDING:

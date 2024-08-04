@@ -27,6 +27,8 @@ class DefaultRolesAndPermissionsSeeder extends Seeder
 
                 Permission::VIEW_ANY_INVOICE,
                 Permission::CREATE_INVOICE,
+
+                Permission::VIEW_ANY_TRANSACTION,
             ],
             Role::CUSTOMER->value => [],
             Role::GUEST->value => [],

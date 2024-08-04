@@ -63,11 +63,11 @@ class PaymentService implements PaymentServiceInterface
         $result = app(PlaceToPayServiceInterface::class)->checkPayment($payment->request_id);
 
         if ($result->ok()) {
-            $this->updatePayment($payment, $result->json());
+            $payment = $this->updatePayment($payment, $result->json());
 
             return [
                 'success' => true,
-                'payment' => $payment->refresh(),
+                'payment' => $payment,
                 'customerName' => $payment->customer->name . ' ' . $payment->customer->last_name,
                 'micrositeName' => $payment->microsite->name,
             ];
@@ -79,7 +79,7 @@ class PaymentService implements PaymentServiceInterface
         }
     }
 
-    public function updatePayment(Payment $payment, array $response): void
+    public function updatePayment(Payment $payment, array $response): Payment
     {
         if ($response['status']['status'] === PaymentStatus::APPROVED->value) {
 
@@ -98,5 +98,7 @@ class PaymentService implements PaymentServiceInterface
                 'status' => $response['status']['status'],
             ]);
         }
+
+        return $payment;
     }
 }
