@@ -1,13 +1,15 @@
 <script setup lang="ts">
 import { Head } from "@inertiajs/vue3";
 import { MainLayout } from "@/Layouts";
-import { TransactionsPaginatedResponse, TransactionsTable } from "./index";
+import { TransactionsPaginatedResponse, TransactionsTable, IndexHeader } from "./index";
 import { useI18n } from "vue-i18n";
 
 const { t } = useI18n();
 
 defineProps<{
     transactions: TransactionsPaginatedResponse;
+    filters: { microsite: string, status: string, reference: string, document: number };
+    paymentStatuses: { value: string; label: string }[];
 }>();
 
 </script>
@@ -22,11 +24,10 @@ defineProps<{
     <MainLayout>
 
         <template #header>
-            <div class="flex items-center">
-                <h2 class="font-semibold text-xl text-gray-800">
-                    {{ t('transactions.index.title') }}
-                </h2>
-            </div>
+            <IndexHeader
+                :filters="filters"
+                :paymentStatuses="paymentStatuses"
+            />
         </template>
 
         <TransactionsTable v-if="transactions.data.length > 0" :transactions="transactions" />

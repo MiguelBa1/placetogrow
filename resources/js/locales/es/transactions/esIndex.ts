@@ -8,5 +8,11 @@ export const esIndex = {
         amount: 'Monto',
         payment_date: 'Fecha de pago',
         actions: 'Acciones',
-    }
+    },
+    filters: {
+        status: 'Estado',
+        microsite: 'Micrositio',
+        document: 'Documento',
+        reference: 'Referencia',
+    },
 }

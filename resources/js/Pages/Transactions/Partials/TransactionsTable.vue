@@ -1,7 +1,9 @@
 <script setup lang="ts">
 import dayjs from "dayjs";
+import { Link } from "@inertiajs/vue3";
 import { DataTable, Pagination } from "@/Components";
 import { TransactionsPaginatedResponse, getTransactionTableColumns, getStatusClass } from "../index";
+import { EyeIcon } from '@heroicons/vue/16/solid';
 import { useI18n } from "vue-i18n";
 
 const { t } = useI18n();
@@ -37,7 +39,16 @@ const columns = getTransactionTableColumns(t);
                     : '-'
             }}
         </template>
-
+        <template #cell-actions="{ row }">
+            <div class="flex justify-center">
+                <Link
+                    href="#"
+                    class="text-gray-700 hover:text-black"
+                >
+                    <EyeIcon class="h-5 w-5" />
+                </Link>
+            </div>
+        </template>
     </DataTable>
     <Pagination
         :links="transactions.meta.links"
