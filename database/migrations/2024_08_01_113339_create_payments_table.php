@@ -1,5 +1,6 @@
 <?php
 
+use App\Constants\CurrencyType;
 use App\Constants\PaymentStatus;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
@@ -16,15 +17,15 @@ return new class extends Migration {
             $table->foreignId('customer_id')->constrained('customers')->onDelete('cascade');
             $table->foreignId('microsite_id')->constrained('microsites')->onDelete('cascade');
             $table->foreignId('invoice_id')->nullable()->constrained('invoices')->onDelete('cascade');
-            $table->string('reference')->unique();
-            $table->string('description');
-            $table->string('currency');
+            $table->string('reference', 50)->unique();
+            $table->string('description', 255);
+            $table->enum('currency', array_column(CurrencyType::cases(), 'value'));
             $table->integer('amount');
             $table->enum('status', array_column(PaymentStatus::cases(), 'value'))->default(PaymentStatus::PENDING);
-            $table->string('status_message')->nullable();
-            $table->string('request_id')->nullable();
-            $table->string('payment_method_name')->nullable();
-            $table->string('authorization')->nullable();
+            $table->string('status_message', 255)->nullable();
+            $table->string('request_id', 50)->nullable();
+            $table->string('payment_method_name', 50)->nullable();
+            $table->string('authorization', 50)->nullable();
             $table->dateTime('payment_date')->nullable();
             $table->json('additional_data')->nullable();
             $table->timestamps();

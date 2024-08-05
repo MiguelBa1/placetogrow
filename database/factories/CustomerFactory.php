@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Constants\DocumentType;
 use App\Models\Customer;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
@@ -24,7 +25,7 @@ class CustomerFactory extends Factory
         return [
             'name' => $this->faker->firstName,
             'last_name' => $this->faker->lastName,
-            'document_type' => $this->faker->randomElement(['CC', 'TI', 'CE', 'NIT']),
+            'document_type' => $this->faker->randomElement(array_column(DocumentType::cases(), 'value')),
             'document_number' => $this->faker->unique()->numerify('##########'),
             'phone' => $this->faker->phoneNumber,
             'email' => $this->faker->unique()->safeEmail,
