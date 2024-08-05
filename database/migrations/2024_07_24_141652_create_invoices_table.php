@@ -20,7 +20,7 @@ return new class extends Migration {
             $table->string('email', 100);
             $table->enum('status', array_column(InvoiceStatus::cases(), 'value'))->default(InvoiceStatus::PENDING);
             $table->string('phone', 20);
-            $table->decimal('amount', 10, 2);
+            $table->decimal('amount', 10);
             $table->date('expiration_date');
             $table->timestamps();
         });

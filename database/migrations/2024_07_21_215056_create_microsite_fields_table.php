@@ -14,7 +14,7 @@ return new class extends Migration {
             $table->string('name', 100);
             $table->string('label', 150);
             $table->enum('type', FieldType::toArray());
-            $table->string('validation_rules')->nullable();
+            $table->string('validation_rules', 255)->nullable();
             $table->json('options')->nullable();
             $table->boolean('modifiable')->default(false);
             $table->foreignId('microsite_id')->constrained()->onDelete('cascade');
