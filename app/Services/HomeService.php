@@ -35,7 +35,7 @@ class HomeService
                 return $query->where('name', 'like', '%' . $searchFilter . '%');
             });
 
-        $microsites = $micrositesQuery->paginate(10)->withQueryString();
+        $microsites = $micrositesQuery->paginate(12)->withQueryString();
 
         $microsites->getCollection()->transform(function ($microsite) {
             return [

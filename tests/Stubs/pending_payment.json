@@ -1,0 +1,207 @@
+{
+    "requestId": "84349",
+    "status": {
+        "status": "PENDING",
+        "reason": "PE",
+        "message": "La petición se encuentra pendiente",
+        "date": "2024-08-02T00:34:14-05:00"
+    },
+    "request": {
+        "locale": "es_CO",
+        "payer": {
+            "document": "6901409665",
+            "documentType": "CC",
+            "name": "Jordane Blick",
+            "surname": "DuBuque",
+            "email": "xmetz@yahoo.com",
+            "mobile": "+573006108300"
+        },
+        "buyer": {
+            "document": "6901409665",
+            "documentType": "CC",
+            "name": "Jordane Blick",
+            "surname": "DuBuque",
+            "email": "xmetz@yahoo.com",
+            "mobile": "3006108300",
+            "address": {
+                "street": "111 Shyanne Union Suite 245",
+                "city": "South Theodoreshire",
+                "state": "Antioquia",
+                "postalCode": "80322-6333",
+                "country": "US"
+            }
+        },
+        "payment": {
+            "reference": "TEST_20240802_002144",
+            "description": "Rerum ipsa libero nostrum delectus.",
+            "amount": {
+                "taxes": [
+                    {
+                        "kind": "ice",
+                        "amount": 7.2,
+                        "base": 0
+                    },
+                    {
+                        "kind": "valueAddedTax",
+                        "amount": 11.4,
+                        "base": 0
+                    }
+                ],
+                "details": [
+                    {
+                        "kind": "shipping",
+                        "amount": 3
+                    },
+                    {
+                        "kind": "tip",
+                        "amount": 3
+                    },
+                    {
+                        "kind": "subtotal",
+                        "amount": 60
+                    }
+                ],
+                "currency": "USD",
+                "total": 84.6
+            },
+            "allowPartial": false,
+            "shipping": {
+                "document": "6901409665",
+                "documentType": "CC",
+                "name": "Jordane Blick",
+                "surname": "DuBuque",
+                "email": "xmetz@yahoo.com",
+                "mobile": "3006108300",
+                "address": {
+                    "street": "111 Shyanne Union Suite 245",
+                    "city": "South Theodoreshire",
+                    "state": "Antioquia",
+                    "postalCode": "80322-6333",
+                    "country": "US"
+                }
+            },
+            "items": [
+                {
+                    "sku": "88050",
+                    "name": "Aut molestiae dolores.",
+                    "category": "physical",
+                    "qty": "1",
+                    "price": "60",
+                    "tax": "11.4"
+                }
+            ],
+            "subscribe": false
+        },
+        "fields": [
+            {
+                "keyword": "Redeem Code",
+                "value": 471864,
+                "displayOn": "payment"
+            },
+            {
+                "keyword": "_processUrl_",
+                "value": "https://checkout-co.placetopay.dev/spa/session/84349/d61673c6c4e5a30a8b3d3f8b9cb47626",
+                "displayOn": "none"
+            },
+            {
+                "keyword": "_session_",
+                "value": 84349,
+                "displayOn": "none"
+            }
+        ],
+        "returnUrl": "https://dnetix.co/p2p/client",
+        "ipAddress": "181.51.90.60",
+        "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/127.0.0.0 Safari/537.36",
+        "expiration": "2024-08-03T00:21:44-05:00",
+        "captureAddress": false,
+        "skipResult": false,
+        "noBuyerFill": false
+    },
+    "payment": [
+        {
+            "status": {
+                "status": "REJECTED",
+                "reason": "05",
+                "message": "Rechazada",
+                "date": "2024-08-02T00:34:07-05:00"
+            },
+            "internalReference": "435059",
+            "paymentMethod": "Visa Credit Card",
+            "paymentMethodName": "Visa Credit Card",
+            "issuerName": "BANCO DE GUAYAQUIL, S.A.",
+            "amount": {
+                "from": {
+                    "currency": "USD",
+                    "total": 84.6
+                },
+                "to": {
+                    "currency": "USD",
+                    "total": 84.6
+                },
+                "factor": 1
+            },
+            "authorization": "000000",
+            "reference": "TEST_20240802_002144",
+            "receipt": "217898585031",
+            "franchise": "PS_VS",
+            "refunded": false,
+            "processorFields": [
+                {
+                    "keyword": "merchantCode",
+                    "value": "4549106521651",
+                    "displayOn": "none"
+                },
+                {
+                    "keyword": "terminalNumber",
+                    "value": "98765432",
+                    "displayOn": "none"
+                },
+                {
+                    "keyword": "cardType",
+                    "value": "C",
+                    "displayOn": "none"
+                },
+                {
+                    "keyword": "bin",
+                    "value": "411076",
+                    "displayOn": "none"
+                },
+                {
+                    "keyword": "installments",
+                    "value": 1,
+                    "displayOn": "none"
+                },
+                {
+                    "keyword": "Redeem Code",
+                    "value": "471864",
+                    "displayOn": "none"
+                },
+                {
+                    "keyword": "returnUrl",
+                    "value": "https://dnetix.co/p2p/client",
+                    "displayOn": "none"
+                },
+                {
+                    "keyword": "onTest",
+                    "value": true,
+                    "displayOn": "none"
+                },
+                {
+                    "keyword": "lastDigits",
+                    "value": "0016",
+                    "displayOn": "none"
+                },
+                {
+                    "keyword": "id",
+                    "value": "f9e64b8a51226a43c4fc2a96ebdfdcb4",
+                    "displayOn": "none"
+                },
+                {
+                    "keyword": "b24",
+                    "value": "05",
+                    "displayOn": "none"
+                }
+            ]
+        }
+    ]
+}

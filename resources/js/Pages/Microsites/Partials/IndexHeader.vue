@@ -40,8 +40,8 @@ const categoryOptions = computed(() => {
 </script>
 
 <template>
-    <div class="flex justify-between">
-        <div class="flex gap-4"
+    <div class="flex flex-col md:flex-row gap-2 justify-between">
+        <div class="flex flex-col md:flex-row gap-4"
         >
             <div class="flex items-center gap-4">
                 <h2 class="font-semibold text-xl text-gray-800">
@@ -57,7 +57,7 @@ const categoryOptions = computed(() => {
 
             <form
                 v-if="showFilters"
-                class="flex items-center gap-2 w-96"
+                class="flex flex-col md:flex-row items-center gap-2 md:w-96"
                 @submit.prevent="handleSearch"
             >
                 <InputField
@@ -72,19 +72,21 @@ const categoryOptions = computed(() => {
                     :placeholder="t('microsites.index.filters.category')"
                     v-model="filtersForm.category"
                 />
-                <Button
-                    type="submit"
-                    variant="secondary"
-                >
-                    <MagnifyingGlassIcon class="h-5 w-5" />
-                </Button>
-                <Button
-                    variant="secondary"
-                    color="gray"
-                    @click="router.visit(route('microsites.index'))"
-                >
-                    <XMarkIcon class="h-5 w-5" />
-                </Button>
+                <div class="flex gap-2">
+                    <Button
+                        type="submit"
+                        variant="secondary"
+                    >
+                        <MagnifyingGlassIcon class="h-5 w-5" />
+                    </Button>
+                    <Button
+                        variant="secondary"
+                        color="gray"
+                        @click="router.visit(route('microsites.index'))"
+                    >
+                        <XMarkIcon class="h-5 w-5" />
+                    </Button>
+                </div>
             </form>
         </div>
         <Button

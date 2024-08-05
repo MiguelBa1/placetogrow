@@ -42,8 +42,8 @@ class CreateAdminUserCommand extends Command
             'email' => $email,
             'password' => $password,
         ], [
-            'name' => 'required|string|max:255',
-            'email' => 'required|string|lowercase|email|max:255|unique:users,email',
+            'name' => 'required|string|max:100',
+            'email' => 'required|string|lowercase|email|max:150|unique:users,email',
             'password' => ['required', Rules\Password::defaults()],
         ]);
 

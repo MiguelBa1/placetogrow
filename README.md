@@ -4,6 +4,7 @@
 Placetogrow is a platform that allows administrators to create and manage microsites for different types of payments (invoices, subscriptions, donations), and enables users to make payments in a simple and secure manner.
 
 ## Technologies Used
+- PHP 8.2
 - Laravel 11.0
 - MySQL 8.0
 - InertiaJs with Vue 3.4.0 and TypeScript 5.0.2
@@ -35,6 +36,11 @@ Placetogrow is a platform that allows administrators to create and manage micros
     - `ADMIN_NAME`
     - `ADMIN_EMAIL`
     - `ADMIN_PASSWORD`
+
+   ### PlacetoPay Credentials
+    - `P2P_LOGIN`
+    - `P2P_SECRET_KEY`
+    - `P2P_URL`
    
 
 4. Run `composer install` to install the dependencies.
@@ -56,3 +62,5 @@ To access the admin panel, you need an admin user. You can create this user in o
     ```
 
 This command allows you to directly create an admin user with the specified name, email, and password.
+
+The system commands are defined in the `routes/console.php` file.

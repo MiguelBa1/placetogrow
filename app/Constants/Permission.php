@@ -16,6 +16,12 @@ enum Permission: string
     case MANAGE_ROLES = 'manage_roles';
     case VIEW_DASHBOARD = 'view_dashboard';
 
+    case VIEW_ANY_INVOICE = 'view_any_invoice';
+    case CREATE_INVOICE = 'create_invoice';
+
+    case VIEW_ANY_TRANSACTION = 'view_any_transaction';
+    case VIEW_TRANSACTION = 'view_transaction';
+
     public static function grouped(): array
     {
         return [
@@ -26,6 +32,14 @@ enum Permission: string
                 self::UPDATE_MICROSITE,
                 self::DELETE_MICROSITE,
                 self::RESTORE_MICROSITE,
+            ],
+            'invoice' => [
+                self::VIEW_ANY_INVOICE,
+                self::CREATE_INVOICE,
+            ],
+            'transaction' => [
+                self::VIEW_ANY_TRANSACTION,
+                self::VIEW_TRANSACTION,
             ],
             'user' => [
                 self::VIEW_ANY_USER,

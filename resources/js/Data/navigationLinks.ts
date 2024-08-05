@@ -1,6 +1,7 @@
 const authenticatedLinks = [
     { name: 'dashboard', route: 'dashboard', label: 'dashboard', requiredPermissions: ['view_dashboard'] },
     { name: 'microsites', route: 'microsites.index', label: 'microsites', requiredPermissions: ['view_any_microsite'] },
+    { name: 'transactions', route: 'transactions.index', label: 'transactions', requiredPermissions: ['view_any_transaction'] },
     { name: 'users', route: 'users.index', label: 'users', requiredPermissions: ['view_any_user'] },
     { name: 'roles', route: 'roles-permissions.index', label: 'roles', requiredPermissions: ['manage_roles'] },
 ];

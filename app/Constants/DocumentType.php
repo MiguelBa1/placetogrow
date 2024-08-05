@@ -2,12 +2,16 @@
 
 namespace App\Constants;
 
+use App\Concerns\EnumToArray;
+
 enum DocumentType: string
 {
+    use EnumToArray;
+
     case CC = 'CC';
     case CE = 'CE';
     case NIT = 'NIT';
-    case PASSPORT = 'PASSPORT';
+    case PP = 'PP';
 
     public static function toSelectArray(): array
     {

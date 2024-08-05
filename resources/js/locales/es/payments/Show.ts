@@ -1,13 +1,6 @@
 export const esShow = {
-    form : {
-        name: "Nombre",
-        lastName: "Apellido",
-        email: "Correo Electrónico",
-        documentNumber: "Número de Documento",
-        documentType: "Tipo de Documento",
-        phone: "Teléfono",
-        currency: "Moneda",
-        amount: "Monto",
-        submit: "Pagar",
+    paymentMessage: 'Se realizará un pago electrónico utilizando {payment_currency}.',
+    form: {
+        pay: 'Pagar',
     }
 }

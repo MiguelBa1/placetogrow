@@ -1,0 +1,8 @@
+{
+    "status": {
+        "status": "FAILED",
+        "reason": "401",
+        "message": "Autenticación fallida 101",
+        "date": "2024-08-02T00:43:46-05:00"
+    }
+}

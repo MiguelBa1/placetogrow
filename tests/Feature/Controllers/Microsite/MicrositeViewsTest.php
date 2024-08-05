@@ -4,6 +4,7 @@ namespace Tests\Feature\Controllers\Microsite;
 
 use App\Constants\Role;
 use App\Models\Microsite;
+use App\Models\MicrositeField;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Inertia\Testing\AssertableInertia;
@@ -22,7 +23,7 @@ class MicrositeViewsTest extends TestCase
 
         $this->seedRolesAndPermissions();
         $this->adminUser = User::factory()->create()->assignRole(Role::ADMIN);
-        $this->guestUser = User::factory()->create()->assignRole(Role::GUEST);
+        $this->customerUser = User::factory()->create()->assignRole(Role::CUSTOMER);
     }
 
     public function test_admin_can_view_microsites_index()
@@ -66,6 +67,27 @@ class MicrositeViewsTest extends TestCase
             );
     }
 
+    public function test_admin_can_view_show_page(): void
+    {
+        $microsite = Microsite::factory()->create();
+        MicrositeField::factory()->create([
+            'name' => 'old_field',
+            'type' => 'text',
+            'validation_rules' => 'required|string|max:255',
+            'microsite_id' => $microsite->id,
+        ]);
+
+        $response = $this->actingAs($this->adminUser)->get(route('microsites.show', $microsite));
+
+        $response->assertOk()
+            ->assertInertia(
+                fn (AssertableInertia $page) => $page
+                    ->component('Microsites/Show')
+                    ->has('microsite')
+                    ->has('fields')
+            );
+    }
+
     public function test_admin_can_view_microsite_details()
     {
         $microsite = Microsite::factory()->create();
@@ -80,18 +102,18 @@ class MicrositeViewsTest extends TestCase
         );
     }
 
-    public function test_guest_cannot_view_create_page()
+    public function test_customer_cannot_view_create_page()
     {
-        $response = $this->actingAs($this->guestUser)->get(route('microsites.create'));
+        $response = $this->actingAs($this->customerUser)->get(route('microsites.create'));
 
         $response->assertForbidden();
     }
 
-    public function test_guest_cannot_view_edit_page()
+    public function test_customer_cannot_view_edit_page()
     {
         $microsite = Microsite::factory()->create();
 
-        $response = $this->actingAs($this->guestUser)->get(route('microsites.edit', $microsite));
+        $response = $this->actingAs($this->customerUser)->get(route('microsites.edit', $microsite));
 
         $response->assertForbidden();
     }

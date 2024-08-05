@@ -11,6 +11,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Microsite\CreateMicrositeRequest;
 use App\Http\Requests\Microsite\FilterMicrositesRequest;
 use App\Http\Requests\Microsite\UpdateMicrositeRequest;
+use App\Http\Resources\MicrositeField\MicrositeFieldListResource;
 use App\Models\Microsite;
 use App\Services\MicrositeService;
 use Exception;
@@ -53,9 +54,11 @@ class MicrositeController extends Controller
         $this->authorize(PolicyName::VIEW->value, $microsite);
 
         $micrositeData = (new micrositeService)->getMicrositeData($microsite);
+        $fields = MicrositeFieldListResource::collection($microsite->fields()->orderBy('created_at', 'desc')->get());
 
         return Inertia::render('Microsites/Show', [
             'microsite' => $micrositeData,
+            'fields' => $fields,
         ]);
     }
 

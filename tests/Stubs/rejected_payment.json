@@ -1,0 +1,102 @@
+{
+    "requestId": "84350",
+    "status": {
+        "status": "REJECTED",
+        "reason": "?C",
+        "message": "La petición ha sido cancelada por el usuario",
+        "date": "2024-08-02T00:35:00-05:00"
+    },
+    "request": {
+        "locale": "es_CO",
+        "buyer": {
+            "document": "6901409665",
+            "documentType": "CC",
+            "name": "Jordane Blick",
+            "surname": "DuBuque",
+            "email": "xmetz@yahoo.com",
+            "mobile": "3006108300",
+            "address": {
+                "street": "111 Shyanne Union Suite 245",
+                "city": "South Theodoreshire",
+                "state": "Antioquia",
+                "postalCode": "80322-6333",
+                "country": "US"
+            }
+        },
+        "payment": {
+            "reference": "TEST_20240802_002144",
+            "description": "Rerum ipsa libero nostrum delectus.",
+            "amount": {
+                "taxes": [
+                    {
+                        "kind": "ice",
+                        "amount": 7.2,
+                        "base": 0
+                    },
+                    {
+                        "kind": "valueAddedTax",
+                        "amount": 11.4,
+                        "base": 0
+                    }
+                ],
+                "details": [
+                    {
+                        "kind": "shipping",
+                        "amount": 3
+                    },
+                    {
+                        "kind": "tip",
+                        "amount": 3
+                    },
+                    {
+                        "kind": "subtotal",
+                        "amount": 60
+                    }
+                ],
+                "currency": "USD",
+                "total": 84.6
+            },
+            "allowPartial": false,
+            "shipping": {
+                "document": "6901409665",
+                "documentType": "CC",
+                "name": "Jordane Blick",
+                "surname": "DuBuque",
+                "email": "xmetz@yahoo.com",
+                "mobile": "3006108300",
+                "address": {
+                    "street": "111 Shyanne Union Suite 245",
+                    "city": "South Theodoreshire",
+                    "state": "Antioquia",
+                    "postalCode": "80322-6333",
+                    "country": "US"
+                }
+            },
+            "items": [
+                {
+                    "sku": "88050",
+                    "name": "Aut molestiae dolores.",
+                    "category": "physical",
+                    "qty": "1",
+                    "price": "60",
+                    "tax": "11.4"
+                }
+            ],
+            "subscribe": false
+        },
+        "fields": [
+            {
+                "keyword": "Redeem Code",
+                "value": 471864,
+                "displayOn": "payment"
+            }
+        ],
+        "returnUrl": "https://dnetix.co/p2p/client",
+        "ipAddress": "181.51.90.60",
+        "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/127.0.0.0 Safari/537.36",
+        "expiration": "2024-08-03T00:21:44-05:00",
+        "captureAddress": false,
+        "skipResult": false,
+        "noBuyerFill": false
+    }
+}

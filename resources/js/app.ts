@@ -9,6 +9,7 @@ import { createI18nInstance } from '@/locales';
 import Toast from 'vue-toastification';
 import 'vue-toastification/dist/index.css';
 import { toastOptions } from '@/Lib/toast';
+import { VueQueryPlugin } from '@tanstack/vue-query'
 
 const appName = import.meta.env.VITE_APP_NAME || 'Laravel';
 
@@ -27,6 +28,7 @@ createInertiaApp({
             .use(ZiggyVue)
             .use(i18n)
             .use(Toast, toastOptions)
+            .use(VueQueryPlugin)
             .mount(el);
     },
     progress: {
