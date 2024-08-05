@@ -49,6 +49,7 @@ class Payment extends Model
     protected $casts = [
         'payment_date' => 'datetime',
         'status' => PaymentStatus::class,
+        'additional_data' => 'array',
     ];
 
     public function customer(): BelongsTo

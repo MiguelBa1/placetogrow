@@ -9,7 +9,6 @@ use App\Contracts\PaymentServiceInterface;
 use App\Contracts\PlaceToPayServiceInterface;
 use App\Models\Customer;
 use App\Models\Payment;
-use Illuminate\Database\Eloquent\Casts\Json;
 use Illuminate\Support\Str;
 
 class PaymentService implements PaymentServiceInterface
@@ -37,7 +36,7 @@ class PaymentService implements PaymentServiceInterface
             'reference' => date('ymdHis') . '-' . strtoupper(Str::random(4)),
             'currency' => $paymentData['currency'],
             'amount' => $paymentData['amount'],
-            'additional_data' => Json::encode($paymentData['additional_data']),
+            'additional_data' => $paymentData['additional_data'],
         ]);
 
         $result = app(PlaceToPayServiceInterface::class)->createPayment($customer, $payment);

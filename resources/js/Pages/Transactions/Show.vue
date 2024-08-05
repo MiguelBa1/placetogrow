@@ -130,7 +130,7 @@ const goBack = () => {
                     </dl>
                 </div>
 
-                <div v-if="transaction.data.additional_data === null">
+                <div v-if="transaction.data.additional_data !== null">
                     <h3 class="font-semibold text-lg text-gray-800 leading-tight">
                         {{ t('transactions.show.details.additionalData') }}
                     </h3>
