@@ -1,5 +1,9 @@
 <script setup lang="ts">
 import { Navbar } from '@/Components';
+import { VueQueryDevtools } from '@tanstack/vue-query-devtools';
+import { ref } from 'vue';
+
+const enableDevtools = ref(import.meta.env.VITE_ENABLE_DEVTOOLS === 'true');
 </script>
 
 <template>
@@ -20,4 +24,5 @@ import { Navbar } from '@/Components';
             </main>
         </div>
     </div>
+    <VueQueryDevtools v-if="enableDevtools" />
 </template>

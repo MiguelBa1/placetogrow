@@ -19,7 +19,7 @@ class StoreMicrositeTest extends TestCase
     use RefreshDatabase, SeedsRolesAndPermissions;
 
     private User $adminUser;
-    private User $guestUser;
+    private User $customerUser;
 
     protected function setUp(): void
     {
@@ -30,7 +30,7 @@ class StoreMicrositeTest extends TestCase
 
         $this->seedRolesAndPermissions();
         $this->adminUser = User::factory()->create()->assignRole(Role::ADMIN);
-        $this->guestUser = User::factory()->create()->assignRole(Role::GUEST);
+        $this->customerUser = User::factory()->create()->assignRole(Role::CUSTOMER);
     }
 
     public function test_admin_can_create_microsite()
@@ -59,11 +59,11 @@ class StoreMicrositeTest extends TestCase
         ]);
     }
 
-    public function test_guest_cannot_create_microsite()
+    public function test_customer_cannot_create_microsite()
     {
         $category = Category::factory()->create();
 
-        $response = $this->actingAs($this->guestUser)->post(route('microsites.store'), [
+        $response = $this->actingAs($this->customerUser)->post(route('microsites.store'), [
             'name' => 'Test Microsite',
             'category_id' => $category->id,
             'logo' => UploadedFile::fake()->image('logo.png'),

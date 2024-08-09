@@ -99,7 +99,7 @@ type Option = {
 
 const props = withDefaults(defineProps<{
     id: string;
-    modelValue: string | number | null;
+    modelValue?: string | number | null;
     options: Option[];
     label?: string;
     placeholder?: string;
