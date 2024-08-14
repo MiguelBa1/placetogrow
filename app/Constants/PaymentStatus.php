@@ -13,6 +13,7 @@ enum PaymentStatus: string
     case PENDING = 'PENDING';
     case APPROVED = 'APPROVED';
     case REJECTED = 'REJECTED';
+    case EXPIRED = 'EXPIRED';
     case UNKNOWN = 'UNKNOWN';
 
     public static function toSelectArray(): array
