@@ -46,13 +46,13 @@ class PlaceToPayServiceTest extends TestCase
         $this->assertEquals(200, $response->status());
 
         $this->assertArrayHasKey('status', $response->json());
-        $this->assertEquals('OK', $response->json()['status']);
+        $this->assertEquals('OK', $response->json()['status']['status']);
     }
 
     public function test_can_check_a_payment()
     {
         Http::fake([
-            config('payments.placetopay.url') => Http::response(['status' => PaymentStatus::APPROVED->value]),
+            config('payments.placetopay.url').'/*' => Http::response(['status' => ['status' => PaymentStatus::APPROVED->value]]),
         ]);
 
         $service = new PlaceToPayService();
@@ -62,6 +62,6 @@ class PlaceToPayServiceTest extends TestCase
         $this->assertEquals(200, $response->status());
 
         $this->assertArrayHasKey('status', $response->json());
-        $this->assertEquals(PaymentStatus::APPROVED->value, $response->json()['status']);
+        $this->assertEquals(PaymentStatus::APPROVED->value, $response->json()['status']['status']);
     }
 }
