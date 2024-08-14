@@ -3,6 +3,11 @@
 declare(strict_types=1);
 
 return [
+    'custom' => [
+        'validation_rules' => [
+            'invalid' => 'El campo contiene reglas de validación no válidas.',
+        ],
+    ],
     'accepted'             => 'El campo :attribute debe ser aceptado.',
     'accepted_if'          => 'El campo :attribute debe ser aceptado cuando :other sea :value.',
     'active_url'           => 'El campo :attribute debe ser una URL válida.',
@@ -274,6 +279,8 @@ return [
         'payment_currency'         => 'moneda de pago',
         'category_id'              => 'categoría',
         'payment_expiration'       => 'vencimiento de pago',
+        'document_number'          => 'número de documento',
+        'document_type'            => 'tipo de documento',
         'responsible_name'         => 'nombre del responsable',
         'responsible_document_number' => 'número de documento del responsable',
         'responsible_document_type' => 'tipo de documento del responsable',

@@ -3,6 +3,7 @@ export const enAuthenticatedLayout = {
     profile: "Profile",
     logOut: "Log Out",
     microsites: "Microsites",
+    transactions: "Transactions",
     users: "Users",
     roles: "Roles",
     userDropdown: {

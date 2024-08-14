@@ -14,10 +14,18 @@ return [
     'manage_roles' => 'Administrar roles',
     'view_dashboard' => 'Ver panel de control',
 
+    'view_any_invoice' => 'Ver cualquier factura',
+    'create_invoice' => 'Crear factura',
+
+    'view_any_transaction' => 'Ver cualquier transacción',
+    'view_transaction' => 'Ver transacción',
+
     'group' => [
         'microsite' => 'Micrositio',
         'user' => 'Usuario',
         'role' => 'Rol',
+        'transaction' => 'Transacción',
         'dashboard' => 'Panel de control',
+        'invoice' => 'Factura',
     ],
 ];

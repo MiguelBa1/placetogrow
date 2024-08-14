@@ -1,3 +1,5 @@
+export * from './ApiResource';
+
 export interface User {
     id: number;
     name: string;
