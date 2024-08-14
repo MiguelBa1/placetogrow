@@ -48,4 +48,36 @@ class HomeService
 
         return $microsites;
     }
+
+    public function filterMricositesWithCategory(?string $categoryFilter, ?string $searchFilter)
+    {
+        $micrositesQuery = Microsite::query()
+            ->select('microsites.id', 'microsites.name as microsite_name', 'microsites.slug', 'microsites.category_id', 'categories.name as category_name')
+            ->leftJoin('categories', 'microsites.category_id', '=', 'categories.id')
+            ->when($categoryFilter, function ($query, $categoryFilter) {
+                return $query->where('microsites.category_id', $categoryFilter);
+            })
+            ->when($searchFilter, function ($query, $searchFilter) {
+                return $query->where('microsites.name', 'like', '%' . $searchFilter . '%');
+            });
+
+        $microsites = $micrositesQuery->paginate(10)->withQueryString();
+
+        $microsites->getCollection()->transform(function ($microsite) {
+            return [
+                'id' => $microsite->id,
+                'name' => $microsite->microsite_name,
+                'slug' => $microsite->slug,
+                'category' => [
+                    'id' => $microsite->category_id,
+                    'name' => $microsite->category_name,
+                    'logo' => asset('images/categories/cat_' . random_int(1, 5) . '.svg'),
+                ],
+                'logo' => asset('images/microsites/logo_' . random_int(1, 7) . '.png'),
+            ];
+        });
+
+        return $microsites;
+
+    }
 }

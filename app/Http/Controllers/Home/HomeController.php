@@ -12,12 +12,11 @@ class HomeController extends Controller
 {
     public function index(FilterMicrositesRequest $request, HomeService $homeService): Response
     {
-        $categories = $homeService->getCategoriesWithLogos();
-
         $categoryFilter = $request->input('category');
         $searchFilter = $request->input('search');
 
-        $microsites = $homeService->filterMicrosites($categoryFilter, $searchFilter);
+        $microsites = $homeService->filterMricositesWithCategory($categoryFilter, $searchFilter);
+        $categories = $microsites->getCollection()->pluck('category')->unique('id')->values();
 
         return Inertia::render('Home/Index', [
             'categories' => fn () => $categories,
