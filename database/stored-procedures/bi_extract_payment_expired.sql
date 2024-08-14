@@ -3,5 +3,5 @@ DROP
 CREATE PROCEDURE UpdateExpiredPayments()
 BEGIN
     UPDATE payments SET status = 'EXPIRED'
-    WHERE expires_in < NOW() AND status NOT IN ('EXPIRED', 'APPROVED', 'PENDING');
+    WHERE payment_date < NOW() AND status NOT IN ('EXPIRED', 'APPROVED', 'OK', 'FAILED');
 END;
