@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Constants\PaymentStatus;
 use App\Models\Payment;
 use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -15,25 +16,25 @@ class UpdateExpiredPaymentTest extends TestCase
     public function test_updates_expired_payments_status(): void
     {
         $paymentA = Payment::factory()->create([
-            'payment_reference' => 'ref1',
-            'expires_in' => Carbon::now()->subDays(),
-            'status' => 'ACTIVE'
+            'reference' => 'ref1',
+            'payment_date' => Carbon::now()->subDays()->toIso8601String(),
+            'status' => PaymentStatus::PENDING->value,
         ]);
 
-        $paymentB = Payment::factory()->create(['payment_reference' => 'ref2','status' => 'APPROVED']);
-        $paymentC = Payment::factory()->create(['payment_reference' => 'ref3','status' => 'PENDING']);
+        $paymentB = Payment::factory()->create(['reference' => 'ref2','status' => PaymentStatus::APPROVED->value]);
+        $paymentC = Payment::factory()->create(['reference' => 'ref3','status' => PaymentStatus::PENDING->value]);
 
         Artisan::call('payments:update-expired');
 
         $paymentA->refresh();
-        $this->assertEquals('EXPIRED', $paymentA->status);
-        $this->assertEquals('APPROVED', $paymentB->status);
-        $this->assertEquals('PENDING', $paymentC->status);
+        $this->assertEquals('EXPIRED', $paymentA->status->value);
+        $this->assertEquals('APPROVED', $paymentB->status->value);
+        $this->assertEquals('PENDING', $paymentC->status->value);
 
         $this->assertDatabaseHas(
             'payments',
             [
-                'payment_reference' => 'ref1',
+                'reference' => 'ref1',
                 'status' => 'EXPIRED'
             ]
         );
