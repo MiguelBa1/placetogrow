@@ -15,9 +15,19 @@ class SubscriptionTranslationFactory extends Factory
 
     public function definition(): array
     {
-        $planKey = $this->faker->randomElement(['basic', 'medium', 'premium']);
         $locale = $this->faker->randomElement(['en', 'es']);
 
+        // Get the locale from the states if it's set
+        if (!empty($this->states)) {
+            foreach ($this->states as $stateClosure) {
+                $state = $stateClosure();
+                if (isset($state['locale'])) {
+                    $locale = $state['locale'];
+                }
+            }
+        }
+
+        $planKey = $this->faker->randomElement(['basic', 'medium', 'premium']);
         $name = __('subscription.plans.' . $planKey . '.name', [], $locale);
         $description = __('subscription.plans.' . $planKey . '.description', [], $locale);
 

@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Constants\BillingUnit;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -24,6 +25,7 @@ use Illuminate\Support\Carbon;
  * @property Carbon|null $deleted_at
  *
  * @property Microsite $microsite
+ * @property Collection|SubscriptionTranslation[] $translations
  */
 class Subscription extends Model
 {

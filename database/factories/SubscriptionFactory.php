@@ -21,8 +21,8 @@ class SubscriptionFactory extends Factory
             'microsite_id' => Microsite::factory(),
             'price' => $this->faker->numberBetween(1000, 10000),
             'total_duration' => $this->faker->numberBetween(1, 12),
-            'billing_frequency' => 1,
-            'billing_unit' => BillingUnit::MONTHS->value,
+            'billing_frequency' => $this->faker->numberBetween(3, 12),
+            'billing_unit' => $this->faker->randomElement(BillingUnit::toArray()),
         ];
     }
 }
