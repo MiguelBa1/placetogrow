@@ -11,8 +11,6 @@ return new class extends Migration {
         Schema::create('subscriptions', function (Blueprint $table) {
             $table->id();
             $table->foreignId('microsite_id')->constrained('microsites')->onDelete('cascade');
-            $table->string('name', 100);
-            $table->text('description')->nullable();
             $table->integer('price');
             $table->integer('total_duration');
             $table->integer('billing_frequency')->default(1);
