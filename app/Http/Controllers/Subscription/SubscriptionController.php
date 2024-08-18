@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Subscription;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Subscription\CreateSubscriptionRequest;
 use App\Http\Requests\Subscription\UpdateSubscriptionRequest;
+use App\Http\Resources\Subscription\SubscriptionListResource;
 use App\Models\Microsite;
 use App\Models\Subscription;
 use Illuminate\Http\RedirectResponse;
@@ -16,7 +17,22 @@ class SubscriptionController extends Controller
 {
     public function index(Microsite $microsite): Response
     {
-        $subscriptions = $microsite->subscriptions()->with('translations')->get();
+        $subscriptions = $microsite->subscriptions()
+            ->select(
+                'id',
+                'price',
+                'total_duration',
+                'billing_frequency',
+                'billing_unit',
+                'created_at',
+                'deleted_at',
+            )
+            ->with('translations:subscription_id,locale,name')
+            ->get();
+
+        $microsite = $microsite->only('id', 'slug');
+
+        $subscriptions = SubscriptionListResource::collection($subscriptions);
 
         return Inertia::render('Subscriptions/Index', [
             'microsite' => $microsite,
@@ -26,6 +42,8 @@ class SubscriptionController extends Controller
 
     public function create(Microsite $microsite): Response
     {
+        $microsite = $microsite->only('id', 'slug');
+
         return Inertia::render('Subscriptions/Create', [
             'microsite' => $microsite,
         ]);
@@ -50,9 +68,16 @@ class SubscriptionController extends Controller
 
     public function edit(Microsite $microsite, Subscription $subscription): Response
     {
+        $microsite = $microsite->only('id', 'slug');
+
+        $subscription = $subscription
+            ->load('translations:subscription_id,locale,name')
+            ->only('id', 'price', 'total_duration', 'billing_frequency', 'billing_unit');
+
+
         return Inertia::render('Subscriptions/Edit', [
             'microsite' => $microsite,
-            'subscription' => $subscription->load('translations'),
+            'subscription' => $subscription,
         ]);
     }
 
