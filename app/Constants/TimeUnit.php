@@ -4,7 +4,7 @@ namespace App\Constants;
 
 use App\Concerns\EnumToArray;
 
-enum BillingUnit: string
+enum TimeUnit: string
 {
     use EnumToArray;
 

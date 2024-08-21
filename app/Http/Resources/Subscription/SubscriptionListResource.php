@@ -24,7 +24,7 @@ class SubscriptionListResource extends JsonResource
             'price' => $this->price,
             'total_duration' => $this->total_duration,
             'billing_frequency' => $this->billing_frequency,
-            'billing_unit' => __('billing_units.' . $this->billing_unit->value),
+            'time_unit' => __('time_units.' . $this->time_unit->value),
             'created_at' => $this->created_at,
             'deleted_at' => $this->deleted_at,
         ];

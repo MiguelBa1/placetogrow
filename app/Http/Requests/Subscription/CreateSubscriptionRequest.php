@@ -10,7 +10,7 @@ class CreateSubscriptionRequest extends BaseSubscriptionRequest
             'price' => ['required'],
             'total_duration' => ['required'],
             'billing_frequency' => ['required'],
-            'billing_unit' => ['required'],
+            'time_unit' => ['required'],
             'translations' => ['required'],
             'translations.*.locale' => ['required'],
             'translations.*.name' => ['required'],

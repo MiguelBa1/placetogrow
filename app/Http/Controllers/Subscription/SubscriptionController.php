@@ -23,7 +23,7 @@ class SubscriptionController extends Controller
                 'price',
                 'total_duration',
                 'billing_frequency',
-                'billing_unit',
+                'time_unit',
                 'created_at',
                 'deleted_at',
             )
@@ -72,7 +72,7 @@ class SubscriptionController extends Controller
 
         $subscription = $subscription
             ->load('translations:subscription_id,locale,name')
-            ->only('id', 'price', 'total_duration', 'billing_frequency', 'billing_unit');
+            ->only('id', 'price', 'total_duration', 'billing_frequency', 'time_unit');
 
 
         return Inertia::render('Subscriptions/Edit', [

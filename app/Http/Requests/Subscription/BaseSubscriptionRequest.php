@@ -2,7 +2,7 @@
 
 namespace App\Http\Requests\Subscription;
 
-use App\Constants\BillingUnit;
+use App\Constants\TimeUnit;
 use Illuminate\Foundation\Http\FormRequest;
 
 abstract class BaseSubscriptionRequest extends FormRequest
@@ -13,7 +13,7 @@ abstract class BaseSubscriptionRequest extends FormRequest
             'price' => ['numeric'],
             'total_duration' => ['integer'],
             'billing_frequency' => ['integer'],
-            'billing_unit' => ['in:' . implode(',', BillingUnit::toArray())],
+            'time_unit' => ['in:' . implode(',', TimeUnit::toArray())],
             'translations' => ['array'],
             'translations.*.locale' => ['string', 'max:2'],
             'translations.*.name' => ['string', 'max:100'],

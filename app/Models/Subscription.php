@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-use App\Constants\BillingUnit;
+use App\Constants\TimeUnit;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -19,7 +19,7 @@ use Illuminate\Support\Carbon;
  * @property int $price
  * @property int $total_duration
  * @property int $billing_frequency
- * @property BillingUnit $billing_unit
+ * @property TimeUnit $time_unit
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  * @property Carbon|null $deleted_at
@@ -38,11 +38,11 @@ class Subscription extends Model
         'price',
         'total_duration',
         'billing_frequency',
-        'billing_unit',
+        'time_unit',
     ];
 
     protected $casts = [
-        'billing_unit' => BillingUnit::class,
+        'time_unit' => TimeUnit::class,
     ];
 
     public function microsite(): BelongsTo

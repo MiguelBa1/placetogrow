@@ -2,7 +2,7 @@
 
 namespace Database\Factories;
 
-use App\Constants\BillingUnit;
+use App\Constants\TimeUnit;
 use App\Models\Microsite;
 use App\Models\Subscription;
 use Illuminate\Database\Eloquent\Factories\Factory;
@@ -22,7 +22,7 @@ class SubscriptionFactory extends Factory
             'price' => $this->faker->numberBetween(1000, 10000),
             'total_duration' => $this->faker->numberBetween(1, 12),
             'billing_frequency' => $this->faker->numberBetween(3, 12),
-            'billing_unit' => $this->faker->randomElement(BillingUnit::toArray()),
+            'time_unit' => $this->faker->randomElement(TimeUnit::toArray()),
         ];
     }
 }

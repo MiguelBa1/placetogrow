@@ -2,9 +2,9 @@
 
 namespace Tests\Feature\Controllers\Subscription;
 
-use App\Constants\BillingUnit;
 use App\Constants\MicrositeType;
 use App\Constants\Role;
+use App\Constants\TimeUnit;
 use App\Models\Microsite;
 use App\Models\Subscription;
 use App\Models\User;
@@ -53,7 +53,7 @@ class SubscriptionControllerTest extends TestCase
             'price' => 1500,
             'total_duration' => 12,
             'billing_frequency' => 1,
-            'billing_unit' => BillingUnit::MONTHS->value,
+            'time_unit' => TimeUnit::MONTHS->value,
             'translations' => [
                 ['locale' => 'en', 'name' => 'Basic Plan', 'description' => 'Basic plan description'],
                 ['locale' => 'es', 'name' => 'Plan Básico', 'description' => 'Descripción del plan básico'],
@@ -85,7 +85,7 @@ class SubscriptionControllerTest extends TestCase
             'price' => 2000,
             'total_duration' => 6,
             'billing_frequency' => 2,
-            'billing_unit' => BillingUnit::MONTHS->value,
+            'time_unit' => TimeUnit::MONTHS->value,
             'translations' => [
                 ['locale' => 'en', 'name' => 'Updated Plan', 'description' => 'Updated plan description'],
                 ['locale' => 'es', 'name' => 'Plan Actualizado', 'description' => 'Descripción del plan actualizado'],
