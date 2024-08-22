@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Subscription;
 
+use App\Constants\TimeUnit;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Subscription\CreateSubscriptionRequest;
 use App\Http\Requests\Subscription\UpdateSubscriptionRequest;
@@ -46,6 +47,7 @@ class SubscriptionController extends Controller
 
         return Inertia::render('Subscriptions/Create', [
             'microsite' => $microsite,
+            'timeUnits' => TimeUnit::toSelectArray(),
         ]);
     }
 

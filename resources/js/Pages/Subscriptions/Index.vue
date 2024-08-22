@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Head } from '@inertiajs/vue3';
+import { Head, router } from '@inertiajs/vue3';
 import { MainLayout } from "@/Layouts";
 import { SubscriptionsList, SubscriptionsTable } from "@/Pages/Subscriptions";
 import { useI18n } from "vue-i18n";
@@ -30,13 +30,21 @@ const goBack = () => {
                     {{ t('subscriptions.index.title') }}
                 </h2>
 
-                <Button
-                    variant="secondary"
-                    color="gray"
-                    @click="goBack"
-                >
-                    {{ t('common.back') }}
-                </Button>
+                <div class="space-x-2">
+                    <Button
+                        variant="primary"
+                        @click="router.visit(route('microsites.subscriptions.create', { microsite }))"
+                    >
+                        {{ t('subscriptions.index.create') }}
+                    </Button>
+                    <Button
+                        variant="secondary"
+                        color="gray"
+                        @click="goBack"
+                    >
+                        {{ t('common.back') }}
+                    </Button>
+                </div>
             </div>
         </template>
 

@@ -1,5 +1,6 @@
 export const esIndex = {
     title: 'Suscripciones',
+    create: 'Crear suscripción',
     table: {
         name: 'Nombre',
         price: 'Precio',

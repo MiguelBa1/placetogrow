@@ -20,4 +20,12 @@ abstract class BaseSubscriptionRequest extends FormRequest
             'translations.*.description' => ['string'],
         ];
     }
+
+    public function attributes(): array
+    {
+        return [
+            'translations.*.name' => __('validation.attributes.name'),
+            'translations.*.description' => __('validation.attributes.description'),
+        ];
+    }
 }

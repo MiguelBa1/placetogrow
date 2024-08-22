@@ -40,10 +40,10 @@ class SubscriptionControllerTest extends TestCase
 
         $response = $this->get(route('microsites.subscriptions.index', $this->microsite));
 
-        $response->assertStatus(200);
+        $response->assertOk();
         $response->assertInertia(fn ($page) => $page
             ->component('Subscriptions/Index')
-            ->has('subscriptions', 3));
+            ->has('subscriptions.data', 3));
     }
 
     public function test_admin_can_create_subscription()
