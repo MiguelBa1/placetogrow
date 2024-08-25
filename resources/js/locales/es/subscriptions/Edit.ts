@@ -1,6 +1,6 @@
-export const Create = {
-    title: "Crear Suscripción",
-    header: "Crear Suscripción",
+export const Edit = {
+    title: "Editar Suscripción",
+    header: "Editar Suscripción",
     form: {
         name: "Nombre",
         description: "Descripción",
@@ -10,6 +10,6 @@ export const Create = {
         price: "Precio",
         content: "Contenido ({locale})",
     },
-    error: "Ocurrió un error al crear la suscripción.",
-    success: "Suscripción creada exitosamente.",
+    error: "Ocurrió un error al editar la suscripción.",
+    success: "Cambios guardados exitosamente.",
 }

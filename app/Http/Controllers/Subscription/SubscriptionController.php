@@ -64,8 +64,7 @@ class SubscriptionController extends Controller
             }
         });
 
-        return redirect()->route('microsites.subscriptions.index', $microsite)
-            ->with('success', 'Subscription created successfully.');
+        return redirect()->route('microsites.subscriptions.index', $microsite);
     }
 
     public function edit(Microsite $microsite, Subscription $subscription): Response
@@ -73,13 +72,13 @@ class SubscriptionController extends Controller
         $microsite = $microsite->only('id', 'slug');
 
         $subscription = $subscription
-            ->load('translations:subscription_id,locale,name')
-            ->only('id', 'price', 'total_duration', 'billing_frequency', 'time_unit');
-
+            ->load('translations:subscription_id,locale,name,description')
+            ->only('id', 'price', 'total_duration', 'billing_frequency', 'time_unit', 'translations');
 
         return Inertia::render('Subscriptions/Edit', [
             'microsite' => $microsite,
             'subscription' => $subscription,
+            'timeUnits' => TimeUnit::toSelectArray(),
         ]);
     }
 
@@ -99,15 +98,13 @@ class SubscriptionController extends Controller
             }
         });
 
-        return redirect()->route('microsites.subscriptions.index', $microsite)
-            ->with('success', 'Subscription updated successfully.');
+        return redirect()->route('microsites.subscriptions.index', $microsite);
     }
 
     public function destroy(Microsite $microsite, Subscription $subscription): RedirectResponse
     {
         $subscription->delete();
 
-        return redirect()->route('microsites.subscriptions.index', $microsite)
-            ->with('success', 'Subscription deleted successfully.');
+        return redirect()->route('microsites.subscriptions.index', $microsite);
     }
 }

@@ -3,6 +3,7 @@ import { Head, router } from "@inertiajs/vue3"
 import { MainLayout } from "@/Layouts";
 import { reactive, ref } from "vue";
 import { InputField, TextareaField, Listbox, Button } from "@/Components";
+import { GlobeAmericasIcon } from "@heroicons/vue/16/solid";
 import { useToast } from "vue-toastification";
 import { useI18n } from "vue-i18n";
 
@@ -61,24 +62,11 @@ const submit = () => {
         {
             preserveScroll: true,
             onSuccess: () => {
-                toast.success('Subscription created successfully');
-                errors.price = '';
-                errors.total_duration = '';
-                errors.billing_frequency = '';
-                errors.time_unit = '';
-                errors.translations = [
-                    {
-                        name: '',
-                        description: '',
-                    },
-                    {
-                        name: '',
-                        description: '',
-                    }
-                ];
+                toast.success(t('subscriptions.create.success'));
+                isSubmitting.value = false;
             },
             onError: (error) => {
-                toast.error('There was an error creating the subscription');
+                toast.error(t('subscriptions.create.error'));
                 errors.price = error?.price;
                 errors.total_duration = error?.total_duration;
                 errors.billing_frequency = error?.billing_frequency;
@@ -171,8 +159,11 @@ const goBack = () => {
             />
 
             <div v-for="(translation, index) in form.translations" :key="index" class="col-span-2 space-y-4">
-                <h3 class="text-lg font-medium text-gray-900 mb-2">
-                    {{ t('subscriptions.create.form.content', { locale: translation.locale }) }}
+                <h3 class="flex items-center gap-1 text-lg font-medium text-gray-900">
+                    <GlobeAmericasIcon class="h-5 w-5 inline-block text-blue-500" />
+                    <span>
+                        {{ t('subscriptions.create.form.content', { locale: translation.locale }) }}
+                    </span>
                 </h3>
 
                 <InputField
@@ -191,7 +182,7 @@ const goBack = () => {
             </div>
             <div>
                 <Button type="submit" class="col-span-2">
-                    {{ t('common.create') }}
+                    {{ isSubmitting ? t('common.creating') : t('common.loading') }}
                 </Button>
             </div>
         </form>
