@@ -9,5 +9,13 @@ export const esIndex = {
         created_at: 'Creado el',
         actions: 'Acciones',
         no_subscriptions: 'No hay suscripciones',
+    },
+    delete: {
+        success: 'Suscripción eliminada correctamente',
+        error: 'Error al eliminar la suscripción',
+    },
+    restore: {
+        success: 'Suscripción restaurada correctamente',
+        error: 'Error al restaurar la suscripción',
     }
 }

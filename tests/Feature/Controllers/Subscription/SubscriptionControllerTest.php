@@ -46,6 +46,31 @@ class SubscriptionControllerTest extends TestCase
             ->has('subscriptions.data', 3));
     }
 
+    public function test_admin_can_view_create_subscription_page()
+    {
+        $response = $this->get(route('microsites.subscriptions.create', $this->microsite));
+
+        $response->assertOk();
+        $response->assertInertia(fn ($page) => $page
+            ->component('Subscriptions/Create')
+            ->has('microsite')
+            ->has('timeUnits'));
+    }
+
+    public function test_admin_can_view_edit_subscription_page()
+    {
+        $subscription = Subscription::factory()->create(['microsite_id' => $this->microsite->id]);
+
+        $response = $this->get(route('microsites.subscriptions.edit', [$this->microsite, $subscription]));
+
+        $response->assertOk();
+        $response->assertInertia(fn ($page) => $page
+            ->component('Subscriptions/Edit')
+            ->has('subscription')
+            ->has('microsite')
+            ->has('timeUnits'));
+    }
+
     public function test_admin_can_create_subscription()
     {
 
@@ -121,5 +146,19 @@ class SubscriptionControllerTest extends TestCase
         // This model implements soft deletes
 
         $this->assertSoftDeleted('subscriptions', ['id' => $subscription->id]);
+    }
+
+    public function test_admin_can_restore_subscription()
+    {
+        $subscription = Subscription::factory()->create([
+            'microsite_id' => $this->microsite->id,
+            'deleted_at' => now(),
+        ]);
+
+        $response = $this->put(route('microsites.subscriptions.restore', [$this->microsite, $subscription]));
+
+        $response->assertRedirect(route('microsites.subscriptions.index', $this->microsite));
+
+        $this->assertDatabaseHas('subscriptions', ['id' => $subscription->id]);
     }
 }

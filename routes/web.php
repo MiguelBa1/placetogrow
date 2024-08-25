@@ -69,9 +69,12 @@ Route::prefix('microsites')->name('microsites.')->group(function () {
                 Route::get('/', [SubscriptionController::class, 'index'])->name('index');
                 Route::get('/create', [SubscriptionController::class, 'create'])->name('create');
                 Route::post('/', [SubscriptionController::class, 'store'])->name('store');
-                Route::get('/{subscription}/edit', [SubscriptionController::class, 'edit'])->name('edit');
-                Route::put('/{subscription}', [SubscriptionController::class, 'update'])->name('update');
-                Route::delete('/{subscription}', [SubscriptionController::class, 'destroy'])->name('destroy');
+                Route::prefix('{subscription}')->group(function () {
+                    Route::get('/edit', [SubscriptionController::class, 'edit'])->name('edit');
+                    Route::put('/', [SubscriptionController::class, 'update'])->name('update');
+                    Route::delete('/', [SubscriptionController::class, 'destroy'])->name('destroy');
+                    Route::put('/restore', [SubscriptionController::class, 'restore'])->name('restore')->withTrashed();
+                });
             });
         });
 

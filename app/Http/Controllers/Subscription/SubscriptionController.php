@@ -18,7 +18,8 @@ class SubscriptionController extends Controller
 {
     public function index(Microsite $microsite): Response
     {
-        $subscriptions = $microsite->subscriptions()
+        $subscriptions = Subscription::withTrashed()
+            ->where('microsite_id', $microsite->id)
             ->select(
                 'id',
                 'price',
@@ -104,6 +105,13 @@ class SubscriptionController extends Controller
     public function destroy(Microsite $microsite, Subscription $subscription): RedirectResponse
     {
         $subscription->delete();
+
+        return redirect()->route('microsites.subscriptions.index', $microsite);
+    }
+
+    public function restore(Microsite $microsite, Subscription $subscription): RedirectResponse
+    {
+        $subscription->restore();
 
         return redirect()->route('microsites.subscriptions.index', $microsite);
     }
