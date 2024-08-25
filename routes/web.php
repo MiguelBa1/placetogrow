@@ -8,6 +8,7 @@ use App\Http\Controllers\MicrositeField\MicrositeFieldController;
 use App\Http\Controllers\Payment\PaymentController;
 use App\Http\Controllers\Profile\ProfileController;
 use App\Http\Controllers\RolePermission\RolePermissionController;
+use App\Http\Controllers\Subscription\SubscriptionController;
 use App\Http\Controllers\Support\LanguageController;
 use App\Http\Controllers\Transaction\TransactionController;
 use App\Http\Controllers\User\UserController;
@@ -62,6 +63,18 @@ Route::prefix('microsites')->name('microsites.')->group(function () {
             Route::prefix('invoices')->name('invoices.')->group(function () {
                 Route::get('/', [InvoiceController::class, 'index'])->name('index');
                 Route::post('/', [InvoiceController::class, 'store'])->name('store');
+            });
+
+            Route::prefix('subscriptions')->name('subscriptions.')->group(function () {
+                Route::get('/', [SubscriptionController::class, 'index'])->name('index');
+                Route::get('/create', [SubscriptionController::class, 'create'])->name('create');
+                Route::post('/', [SubscriptionController::class, 'store'])->name('store');
+                Route::prefix('{subscription}')->group(function () {
+                    Route::get('/edit', [SubscriptionController::class, 'edit'])->name('edit');
+                    Route::put('/', [SubscriptionController::class, 'update'])->name('update');
+                    Route::delete('/', [SubscriptionController::class, 'destroy'])->name('destroy');
+                    Route::put('/restore', [SubscriptionController::class, 'restore'])->name('restore')->withTrashed();
+                });
             });
         });
 
