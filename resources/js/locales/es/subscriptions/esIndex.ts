@@ -1,5 +1,5 @@
 export const esIndex = {
-    title: 'Suscripciones',
+    title: 'Suscripciones de {microsite}',
     create: 'Crear suscripción',
     table: {
         name: 'Nombre',

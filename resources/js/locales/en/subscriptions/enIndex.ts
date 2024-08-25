@@ -1,13 +1,13 @@
 export const enIndex = {
-    title: 'Suscripciones',
+    title: 'Subscriptions of {microsite}',
+    create: 'Create subscription',
     table: {
-        name: 'Nombre',
-        price: 'Precio',
-        total_duration: 'Duración total',
-        billing_frequency: 'Frecuencia de facturación',
-        billing_unit: 'Unidad de facturación',
-        created_at: 'Creado el',
-        actions: 'Acciones',
-        no_subscriptions: 'No hay suscripciones',
+        name: 'Name',
+        price: 'Price',
+        total_duration: 'Total duration',
+        billing_frequency: 'Billing frequency',
+        created_at: 'Created at',
+        actions: 'Actions',
+        no_subscriptions: 'No subscriptions',
     }
 }

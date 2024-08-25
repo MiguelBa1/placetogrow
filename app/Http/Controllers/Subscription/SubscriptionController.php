@@ -31,7 +31,7 @@ class SubscriptionController extends Controller
             ->with('translations:subscription_id,locale,name')
             ->get();
 
-        $microsite = $microsite->only('id', 'slug');
+        $microsite = $microsite->only('id', 'slug', 'name');
 
         $subscriptions = SubscriptionListResource::collection($subscriptions);
 

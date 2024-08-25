@@ -8,7 +8,7 @@ import { Button } from "@/Components";
 const { t } = useI18n();
 
 defineProps<{
-    microsite: { id: string; slug: string };
+    microsite: { id: string; slug: string; name: string };
     subscriptions: SubscriptionsList;
 }>();
 
@@ -27,7 +27,7 @@ const goBack = () => {
         <template #header>
             <div class="flex justify-between items-center">
                 <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-                    {{ t('subscriptions.index.title') }}
+                    {{ t('subscriptions.index.title', { microsite: microsite.name }) }}
                 </h2>
 
                 <div class="space-x-2">
@@ -51,6 +51,7 @@ const goBack = () => {
         <SubscriptionsTable
             v-if="subscriptions.data.length > 0"
             :subscriptions="subscriptions"
+            :microsite="microsite"
         />
         <div
             v-else
