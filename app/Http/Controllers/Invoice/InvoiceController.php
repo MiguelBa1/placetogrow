@@ -71,7 +71,7 @@ class InvoiceController extends Controller
 
         $filePath = $file->store('imports', 'local');
 
-        ImportInvoicesJob::dispatch($filePath, $user);
+        ImportInvoicesJob::dispatch($filePath, $user, $microsite);
 
         return redirect()->back()->with('success', __('invoices.import.success'));
     }

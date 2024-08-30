@@ -5,6 +5,7 @@ namespace App\Imports;
 use App\Constants\InvoiceStatus;
 use App\Http\Requests\Invoice\CreateInvoiceRequest;
 use App\Models\Invoice;
+use App\Models\Microsite;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Maatwebsite\Excel\Concerns\Importable;
 use Maatwebsite\Excel\Concerns\ToModel;
@@ -18,12 +19,19 @@ class InvoicesImport implements ToModel, WithValidation, WithHeadingRow, ShouldQ
 
     private int $importedRowsCount = 0;
 
+    protected Microsite $microsite;
+
+    public function __construct(Microsite $microsite)
+    {
+        $this->microsite = $microsite;
+    }
+
     public function model(array $row): Invoice
     {
         $this->importedRowsCount++;
 
         return new Invoice([
-            'microsite_id' => $row['microsite_id'],
+            'microsite_id' => $this->microsite->id,
             'reference' => $row['reference'],
             'document_type' => $row['document_type'],
             'document_number' => $row['document_number'],

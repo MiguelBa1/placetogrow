@@ -4,6 +4,7 @@ namespace App\Jobs;
 
 use App\Imports\InvoicesImport;
 use App\Mail\ImportInvoicesResultMail;
+use App\Models\Microsite;
 use App\Models\User;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -21,16 +22,18 @@ class ImportInvoicesJob implements ShouldQueue
 
     protected string $filePath;
     protected User $user;
+    protected Microsite $microsite;
 
-    public function __construct($filePath, $user)
+    public function __construct($filePath, $user, $microsite)
     {
         $this->filePath = $filePath;
         $this->user = $user;
+        $this->microsite = $microsite;
     }
 
     public function handle(): void
     {
-        $import = new InvoicesImport;
+        $import = new InvoicesImport($this->microsite);
 
         try {
             $file = Storage::disk('local')->path($this->filePath);
