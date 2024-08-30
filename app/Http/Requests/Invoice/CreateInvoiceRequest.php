@@ -14,9 +14,9 @@ class CreateInvoiceRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'reference' => ['required', 'string', 'max:100', 'unique:invoices'],
+            'reference' => ['required', 'string', 'max:100'],
             'document_type' => ['required', 'string', 'max:20'],
-            'document_number' => ['required', 'string', 'max:20'],
+            'document_number' => ['required', 'regex:/^\d+$/', 'max:20'],
             'name' => ['required', 'string', 'max:100'],
             'last_name' => ['required', 'string', 'max:100'],
             'email' => ['required', 'email', 'max:100'],

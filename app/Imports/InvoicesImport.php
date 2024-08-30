@@ -17,7 +17,6 @@ class InvoicesImport implements ToModel, WithValidation, WithHeadingRow, ShouldQ
 {
     use Importable;
 
-    private int $importedRowsCount = 0;
 
     protected Microsite $microsite;
 
@@ -28,8 +27,6 @@ class InvoicesImport implements ToModel, WithValidation, WithHeadingRow, ShouldQ
 
     public function model(array $row): Invoice
     {
-        $this->importedRowsCount++;
-
         return new Invoice([
             'microsite_id' => $this->microsite->id,
             'reference' => $row['reference'],
@@ -59,10 +56,4 @@ class InvoicesImport implements ToModel, WithValidation, WithHeadingRow, ShouldQ
     {
         return 1000;
     }
-
-    public function getImportedRowsCount(): int
-    {
-        return $this->importedRowsCount;
-    }
-
 }

@@ -7,7 +7,7 @@ return [
         "mail" => [
             "subject" => "Invoice Import Results",
             "title" => "Invoice Import Results",
-            "success" => ":count invoices were imported successfully.",
+            "success" => "The invoice import has been completed successfully.",
             "failures_title" => "Failures:",
             "no_failures" => "There were no failures during the import.",
             "failure" => "Row :row: :errors",

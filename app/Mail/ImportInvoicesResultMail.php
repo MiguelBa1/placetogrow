@@ -1,31 +1,42 @@
 <?php
+
 namespace App\Mail;
 
 use Illuminate\Bus\Queueable;
+use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
+use Illuminate\Mail\Mailables\Content;
+use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Collection;
 
-class ImportInvoicesResultMail extends Mailable
+class ImportInvoicesResultMail extends Mailable implements ShouldQueue
 {
     use Queueable, SerializesModels;
 
-    public int $successCount;
     public Collection $failures;
 
-    public function __construct(int $successCount, Collection $failures)
+    public function __construct(Collection $failures = new Collection())
     {
-        $this->successCount = $successCount;
         $this->failures = $failures;
     }
 
-    public function build(): static
+    public function envelope(): Envelope
     {
-        return $this->subject(__('invoices.import.mail.subject'))
-            ->view('emails.invoices.import_result')
-            ->with([
-                'successCount' => $this->successCount,
-                'failures' => $this->failures,
-            ]);
+        return new Envelope(
+            subject: __('invoices.import.mail.subject'),
+        );
+    }
+
+    public function content(): Content
+    {
+        return new Content(
+            markdown: 'emails.invoices.import_result',
+        );
+    }
+
+    public function attachments(): array
+    {
+        return [];
     }
 }

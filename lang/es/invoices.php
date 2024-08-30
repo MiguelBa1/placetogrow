@@ -14,7 +14,7 @@ return [
         "mail" => [
             "subject" => "Resultados de la Importación de Facturas",
             "title" => "Resultados de la Importación de Facturas",
-            "success" => ":count facturas fueron importadas exitosamente.",
+            "success" => "La importación de facturas se ha completado con éxito.",
             "failures_title" => "Fallos:",
             "no_failures" => "No hubo fallos durante la importación.",
             "failure" => "Fila :row: :errors",

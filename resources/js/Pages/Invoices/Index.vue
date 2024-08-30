@@ -3,7 +3,7 @@ import { ref } from 'vue'
 import { MainLayout } from '@/Layouts';
 import { Button } from '@/Components';
 import { Head } from '@inertiajs/vue3';
-import { InvoiceList, InvoicesTable, CreateInvoiceModal } from './index';
+import { InvoiceList, InvoicesTable, CreateInvoiceModal, ImportInvoiceModal } from './index';
 import { useI18n } from 'vue-i18n';
 
 const { t } = useI18n();
@@ -21,6 +21,7 @@ const goBack = () => {
 };
 
 const isCreateInvoiceModalOpen = ref(false);
+const isImportInvoiceModalOpen = ref(false);
 
 </script>
 
@@ -40,6 +41,14 @@ const isCreateInvoiceModalOpen = ref(false);
                 <div class="space-x-2">
                     <Button
                         variant="primary"
+                        @click="isImportInvoiceModalOpen = true"
+                    >
+                        {{ t('invoices.index.import') }}
+                    </Button>
+
+                    <Button
+                        variant="primary"
+                        color="green"
                         @click="isCreateInvoiceModalOpen = true"
                     >
                         {{ t('invoices.index.create') }}
@@ -57,13 +66,30 @@ const isCreateInvoiceModalOpen = ref(false);
             </div>
         </template>
 
-        <InvoicesTable :invoiceList="invoices" />
+        <InvoicesTable
+            v-if="invoices.data.length > 0"
+            :invoiceList="invoices"
+        />
+        <div
+            v-else
+            class="flex justify-center items-center h-96"
+        >
+            <p class="text-gray-500">
+                {{ t('invoices.index.noInvoices') }}
+            </p>
+        </div>
 
         <CreateInvoiceModal
             :isOpen="isCreateInvoiceModalOpen"
             :micrositeSlug="microsite.slug"
             @closeModal="isCreateInvoiceModalOpen = false"
             :documentTypes="documentTypes"
+        />
+
+        <ImportInvoiceModal
+            :isOpen="isImportInvoiceModalOpen"
+            :micrositeSlug="microsite.slug"
+            @closeModal="isImportInvoiceModalOpen = false"
         />
 
     </MainLayout>

@@ -40,8 +40,7 @@ class ImportInvoicesJob implements ShouldQueue
 
             Excel::queueImport($import, $file);
 
-            $successCount = $import->getImportedRowsCount();
-            Mail::to($this->user->email)->send(new ImportInvoicesResultMail($successCount, collect()));
+            Mail::to($this->user->email)->send(new ImportInvoicesResultMail());
 
         } catch (ValidationException $e) {
             $failures = $e->failures();
@@ -56,7 +55,7 @@ class ImportInvoicesJob implements ShouldQueue
                 ];
             }
 
-            Mail::to($this->user->email)->send(new ImportInvoicesResultMail(0, $failureDetails));
+            Mail::to($this->user->email)->send(new ImportInvoicesResultMail($failureDetails));
         }
 
         Storage::disk('local')->delete($this->filePath);
