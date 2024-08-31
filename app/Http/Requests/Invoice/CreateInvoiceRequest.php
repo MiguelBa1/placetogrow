@@ -14,7 +14,12 @@ class CreateInvoiceRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'reference' => ['required', 'string', 'max:100'],
+            'reference' => [
+                'required',
+                'string',
+                'max:100',
+                'unique:invoices,reference,NULL,id,microsite_id,' . $this->route('microsite')->id,
+            ],
             'document_type' => ['required', 'string', 'max:20'],
             'document_number' => ['required', 'regex:/^\d+$/', 'max:20'],
             'name' => ['required', 'string', 'max:100'],
@@ -24,4 +29,5 @@ class CreateInvoiceRequest extends FormRequest
             'amount' => ['required', 'numeric', 'min:0'],
         ];
     }
+
 }
