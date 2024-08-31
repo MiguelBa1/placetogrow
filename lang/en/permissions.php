@@ -16,6 +16,7 @@ return [
 
     'view_any_invoice' => 'View any invoice',
     'create_invoice' => 'Create invoice',
+    'import_invoice' => 'Import invoice',
 
     'view_any_transaction' => 'View any transaction',
     'view_transaction' => 'View transaction',

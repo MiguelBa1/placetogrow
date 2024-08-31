@@ -65,6 +65,8 @@ class InvoiceController extends Controller
 
     public function import(ImportInvoicesRequest $request, Microsite $microsite): RedirectResponse
     {
+        $this->authorize(PolicyName::IMPORT->value, Invoice::class);
+
         if ($microsite->type !== MicrositeType::INVOICE) {
             return redirect()->back()->withErrors(['error' => __('invoices.invalid_microsite_type')]);
         }

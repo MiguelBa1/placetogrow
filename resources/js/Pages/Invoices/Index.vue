@@ -2,11 +2,14 @@
 import { ref } from 'vue'
 import { MainLayout } from '@/Layouts';
 import { Button } from '@/Components';
-import { Head } from '@inertiajs/vue3';
+import { Head, usePage } from '@inertiajs/vue3';
 import { InvoiceList, InvoicesTable, CreateInvoiceModal, ImportInvoiceModal } from './index';
 import { useI18n } from 'vue-i18n';
 
 const { t } = useI18n();
+
+const { props: { auth: { permissions }}} = usePage();
+
 defineProps<{
     invoices: InvoiceList;
     microsite: {
@@ -40,6 +43,7 @@ const isImportInvoiceModalOpen = ref(false);
                 </h2>
                 <div class="space-x-2">
                     <Button
+                        v-if="permissions.includes('import_invoice')"
                         variant="primary"
                         @click="isImportInvoiceModalOpen = true"
                     >
@@ -47,6 +51,7 @@ const isImportInvoiceModalOpen = ref(false);
                     </Button>
 
                     <Button
+                        v-if="permissions.includes('create_invoice')"
                         variant="primary"
                         color="green"
                         @click="isCreateInvoiceModalOpen = true"
