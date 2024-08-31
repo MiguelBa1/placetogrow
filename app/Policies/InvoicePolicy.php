@@ -16,4 +16,9 @@ class InvoicePolicy
     {
         return $user->hasPermissionTo(Permission::CREATE_INVOICE);
     }
+
+    public function import(User $user): bool
+    {
+        return $user->hasPermissionTo(Permission::IMPORT_INVOICE);
+    }
 }

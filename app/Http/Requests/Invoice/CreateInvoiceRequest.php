@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Invoice;
 
+use App\Models\Microsite;
 use Illuminate\Foundation\Http\FormRequest;
 
 class CreateInvoiceRequest extends FormRequest
@@ -11,12 +12,19 @@ class CreateInvoiceRequest extends FormRequest
         return true;
     }
 
-    public function rules(): array
+    public function rules(?Microsite $microsite): array
     {
+        $micrositeId = $microsite ? $microsite->id : $this->route('microsite')->id;
+
         return [
-            'reference' => ['required', 'string', 'max:100'],
+            'reference' => [
+                'required',
+                'string',
+                'max:100',
+                'unique:invoices,reference,NULL,id,microsite_id,' . $micrositeId,
+            ],
             'document_type' => ['required', 'string', 'max:20'],
-            'document_number' => ['required', 'string', 'max:20'],
+            'document_number' => ['required', 'regex:/^\d+$/', 'max:20'],
             'name' => ['required', 'string', 'max:100'],
             'last_name' => ['required', 'string', 'max:100'],
             'email' => ['required', 'email', 'max:100'],
@@ -24,4 +32,5 @@ class CreateInvoiceRequest extends FormRequest
             'amount' => ['required', 'numeric', 'min:0'],
         ];
     }
+
 }

@@ -101,4 +101,14 @@ class InvoiceControllerTest extends TestCase
 
         $this->assertDatabaseCount('invoices', 0);
     }
+
+    public function test_admin_can_download_invoice_template()
+    {
+        $microsite = Microsite::factory()->create();
+
+        $response = $this->actingAs($this->adminUser)->get(route('microsites.invoices.download-template', $microsite));
+
+        $response->assertOk();
+    }
+
 }

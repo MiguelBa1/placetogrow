@@ -2,11 +2,14 @@
 import { ref } from 'vue'
 import { MainLayout } from '@/Layouts';
 import { Button } from '@/Components';
-import { Head } from '@inertiajs/vue3';
-import { InvoiceList, InvoicesTable, CreateInvoiceModal } from './index';
+import { Head, usePage } from '@inertiajs/vue3';
+import { InvoiceList, InvoicesTable, CreateInvoiceModal, ImportInvoiceModal } from './index';
 import { useI18n } from 'vue-i18n';
 
 const { t } = useI18n();
+
+const { props: { auth: { permissions }}} = usePage();
+
 defineProps<{
     invoices: InvoiceList;
     microsite: {
@@ -21,6 +24,7 @@ const goBack = () => {
 };
 
 const isCreateInvoiceModalOpen = ref(false);
+const isImportInvoiceModalOpen = ref(false);
 
 </script>
 
@@ -39,7 +43,17 @@ const isCreateInvoiceModalOpen = ref(false);
                 </h2>
                 <div class="space-x-2">
                     <Button
+                        v-if="permissions.includes('import_invoice')"
                         variant="primary"
+                        @click="isImportInvoiceModalOpen = true"
+                    >
+                        {{ t('invoices.index.import') }}
+                    </Button>
+
+                    <Button
+                        v-if="permissions.includes('create_invoice')"
+                        variant="primary"
+                        color="green"
                         @click="isCreateInvoiceModalOpen = true"
                     >
                         {{ t('invoices.index.create') }}
@@ -57,13 +71,30 @@ const isCreateInvoiceModalOpen = ref(false);
             </div>
         </template>
 
-        <InvoicesTable :invoiceList="invoices" />
+        <InvoicesTable
+            v-if="invoices.data.length > 0"
+            :invoiceList="invoices"
+        />
+        <div
+            v-else
+            class="flex justify-center items-center h-96"
+        >
+            <p class="text-gray-500">
+                {{ t('invoices.index.noInvoices') }}
+            </p>
+        </div>
 
         <CreateInvoiceModal
             :isOpen="isCreateInvoiceModalOpen"
             :micrositeSlug="microsite.slug"
             @closeModal="isCreateInvoiceModalOpen = false"
             :documentTypes="documentTypes"
+        />
+
+        <ImportInvoiceModal
+            :isOpen="isImportInvoiceModalOpen"
+            :micrositeSlug="microsite.slug"
+            @closeModal="isImportInvoiceModalOpen = false"
         />
 
     </MainLayout>

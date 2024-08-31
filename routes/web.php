@@ -63,6 +63,9 @@ Route::prefix('microsites')->name('microsites.')->group(function () {
             Route::prefix('invoices')->name('invoices.')->group(function () {
                 Route::get('/', [InvoiceController::class, 'index'])->name('index');
                 Route::post('/', [InvoiceController::class, 'store'])->name('store');
+                Route::post('/import', [InvoiceController::class, 'import'])->name('import');
+
+                Route::get('/download-template', [InvoiceController::class, 'downloadTemplate'])->name('download-template');
             });
 
             Route::prefix('subscriptions')->name('subscriptions.')->group(function () {

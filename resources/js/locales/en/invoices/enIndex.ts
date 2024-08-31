@@ -1,7 +1,9 @@
 export const enIndex = {
     title: "Invoices of {name}",
     header: "Invoices list",
+    noInvoices: "No invoices available",
     create: "Create invoice",
+    import: "Import invoices",
     table: {
         reference: "Reference",
         name: "Name",
@@ -19,5 +21,17 @@ export const enIndex = {
         documentNumber: "Document number",
         phone: "Phone",
         amount: "Amount",
+        error: "There was an error trying to create the invoice. Please try again.",
+        success: "The invoice has been created successfully.",
     },
+    importModal: {
+        description: 'Attach a CSV file containing the invoices you want to import. You can download a sample file to see the required format.',
+        downloadSample: 'Download sample file',
+        chooseFile: 'Choose file',
+        noFileSelected: 'No file selected',
+        noFileError: 'Please select a CSV file before continuing.',
+        import: 'Import',
+        success: 'The import has started. You will receive an email once it is complete.',
+        error: 'There was an error trying to import the invoices. Please try again.',
+    }
 }
