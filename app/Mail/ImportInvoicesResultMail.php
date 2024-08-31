@@ -8,15 +8,14 @@ use Illuminate\Mail\Mailable;
 use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
-use Illuminate\Support\Collection;
 
 class ImportInvoicesResultMail extends Mailable implements ShouldQueue
 {
     use Queueable, SerializesModels;
 
-    public Collection $failures;
+    public array $failures;
 
-    public function __construct(Collection $failures = new Collection())
+    public function __construct(array $failures = [])
     {
         $this->failures = $failures;
     }

@@ -21,6 +21,8 @@ export const enIndex = {
         documentNumber: "Document number",
         phone: "Phone",
         amount: "Amount",
+        error: "There was an error trying to create the invoice. Please try again.",
+        success: "The invoice has been created successfully.",
     },
     importModal: {
         description: 'Attach a CSV file containing the invoices you want to import. You can download a sample file to see the required format.',

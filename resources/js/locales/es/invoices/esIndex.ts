@@ -21,6 +21,8 @@ export const esIndex = {
         documentNumber: "Número de documento",
         phone: "Teléfono",
         amount: "Monto",
+        error: "Hubo un error al intentar crear la factura. Por favor, inténtelo de nuevo.",
+        success: "La factura ha sido creada exitosamente.",
     },
     importModal: {
         description: 'Adjunte un archivo CSV que contenga las facturas que desea importar. Puede descargar un archivo de muestra para ver el formato requerido.',

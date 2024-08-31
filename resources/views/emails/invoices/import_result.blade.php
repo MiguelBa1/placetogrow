@@ -3,7 +3,7 @@
 
 {{ __('invoices.import.mail.success') }}
 
-@if($failures->isNotEmpty())
+@if(!empty($failures))
 ## {{ __('invoices.import.mail.failures_title') }}
 <ul>
     @foreach($failures as $failure)

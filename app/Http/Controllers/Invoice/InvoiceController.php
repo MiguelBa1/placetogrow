@@ -4,19 +4,22 @@ namespace App\Http\Controllers\Invoice;
 
 use App\Actions\Invoice\StoreInvoiceAction;
 use App\Constants\DocumentType;
+use App\Constants\ImportStatus;
 use App\Constants\MicrositeType;
 use App\Constants\PolicyName;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Invoice\CreateInvoiceRequest;
 use App\Http\Requests\Invoice\ImportInvoicesRequest;
 use App\Http\Resources\Invoice\InvoiceListResource;
-use App\Jobs\ImportInvoicesJob;
+use App\Imports\InvoicesImport;
+use App\Models\Import;
 use App\Models\Invoice;
 use App\Models\Microsite;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\RedirectResponse;
 use Inertia\Inertia;
 use Inertia\Response;
+use Maatwebsite\Excel\Facades\Excel;
 
 class InvoiceController extends Controller
 {
@@ -71,7 +74,15 @@ class InvoiceController extends Controller
 
         $filePath = $file->store('imports', 'local');
 
-        ImportInvoicesJob::dispatch($filePath, $user, $microsite);
+        /** @var Import $import */
+        $import = Import::query()->create([
+            'user_id' => $user->id,
+            'filename' => $file->getClientOriginalName(),
+            'status' => ImportStatus::PENDING->value,
+            'errors' => [],
+        ]);
+
+        Excel::queueImport(new InvoicesImport($microsite, $import), $filePath, 'local');
 
         return redirect()->back()->with('success', __('invoices.import.success'));
     }

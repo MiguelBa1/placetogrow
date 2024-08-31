@@ -4,13 +4,14 @@ namespace Tests\Feature\Controllers\Invoice;
 
 use App\Constants\MicrositeType;
 use App\Constants\Role;
-use App\Jobs\ImportInvoicesJob;
+use App\Imports\InvoicesImport;
 use App\Models\Microsite;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Queue;
 use Illuminate\Support\Facades\Storage;
+use Maatwebsite\Excel\Facades\Excel;
 use Tests\TestCase;
 use Tests\Traits\SeedsRolesAndPermissions;
 
@@ -31,6 +32,7 @@ class InvoiceImportTest extends TestCase
 
     public function test_admin_can_import_invoices()
     {
+        Excel::fake();
         Queue::fake();
 
         $microsite = Microsite::factory()->create([
@@ -47,11 +49,12 @@ class InvoiceImportTest extends TestCase
         $response->assertRedirect();
         $response->assertSessionHas('success', __('invoices.import.success'));
 
-        Queue::assertPushed(ImportInvoicesJob::class);
+        Excel::assertQueued(InvoicesImport::class, 'local');
     }
 
     public function test_admin_cannot_import_invoices_for_invalid_microsite_type()
     {
+        Excel::fake();
         Queue::fake();
 
         $microsite = Microsite::factory()->create([
@@ -68,7 +71,7 @@ class InvoiceImportTest extends TestCase
         $response->assertRedirect();
         $response->assertSessionHasErrors(['error' => __('invoices.invalid_microsite_type')]);
 
-        Queue::assertNotPushed(ImportInvoicesJob::class);
+        Queue::assertNothingPushed();
     }
 
 }
