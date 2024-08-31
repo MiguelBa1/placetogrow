@@ -17,9 +17,11 @@ use App\Models\Invoice;
 use App\Models\Microsite;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 use Inertia\Response;
 use Maatwebsite\Excel\Facades\Excel;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 class InvoiceController extends Controller
 {
@@ -63,6 +65,9 @@ class InvoiceController extends Controller
         return back();
     }
 
+    /**
+     * @throws AuthorizationException
+     */
     public function import(ImportInvoicesRequest $request, Microsite $microsite): RedirectResponse
     {
         $this->authorize(PolicyName::IMPORT->value, Invoice::class);
@@ -87,5 +92,17 @@ class InvoiceController extends Controller
         Excel::queueImport(new InvoicesImport($microsite, $import), $filePath, 'local');
 
         return redirect()->back()->with('success', __('invoices.import.success'));
+    }
+
+    /**
+     * @throws AuthorizationException
+     */
+    public function downloadTemplate(): BinaryFileResponse
+    {
+        $this->authorize(PolicyName::IMPORT->value, Invoice::class);
+
+        $templatePath = Storage::disk('public')->path('templates/invoices.csv');
+
+        return response()->download($templatePath, 'invoices.csv');
     }
 }

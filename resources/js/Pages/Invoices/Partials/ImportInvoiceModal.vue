@@ -66,7 +66,7 @@ const fileName = computed(() => form.invoices ? form.invoices.name : t('invoices
                 <p>{{ t('invoices.index.importModal.description') }}</p>
                 <p>
                     <a
-                        href="#"
+                        :href="route('microsites.invoices.download-template', micrositeSlug)"
                         class="text-blue-500 underline">
                         {{ t('invoices.index.importModal.downloadSample') }}
                     </a>
@@ -86,7 +86,6 @@ const fileName = computed(() => form.invoices ? form.invoices.name : t('invoices
                 @change="handleFileChange"
                 required
             >
-            <!-- Error message -->
             <p class="text-red-500" v-if="form.errors.invoices">{{ form.errors.invoices }}</p>
         </form>
         <template #footerButtons>

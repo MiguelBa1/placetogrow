@@ -1,0 +1,11 @@
+reference,document_type,document_number,name,last_name,email,phone,amount,expiration_date
+INV-001,CC,1234567890,John,Doe,test@mail.com,1234567890,1000,2024-01-01
+INV-002,CC,0987654321,Jane,Doe,jane@mail.com,0987654321,2000,2024-01-01
+INV-003,CC,1122334455,Alice,Smith,alice.smith@mail.com,1122334455,1500,2024-06-15
+INV-004,CC,2233445566,Bob,Brown,bob.brown@mail.com,2233445566,2500,2024-03-20
+INV-005,CC,3344556677,Charlie,Johnson,charlie.johnson@mail.com,3344556677,3000,2024-05-10
+INV-006,CC,4455667788,David,Williams,david.williams@mail.com,4455667788,1200,2024-07-25
+INV-007,CC,5566778899,Eva,Jones,eva.jones@mail.com,5566778899,2200,2024-04-30
+INV-008,CC,6677889900,Frank,Garcia,frank.garcia@mail.com,6677889900,1800,2024-02-14
+INV-009,CC,7788990011,Grace,Martinez,grace.martinez@mail.com,7788990011,1900,2024-11-11
+INV-010,CC,8899001122,Hannah,Lopez,hannah.lopez@mail.com,8899001122,1600,2024-09-18
