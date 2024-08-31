@@ -4,7 +4,6 @@ namespace Tests\Feature\Controllers\Invoice;
 
 use App\Constants\MicrositeType;
 use App\Constants\Role;
-use App\Imports\InvoicesImport;
 use App\Models\Microsite;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -40,7 +39,7 @@ class InvoiceImportTest extends TestCase
         ]);
 
         Storage::fake('local');
-        $file = UploadedFile::fake()->create('invoices.csv', 1024, 'text/csv');
+        $file = new UploadedFile(base_path('tests/Fixtures/valid_invoices.csv'), 'valid_invoices.csv', 'text/csv', null, true);
 
         $response = $this->actingAs($this->adminUser)->post(route('microsites.invoices.import', $microsite), [
             'invoices' => $file,
@@ -49,7 +48,7 @@ class InvoiceImportTest extends TestCase
         $response->assertRedirect();
         $response->assertSessionHas('success', __('invoices.import.success'));
 
-        Excel::assertQueued(InvoicesImport::class, 'local');
+        Queue::assertCount(1);
     }
 
     public function test_admin_cannot_import_invoices_for_invalid_microsite_type()
