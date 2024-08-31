@@ -67,7 +67,7 @@ class InvoicesImport implements
 
     public function rules(): array
     {
-        return (new CreateInvoiceRequest())->rules();
+        return (new CreateInvoiceRequest())->rules($this->microsite);
     }
 
     public function customValidationMessages(): array
