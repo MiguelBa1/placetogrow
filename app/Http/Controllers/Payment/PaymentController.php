@@ -2,12 +2,14 @@
 
 namespace App\Http\Controllers\Payment;
 
+use App\Constants\MicrositeType;
 use App\Constants\PaymentStatus;
 use App\Contracts\PaymentServiceInterface;
 use App\Factories\PaymentDataProviderFactory;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Payment\CreatePaymentRequest;
 use App\Http\Resources\MicrositeField\MicrositeFieldDetailResource;
+use App\Http\Resources\Subscription\SubscriptionDetailResource;
 use App\Models\Microsite;
 use App\Models\Payment;
 use App\Services\MicrositeService;
@@ -34,9 +36,28 @@ class PaymentController extends Controller
             $microsite->fields()->with('translations')->get()
         );
 
+        $subscriptions = collect();
+
+        if ($microsite->type === MicrositeType::SUBSCRIPTION) {
+            $subscriptions = SubscriptionDetailResource::collection(
+                $microsite->subscriptions()
+                    ->select(
+                        'id',
+                        'price',
+                        'total_duration',
+                        'billing_frequency',
+                        'time_unit',
+                        'created_at',
+                    )
+                    ->with('translations:subscription_id,locale,name,description')
+                    ->get()
+            );
+        }
+
         return Inertia::render('Payments/Show', [
             'microsite' => $micrositeData,
             'fields' => $fields,
+            'subscriptions' => $subscriptions,
         ]);
     }
 
