@@ -182,7 +182,7 @@ const goBack = () => {
             </div>
             <div>
                 <Button type="submit" class="col-span-2">
-                    {{ isSubmitting ? t('common.creating') : t('common.loading') }}
+                    {{ isSubmitting ? t('common.loading') : t('common.create') }}
                 </Button>
             </div>
         </form>

@@ -31,7 +31,15 @@ class PaymentController extends Controller
 
     public function show(Microsite $microsite): \Inertia\Response
     {
-        $micrositeData = (new MicrositeService)->getMicrositeData($microsite);
+        $micrositeData = [
+            'id' => $microsite->id,
+            'name' => $microsite->name,
+            'logo' => $microsite->getFirstMediaUrl('logos'),
+            'slug' => $microsite->slug,
+            'type' => $microsite->type,
+            'payment_currency' => $microsite->payment_currency,
+        ];
+
         $fields = MicrositeFieldDetailResource::collection(
             $microsite->fields()->with('translations')->get()
         );
@@ -41,15 +49,7 @@ class PaymentController extends Controller
         if ($microsite->type === MicrositeType::SUBSCRIPTION) {
             $subscriptions = SubscriptionDetailResource::collection(
                 $microsite->subscriptions()
-                    ->select(
-                        'id',
-                        'price',
-                        'total_duration',
-                        'billing_frequency',
-                        'time_unit',
-                        'created_at',
-                    )
-                    ->with('translations:subscription_id,locale,name,description')
+                    ->with('translations')
                     ->get()
             );
         }

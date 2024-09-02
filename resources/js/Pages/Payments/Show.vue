@@ -3,7 +3,7 @@ import { Head } from '@inertiajs/vue3';
 import { MainLayout } from '@/Layouts';
 import { useI18n } from 'vue-i18n';
 import { Button } from "@/Components";
-import { DynamicForm, Field, MicrositeInformation } from "./index";
+import { DynamicForm, Field, MicrositeInformation, SubscriptionList, SubscriptionPlans } from "@/Pages/Payments";
 
 const { t } = useI18n();
 
@@ -12,11 +12,14 @@ const { microsite, fields } = defineProps<{
     fields: {
         data: Field[];
     };
+    subscriptions: SubscriptionList;
 }>();
 
 const goBack = () => {
     window.history.back();
 };
+
+const isSubscription = microsite.type === 'subscription';
 
 </script>
 
@@ -53,8 +56,13 @@ const goBack = () => {
 
         <div class="p-10 bg-white rounded-xl shadow-sm">
             <DynamicForm
-                v-if="fields.data.length > 0"
+                v-if="!isSubscription && subscriptions.data.length > 0"
                 :fields="fields.data"
+                :microsite="microsite"
+            />
+            <SubscriptionPlans
+                v-if="isSubscription && subscriptions.data.length > 0"
+                :subscriptions="subscriptions"
                 :microsite="microsite"
             />
             <div v-else class="text-center">
