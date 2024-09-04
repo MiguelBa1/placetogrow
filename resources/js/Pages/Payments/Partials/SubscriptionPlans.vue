@@ -2,7 +2,7 @@
 import MarkdownIt from 'markdown-it';
 import { ref } from 'vue';
 import { Button } from "@/Components";
-import { SubscriptionList, SubscriptionItem, MicrositeInformation } from '@/Pages/Payments';
+import { SubscriptionList, SubscriptionItem, MicrositeInformation, Field, SubscriptionFormModal } from '@/Pages/Payments';
 import { useI18n } from 'vue-i18n';
 import { formatCurrency} from '@/Utils';
 
@@ -10,11 +10,10 @@ const { t } = useI18n();
 const markdown = new MarkdownIt();
 
 const { subscriptions, microsite } = defineProps<{
+    fields: Field[];
     subscriptions: SubscriptionList;
     microsite: MicrositeInformation;
 }>();
-
-console.log(microsite.payment_currency)
 
 const renderMarkdown = (description: string) => {
     return markdown.render(description);
@@ -48,15 +47,22 @@ const closeModal = () => {
             <div class="space-y-2">
                 <h3 class="text-lg font-semibold">{{ subscription.name }}</h3>
                 <p class="text-2xl font-bold text-gray-800 my-4">
-                    {{ formattedPrice(subscription.price) }} / {{ t('mes') }}
+                    {{ formattedPrice(subscription.price) }} / {{ t('payments.show.subscription.month') }}
                 </p>
 
                 <p class="text-gray-600 my-4" v-html="renderMarkdown(subscription.description)"></p>
 
             </div>
             <Button @click="openModal(subscription)" class="w-full">
-                {{ t('Seleccionar Plan') }}
+                {{ t('payments.show.subscription.button') }}
             </Button>
         </div>
     </div>
+    <SubscriptionFormModal
+        :isOpen="showModal"
+        :fields="fields"
+        :subscription="selectedSubscription"
+        :micrositeSlug="microsite.slug"
+        @closeModal="closeModal"
+    />
 </template>

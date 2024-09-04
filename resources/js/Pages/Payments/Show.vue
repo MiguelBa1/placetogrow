@@ -64,6 +64,7 @@ const isSubscription = microsite.type === 'subscription';
                 v-if="isSubscription && subscriptions.data.length > 0"
                 :subscriptions="subscriptions"
                 :microsite="microsite"
+                :fields="fields.data"
             />
             <div v-else class="text-center">
                 <p>
