@@ -60,6 +60,14 @@ enum MicrositeField: string
                 self::REFERENCE,
                 self::DOCUMENT_NUMBER,
             ],
+            MicrositeType::SUBSCRIPTION => [
+                self::DOCUMENT_NUMBER,
+                self::DOCUMENT_TYPE,
+                self::NAME,
+                self::LAST_NAME,
+                self::PHONE,
+                self::EMAIL,
+            ],
             default => []
         };
     }

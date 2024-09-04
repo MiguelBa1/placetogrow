@@ -21,9 +21,7 @@ const formData = ref<
 
 const formErrors = ref<
     Record<string, string>
->({
-    subscription_id: subscription?.id ?? '',
-});
+>({});
 
 const isSubmitting = ref(false);
 const formRef = ref<HTMLFormElement | null>(null);
@@ -48,7 +46,8 @@ const getComponent = (type: string) => {
     }
 };
 
-const handleSubmit = (subscription: SubscriptionItem) => {
+const handleSubmit = () => {
+    formData.value['subscription_id'] = subscription?.id;
     isSubmitting.value = true;
 
     router.post(route('payments.store', {
