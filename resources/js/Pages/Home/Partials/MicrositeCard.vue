@@ -2,7 +2,7 @@
 import { Link } from '@inertiajs/vue3';
 import { type Microsite } from '../index';
 
-defineProps<{
+const { microsite } = defineProps<{
     microsite: Microsite;
 }>();
 
@@ -11,13 +11,25 @@ const handleImageError = (event: Event) => {
     target.src = '/images/placeholder.png';
 };
 
+const getMicrositeRoute = () => {
+    if (['invoice', 'basic'].includes(microsite.type)) {
+        return route('payments.show', {
+            microsite: microsite.slug
+        });
+    }
+
+    if (microsite.type === 'subscription') {
+        return route('subscription-payments.show', {
+            microsite: microsite.slug
+        });
+    }
+};
+
 </script>
 
 <template>
     <Link
-        :href="route('payments.show', {
-            microsite: microsite.slug
-        })"
+        :href="getMicrositeRoute()"
         class="grid gap-2 p-4 max-w-sm rounded overflow-hidden border bg-white
                shadow-sm hover:text-blue-500
                cursor-pointer"
@@ -28,6 +40,7 @@ const handleImageError = (event: Event) => {
                 :src="microsite.logo"
                 :alt="microsite.name"
                 @error="handleImageError"
+                loading="lazy"
             />
         </div>
         <div class="font-bold text-xl text-center">{{ microsite.name }}</div>

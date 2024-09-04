@@ -50,7 +50,7 @@ const handleSubmit = () => {
     formData.value['subscription_id'] = subscription?.id;
     isSubmitting.value = true;
 
-    router.post(route('payments.store', {
+    router.post(route('subscription-payments.store', {
         microsite: micrositeSlug,
     }), formData.value, {
         preserveScroll: true,

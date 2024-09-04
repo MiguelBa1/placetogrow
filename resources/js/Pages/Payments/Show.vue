@@ -12,14 +12,12 @@ const { microsite, fields } = defineProps<{
     fields: {
         data: Field[];
     };
-    subscriptions: SubscriptionList;
+    subscriptions?: SubscriptionList;
 }>();
 
 const goBack = () => {
     window.history.back();
 };
-
-const isSubscription = microsite.type === 'subscription';
 
 </script>
 
@@ -56,21 +54,16 @@ const isSubscription = microsite.type === 'subscription';
 
         <div class="p-10 bg-white rounded-xl shadow-sm">
             <DynamicForm
-                v-if="!isSubscription && subscriptions.data.length > 0"
+                v-if="['basic', 'invoice'].includes(microsite.type)"
                 :fields="fields.data"
                 :microsite="microsite"
             />
             <SubscriptionPlans
-                v-if="isSubscription && subscriptions.data.length > 0"
+                v-if="microsite.type === 'subscription'"
                 :subscriptions="subscriptions"
                 :microsite="microsite"
                 :fields="fields.data"
             />
-            <div v-else class="text-center">
-                <p>
-                    {{ t('common.no_data') }}
-                </p>
-            </div>
         </div>
     </MainLayout>
 </template>
