@@ -6,10 +6,10 @@ import { Field, SubscriptionItem } from '@/Pages/Payments';
 import { useI18n } from 'vue-i18n';
 import { useToast } from "vue-toastification";
 
-const { subscription, micrositeSlug } = defineProps<{
+const { subscriptionId, micrositeSlug } = defineProps<{
     isOpen: boolean;
     micrositeSlug: string;
-    subscription: SubscriptionItem | null;
+    subscriptionId: number | null;
     fields: Field[];
 }>();
 
@@ -47,18 +47,21 @@ const getComponent = (type: string) => {
 };
 
 const handleSubmit = () => {
-    formData.value['subscription_id'] = subscription?.id;
     isSubmitting.value = true;
 
     router.post(route('subscription-payments.store', {
         microsite: micrositeSlug,
-    }), formData.value, {
+    }), {
+        ...formData.value,
+        subscription_id: subscriptionId,
+    }, {
         preserveScroll: true,
         onSuccess: () => {
             toast.success(t('common.form.success'));
             formErrors.value = {};
         },
         onError: (error) => {
+            console.log(error)
             toast.error(error?.payment ?? t('common.form.error'));
             formErrors.value = error ?? {};
         },

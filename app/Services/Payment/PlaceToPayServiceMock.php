@@ -6,6 +6,7 @@ use App\Contracts\PlaceToPayServiceInterface;
 use App\Models\Customer;
 use App\Models\Payment;
 use GuzzleHttp\Psr7\Response as GuzzleResponse;
+use Illuminate\Database\Eloquent\Relations\Pivot;
 use Illuminate\Http\Client\Response;
 
 class PlaceToPayServiceMock implements PlaceToPayServiceInterface
@@ -45,5 +46,19 @@ class PlaceToPayServiceMock implements PlaceToPayServiceInterface
     public function setStatusCode(int $statusCode): void
     {
         $this->statusCode = $statusCode;
+    }
+
+    public function createSubscription(Customer $customer, Pivot $subscriptionPivot): Response
+    {
+        // TODO: Implement createSubscription() method.
+
+        return new Response(new GuzzleResponse(200, ['Content-Type' => 'application/json'], json_encode([])));
+    }
+
+    public function checkSubscription(string $subscriptionId): Response
+    {
+        // TODO: Implement checkSubscription() method.
+
+        return new Response(new GuzzleResponse(200, ['Content-Type' => 'application/json'], json_encode([])));
     }
 }

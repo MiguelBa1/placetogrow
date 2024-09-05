@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Contracts\PlaceToPayServiceInterface;
 use App\Models\Customer;
 use App\Models\Payment;
+use Illuminate\Database\Eloquent\Relations\Pivot;
 use Illuminate\Http\Client\Response;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
@@ -79,6 +80,18 @@ class PlaceToPayService implements PlaceToPayServiceInterface
         return $this;
     }
 
+    public function subscription(array $data): self
+    {
+        $this->data['subscription'] = [
+            'reference' => $data['reference'],
+            'description' => $data['description'],
+        ];
+
+        $this->data['returnUrl'] = route('subscription-payments.return', $data['reference']);
+
+        return $this;
+    }
+
     public function createPayment(Customer $customer, Payment $payment): Response
     {
         $this->prepare();
@@ -99,6 +112,29 @@ class PlaceToPayService implements PlaceToPayServiceInterface
         ]);
 
         Log::info('PlaceToPayService: Checking payment', $result->json());
+
+        return $result;
+    }
+
+    public function createSubscription(Customer $customer, Pivot $subscriptionPivot): Response
+    {
+        $this->prepare();
+        $this->subscription($subscriptionPivot->toArray());
+        $this->buyer($customer);
+
+        Log::info('PlaceToPayService: Creating subscription', array_merge($this->data['subscription'], $this->data['buyer']));
+
+        return Http::post($this->config['url'] . '/api/session', $this->data);
+    }
+    public function checkSubscription(string $subscriptionId): Response
+    {
+        $this->prepare();
+
+        $result = Http::post($this->config['url'] . '/api/session/' . $subscriptionId, [
+            'auth' => $this->data['auth'],
+        ]);
+
+        Log::info('PlaceToPayService: Checking subscription', $result->json());
 
         return $result;
     }

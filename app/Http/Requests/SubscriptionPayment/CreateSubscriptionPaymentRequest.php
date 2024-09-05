@@ -3,7 +3,6 @@
 namespace App\Http\Requests\SubscriptionPayment;
 
 use App\Constants\FieldType;
-use App\Constants\MicrositeType;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 

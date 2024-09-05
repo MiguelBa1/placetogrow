@@ -23,11 +23,11 @@ const formattedPrice = (price: number) => {
     return formatCurrency(price, microsite.payment_currency);
 };
 
-const selectedSubscription = ref<SubscriptionItem | null>(null);
 const showModal = ref(false);
+const selectedSubscription = ref<number | null>(null);
 
-const openModal = (subscription: SubscriptionItem) => {
-    selectedSubscription.value = subscription;
+const openModal = (subscriptionId: number) => {
+    selectedSubscription.value = subscriptionId;
     showModal.value = true;
 };
 
@@ -53,15 +53,16 @@ const closeModal = () => {
                 <p class="text-gray-600 my-4" v-html="renderMarkdown(subscription.description)"></p>
 
             </div>
-            <Button @click="openModal(subscription)" class="w-full">
+            <Button @click="openModal(subscription.id)" class="w-full">
                 {{ t('payments.show.subscription.button') }}
             </Button>
         </div>
     </div>
     <SubscriptionFormModal
+        v-if="showModal"
         :isOpen="showModal"
         :fields="fields"
-        :subscription="selectedSubscription"
+        :subscriptionId="selectedSubscription"
         :micrositeSlug="microsite.slug"
         @closeModal="closeModal"
     />

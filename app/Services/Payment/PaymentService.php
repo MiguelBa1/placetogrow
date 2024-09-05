@@ -13,6 +13,14 @@ use Illuminate\Support\Str;
 
 class PaymentService implements PaymentServiceInterface
 {
+
+    private PlaceToPayServiceInterface $placeToPayService;
+
+    public function __construct(PlaceToPayServiceInterface $placeToPayService)
+    {
+        $this->placeToPayService = $placeToPayService;
+    }
+
     public function createPayment(array $paymentData): array
     {
         /** @var Customer $customer */
@@ -39,7 +47,7 @@ class PaymentService implements PaymentServiceInterface
             'additional_data' => $paymentData['additional_data'],
         ]);
 
-        $result = app(PlaceToPayServiceInterface::class)->createPayment($customer, $payment);
+        $result = $this->placeToPayService->createPayment($customer, $payment);
 
         if (!$result->ok()) {
 
@@ -70,7 +78,7 @@ class PaymentService implements PaymentServiceInterface
 
     public function checkPayment(Payment $payment): array
     {
-        $result = app(PlaceToPayServiceInterface::class)->checkPayment($payment->request_id);
+        $result = $this->placeToPayService->checkPayment($payment->request_id);
 
         if ($result->ok()) {
             $payment = $this->updatePayment($payment, $result->json());
