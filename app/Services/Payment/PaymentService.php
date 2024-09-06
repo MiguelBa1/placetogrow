@@ -72,7 +72,6 @@ class PaymentService implements PaymentServiceInterface
             'success' => $result->ok(),
             'url' => $result['processUrl'] ?? null,
             'message' => $result['status']['message'] ?? null,
-            'microsite_slug' => $payment->microsite->slug,
         ];
     }
 
@@ -86,8 +85,6 @@ class PaymentService implements PaymentServiceInterface
             return [
                 'success' => true,
                 'payment' => $payment,
-                'customerName' => $payment->customer->name . ' ' . $payment->customer->last_name,
-                'micrositeName' => $payment->microsite->name,
             ];
         } else {
             return [
