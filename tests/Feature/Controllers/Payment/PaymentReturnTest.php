@@ -8,7 +8,6 @@ use App\Models\Microsite;
 use App\Models\Payment;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\Storage;
 use Inertia\Testing\AssertableInertia as Assert;
 use Mockery;
 use Tests\TestCase;
@@ -24,9 +23,6 @@ class PaymentReturnTest extends TestCase
     public function setUp(): void
     {
         parent::setUp();
-
-        Storage::fake('microsites_logos');
-        Storage::fake('category_icons');
 
         $this->basicMicrosite = $this->createMicrositeWithFields(MicrositeType::BASIC);
     }

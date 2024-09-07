@@ -11,13 +11,13 @@ use Illuminate\Http\Client\Response;
 
 class PlaceToPayServiceMock implements PlaceToPayServiceInterface
 {
-    private string $createPaymentFile = 'create_payment.json';
+    private string $createPaymentFile = 'created_payment.json';
 
     private string $checkPaymentFile = 'approved_payment.json';
 
-    private string $createSubscriptionFile = 'create_subscription.json';
+    private string $createSubscriptionFile = 'created_subscription.json';
 
-    private string $checkSubscriptionFile = 'check_subscription.json';
+    private string $checkSubscriptionFile = 'approved_subscription.json';
 
     private int $statusCode = 200;
 

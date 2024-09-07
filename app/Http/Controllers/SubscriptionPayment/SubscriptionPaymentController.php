@@ -75,7 +75,7 @@ class SubscriptionPaymentController extends Controller
         if ($result['success']) {
             return Inertia::location($result['url']);
         } else {
-            return redirect()->route('payments.show', $microsite->slug)
+            return redirect()->route('subscription-payments.show', $microsite->slug)
                 ->withErrors([
                     'payment' => $result['message'],
                 ]);
@@ -97,10 +97,9 @@ class SubscriptionPaymentController extends Controller
                 $result = $this->subscriptionService->checkSubscription($customerSubscription);
 
                 if (!$result['success']) {
-                    return redirect()->route('subscriptions.show', $customerSubscription->subscription->microsite->slug)
-                        ->withErrors([
-                            'subscription' => $result['message'],
-                        ]);
+                    return Inertia::render('Payments/Return', [
+                        'error' => $result['message'],
+                    ]);
                 }
 
                 $customerSubscription = $result['customer_subscription'];
