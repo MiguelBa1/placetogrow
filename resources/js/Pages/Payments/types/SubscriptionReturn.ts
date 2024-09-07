@@ -1,6 +1,8 @@
+import { SubscriptionStatus } from '@/types/enums';
+
 export type SubscriptionReturn = {
     reference: string;
-    status: string;
+    status: SubscriptionStatus;
     status_message: string;
     payment_method_name: string;
     created_at: string;

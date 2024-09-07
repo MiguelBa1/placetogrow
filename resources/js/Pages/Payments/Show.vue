@@ -59,7 +59,7 @@ const goBack = () => {
                 :microsite="microsite"
             />
             <SubscriptionPlans
-                v-if="microsite.type === 'subscription'"
+                v-if="microsite.type === 'subscription' && subscriptions"
                 :subscriptions="subscriptions"
                 :microsite="microsite"
                 :fields="fields.data"

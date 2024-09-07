@@ -13,7 +13,7 @@ const { payment } = defineProps<{
         name: string;
         last_name: string;
     };
-    micrositeName: string;
+    micrositeName?: string;
 }>();
 
 const formattedPaymentDate = new Date(payment.payment_date).toLocaleString();

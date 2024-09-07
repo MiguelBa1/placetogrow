@@ -23,6 +23,9 @@ const getMicrositeRoute = () => {
             microsite: microsite.slug
         });
     }
+
+    console.error('Unknown microsite type:', microsite.type);
+    return '#';
 };
 
 </script>
