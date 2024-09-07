@@ -15,5 +15,5 @@ interface PlaceToPayServiceInterface
 
     public function createSubscription(Customer $customer, CustomerSubscription $subscriptionPivot): Response;
 
-    public function checkSubscription(string $subscriptionId): Response;
+    public function checkSubscription(string $sessionId): Response;
 }

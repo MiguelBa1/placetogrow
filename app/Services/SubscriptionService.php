@@ -2,12 +2,12 @@
 
 namespace App\Services;
 
+use App\Constants\PlaceToPayStatus;
 use App\Constants\SubscriptionStatus;
 use App\Contracts\PlaceToPayServiceInterface;
 use App\Contracts\SubscriptionServiceInterface;
 use App\Models\Customer;
 use App\Models\CustomerSubscription;
-use App\Models\Subscription;
 use DateInterval;
 use Illuminate\Support\Str;
 
@@ -84,8 +84,46 @@ class SubscriptionService implements SubscriptionServiceInterface
         ];
     }
 
-    public function checkSubscription(Subscription $subscription): array
+    public function checkSubscription(CustomerSubscription $customerSubscription): array
     {
-        // TODO: Implement checkSubscription() method.
+        $result = $this->placeToPayService->checkSubscription($customerSubscription->request_id);
+        $dataResponse = $result->json();
+
+        if ($result->ok()) {
+            $this->updateSubscription($customerSubscription, $dataResponse);
+
+            return [
+                'success' => true,
+                'message' => $dataResponse['status']['message'],
+            ];
+        } else {
+            return [
+                'success' => false,
+                'message' => $dataResponse['status']['message'],
+            ];
+        }
+
+    }
+
+    private function updateSubscription(CustomerSubscription $customerSubscription, array $dataResponse): void
+    {
+        $subscriptionStatus = $dataResponse['status'];
+
+        if ($subscriptionStatus['status'] === PlaceToPayStatus::APPROVED->value) {
+            $subscriptionInstrument = $dataResponse['subscription']['instrument'];
+
+            $customerSubscription->update([
+                'status' => SubscriptionStatus::ACTIVE->value,
+                'status_message' => $subscriptionStatus['message'],
+                'token' => $subscriptionInstrument[0]['value'],
+                'subtoken' => $subscriptionInstrument[1]['value'],
+            ]);
+
+        } else {
+            $customerSubscription->update([
+                'status' => SubscriptionStatus::INACTIVE->value,
+                'status_message' => $subscriptionStatus['message'],
+            ]);
+        }
     }
 }

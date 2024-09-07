@@ -106,7 +106,7 @@ Route::prefix('subscription-payments')->name('subscription-payments.')->group(fu
         Route::get('/', [SubscriptionPaymentController::class, 'show'])->name('show');
         Route::post('{subscription}/payment', [SubscriptionPaymentController::class, 'store'])->name('store');
     });
-    Route::get('/return/{subscription}', [SubscriptionPaymentController::class, 'return'])->name('return');
+    Route::get('/return/{customerSubscription:reference}', [SubscriptionPaymentController::class, 'return'])->name('return');
 });
 
 Route::prefix('transactions')->name('transactions.')->group(function () {

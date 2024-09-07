@@ -2,12 +2,12 @@
 
 namespace App\Contracts;
 
-use App\Models\Subscription;
+use App\Models\CustomerSubscription;
 
 interface SubscriptionServiceInterface
 {
     public function createSubscription(array $subscriptionData): array;
 
-    public function checkSubscription(Subscription $subscription): array;
+    public function checkSubscription(CustomerSubscription $customerSubscription): array;
 
 }

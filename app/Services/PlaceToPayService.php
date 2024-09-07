@@ -87,7 +87,7 @@ class PlaceToPayService implements PlaceToPayServiceInterface
             'description' => $data->description,
         ];
 
-        $this->data['returnUrl'] = route('subscription-payments.return', $data->id);
+        $this->data['returnUrl'] = route('subscription-payments.return', $data->reference);
 
         return $this;
     }
@@ -126,11 +126,11 @@ class PlaceToPayService implements PlaceToPayServiceInterface
 
         return Http::post($this->config['url'] . '/api/session', $this->data);
     }
-    public function checkSubscription(string $subscriptionId): Response
+    public function checkSubscription(string $sessionId): Response
     {
         $this->prepare();
 
-        $result = Http::post($this->config['url'] . '/api/session/' . $subscriptionId, [
+        $result = Http::post($this->config['url'] . '/api/session/' . $sessionId, [
             'auth' => $this->data['auth'],
         ]);
 

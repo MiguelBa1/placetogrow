@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\Pivot;
 
 /**
@@ -19,6 +20,8 @@ use Illuminate\Database\Eloquent\Relations\Pivot;
  * @property string $token
  * @property string $subtoken
  * @property array $additional_data
+ * @property Subscription $subscription
+ * @property Customer $customer
  */
 class CustomerSubscription extends Pivot
 {
@@ -45,4 +48,14 @@ class CustomerSubscription extends Pivot
     protected $casts = [
         'additional_data' => 'array',
     ];
+
+    public function subscription(): BelongsTo
+    {
+        return $this->belongsTo(Subscription::class);
+    }
+
+    public function customer(): BelongsTo
+    {
+        return $this->belongsTo(Customer::class);
+    }
 }
