@@ -103,7 +103,7 @@ class SubscriptionPaymentController extends Controller
                         ]);
                 }
 
-                $customerSubscription = $result['subscription'];
+                $customerSubscription = $result['customer_subscription'];
 
                 Cache::put($cacheKey, $customerSubscription->status, now()->addMinutes(10));
             } else {
@@ -111,9 +111,9 @@ class SubscriptionPaymentController extends Controller
             }
         }
 
-        return Inertia::render('Payments/SubscriptionReturn', [
+        return Inertia::render('Payments/Return', [
             'subscription' => $customerSubscription,
-            'message' => $result['message'] ?? __('subscription_payment.success'),
+            'customer' => $customerSubscription->customer->only(['name', 'last_name']),
         ]);
     }
 }

@@ -9,6 +9,11 @@ const { t } = useI18n();
 
 const { payment } = defineProps<{
     payment: PaymentReturn;
+    customer: {
+        name: string;
+        last_name: string;
+    };
+    micrositeName: string;
 }>();
 
 const formattedPaymentDate = new Date(payment.payment_date).toLocaleString();
@@ -28,7 +33,7 @@ const formattedStatus = formattedPaymentStatus(t, payment.status);
                     {{ t('payments.result.greeting') }}
                 </p>
                 <p class="text-2xl font-bold">
-                    {{ customerName }}
+                    {{ customer.name }} {{ customer.last_name }}
                 </p>
 
                 <p class="text-lg">

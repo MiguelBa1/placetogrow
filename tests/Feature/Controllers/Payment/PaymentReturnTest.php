@@ -51,7 +51,7 @@ class PaymentReturnTest extends TestCase
             fn (Assert $page) => $page
                 ->component('Payments/Return')
                 ->has('payment')
-                ->has('customerName')
+                ->has('customer')
                 ->has('micrositeName')
         );
 
@@ -144,7 +144,7 @@ class PaymentReturnTest extends TestCase
             fn (Assert $page) => $page
                 ->component('Payments/Return')
                 ->has('payment')
-                ->has('customerName')
+                ->has('customer')
                 ->has('micrositeName')
         );
 

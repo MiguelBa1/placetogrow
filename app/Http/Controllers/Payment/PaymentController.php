@@ -100,7 +100,7 @@ class PaymentController extends Controller
 
         return Inertia::render('Payments/Return', [
             'payment' => $payment,
-            'customerName' => $payment->customer->name . ' ' . $payment->customer->last_name,
+            'customer' => $payment->customer->only(['name', 'last_name']),
             'micrositeName' => $payment->microsite->name,
         ]);
     }

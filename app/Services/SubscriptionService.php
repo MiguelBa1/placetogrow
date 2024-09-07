@@ -73,7 +73,6 @@ class SubscriptionService implements SubscriptionServiceInterface
 
         $subscriptionPivot->update([
             'request_id' => $dataResponse['requestId'],
-            'status' => SubscriptionStatus::ACTIVE->value,
             'status_message' => $dataResponse['status']['message'],
         ]);
 
@@ -95,6 +94,7 @@ class SubscriptionService implements SubscriptionServiceInterface
             return [
                 'success' => true,
                 'message' => $dataResponse['status']['message'],
+                'customer_subscription' => $customerSubscription,
             ];
         } else {
             return [
