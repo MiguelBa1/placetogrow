@@ -51,10 +51,8 @@ const handleSubmit = () => {
 
     router.post(route('subscription-payments.store', {
         microsite: micrositeSlug,
-    }), {
-        ...formData.value,
-        subscription_id: subscriptionId,
-    }, {
+        subscription: subscriptionId,
+    }), formData.value, {
         preserveScroll: true,
         onSuccess: () => {
             toast.success(t('common.form.success'));

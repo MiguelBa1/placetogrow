@@ -30,8 +30,6 @@ class CreateSubscriptionPaymentRequest extends FormRequest
             $rules[$field->name] = $fieldRules;
         }
 
-        $rules['subscription_id'] = ['required', 'integer', 'exists:subscriptions,id'];
-
         return $rules;
     }
 }

@@ -6,7 +6,9 @@ use App\Constants\SubscriptionStatus;
 use App\Contracts\PlaceToPayServiceInterface;
 use App\Contracts\SubscriptionServiceInterface;
 use App\Models\Customer;
+use App\Models\CustomerSubscription;
 use App\Models\Subscription;
+use DateInterval;
 use Illuminate\Support\Str;
 
 class SubscriptionService implements SubscriptionServiceInterface
@@ -34,44 +36,51 @@ class SubscriptionService implements SubscriptionServiceInterface
             ]
         );
 
-        $customer->subscriptions()->attach($subscriptionData['subscription_id'], [
-            'start_date' => now(),
-            'reference' => date('ymdHis') . '-' . strtoupper(Str::random(4)),
-            'description' => $customer->name . ' ' . $subscriptionData['subscription_id'],
-            'currency' => $subscriptionData['currency'],
-            'additional_data' => json_encode($subscriptionData['additional_data']),
-        ]);
+        $start_date = now();
+        $end_date = now()->add(DateInterval::createFromDateString("{$subscriptionData['total_duration']} {$subscriptionData['time_unit']}"));
 
-        $subscriptionPivot = $customer->subscriptions()
-            ->where('subscription_id', $subscriptionData['subscription_id'])
-            ->first()
-            ->pivot;
+        /** @var CustomerSubscription $subscriptionPivot */
+        $subscriptionPivot = CustomerSubscription::query()->firstOrCreate(
+            [
+                'customer_id' => $customer->id,
+                'subscription_id' => $subscriptionData['subscription_id'],
+            ],
+            [
+                'start_date' => $start_date,
+                'end_date' => $end_date,
+                'reference' => date('ymdHis') . '-' . strtoupper(Str::random(4)),
+                'description' => $customer->name . ' ' . $subscriptionData['subscription_id'],
+                'currency' => $subscriptionData['currency'],
+                'additional_data' => $subscriptionData['additional_data'],
+            ]
+        );
 
         $result = $this->placeToPayService->createSubscription($customer, $subscriptionPivot);
 
+        $dataResponse = $result->json();
         if (!$result->ok()) {
-            $customer->subscriptions()->updateExistingPivot($subscriptionData['subscription_id'], [
-                'request_id' => $result->json()['requestId'],
+            $subscriptionPivot->update([
+                'request_id' => $dataResponse['requestId'],
                 'status' => SubscriptionStatus::INACTIVE->value,
-                'status_message' => $result->json()['status']['message'],
+                'status_message' => $dataResponse['status']['message'],
             ]);
 
             return [
                 'success' => false,
-                'message' => $result->json()['status']['message'],
+                'message' => $dataResponse['status']['message'],
             ];
         }
 
-        $customer->subscriptions()->updateExistingPivot($subscriptionData['subscription_id'], [
-            'request_id' => $result->json()['requestId'],
+        $subscriptionPivot->update([
+            'request_id' => $dataResponse['requestId'],
             'status' => SubscriptionStatus::ACTIVE->value,
-            'status_message' => $result->json()['status']['message'],
+            'status_message' => $dataResponse['status']['message'],
         ]);
 
         return [
             'success' => $result->ok(),
             'url' => $result['processUrl'] ?? null,
-            'message' => $result->json()['status']['message'] ?? null,
+            'message' => $dataResponse['status']['message'] ?? null,
         ];
     }
 

@@ -11,6 +11,7 @@ use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Collection;
 
 /**
+ * @property int id
  * @property string name
  * @property string last_name
  * @property DocumentType document_type
@@ -40,19 +41,7 @@ class Customer extends Model
     public function subscriptions(): BelongsToMany
     {
         return $this->belongsToMany(Subscription::class, 'customer_subscription')
-            ->withPivot(
-                'start_date',
-                'end_date',
-                'status',
-                'reference',
-                'description',
-                'request_id',
-                'status_message',
-                'currency',
-                'token',
-                'subtoken',
-                'additional_data',
-            )
+            ->using(CustomerSubscription::class)
             ->withTimestamps();
     }
 }

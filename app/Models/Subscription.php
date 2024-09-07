@@ -59,19 +59,7 @@ class Subscription extends Model
     public function customers(): BelongsToMany
     {
         return $this->belongsToMany(Customer::class, 'customer_subscription')
-            ->withPivot(
-                'start_date',
-                'end_date',
-                'status',
-                'reference',
-                'description',
-                'request_id',
-                'status_message',
-                'currency',
-                'token',
-                'subtoken',
-                'additional_data',
-            )
+            ->using(CustomerSubscription::class)
             ->withTimestamps();
     }
 }

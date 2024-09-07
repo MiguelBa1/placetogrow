@@ -7,6 +7,7 @@ use App\Http\Requests\SubscriptionPayment\CreateSubscriptionPaymentRequest;
 use App\Http\Resources\MicrositeField\MicrositeFieldDetailResource;
 use App\Http\Resources\Subscription\SubscriptionDetailResource;
 use App\Models\Microsite;
+use App\Models\Subscription;
 use App\Services\SubscriptionService;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -48,7 +49,7 @@ class SubscriptionPaymentController extends Controller
         ]);
     }
 
-    public function store(CreateSubscriptionPaymentRequest $request, Microsite $microsite): \Symfony\Component\HttpFoundation\Response
+    public function store(CreateSubscriptionPaymentRequest $request, Microsite $microsite, Subscription $subscription): \Symfony\Component\HttpFoundation\Response
     {
         $subscriptionData = $request->validated();
         $subscriptionData['additional_data'] = [];
@@ -60,7 +61,9 @@ class SubscriptionPaymentController extends Controller
         }
 
         $subscriptionData['currency'] = $microsite->payment_currency->value;
-        $subscriptionData['microsite_id'] = $microsite->id;
+        $subscriptionData['subscription_id'] = $subscription->id;
+        $subscriptionData['total_duration'] = $subscription->total_duration;
+        $subscriptionData['time_unit'] = $subscription->time_unit->value;
 
         $result = $this->subscriptionService->createSubscription($subscriptionData);
 

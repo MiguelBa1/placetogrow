@@ -104,9 +104,9 @@ Route::prefix('payments')->name('payments.')->group(function () {
 Route::prefix('subscription-payments')->name('subscription-payments.')->group(function () {
     Route::prefix('{microsite}')->group(function () {
         Route::get('/', [SubscriptionPaymentController::class, 'show'])->name('show');
-        Route::post('/payment', [SubscriptionPaymentController::class, 'store'])->name('store');
+        Route::post('{subscription}/payment', [SubscriptionPaymentController::class, 'store'])->name('store');
     });
-    Route::get('/return/{payment}', [SubscriptionPaymentController::class, 'return'])->name('return');
+    Route::get('/return/{subscription}', [SubscriptionPaymentController::class, 'return'])->name('return');
 });
 
 Route::prefix('transactions')->name('transactions.')->group(function () {
