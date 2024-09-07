@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\Pivot;
 
@@ -25,6 +26,8 @@ use Illuminate\Database\Eloquent\Relations\Pivot;
  */
 class CustomerSubscription extends Pivot
 {
+    use HasFactory;
+
     public $incrementing = true;
 
     protected $table = 'customer_subscription';

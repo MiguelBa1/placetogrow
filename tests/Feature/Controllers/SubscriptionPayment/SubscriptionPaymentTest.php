@@ -48,6 +48,14 @@ class SubscriptionPaymentTest extends TestCase
     {
         $this->fakePaymentCreationSuccess();
 
+        // Add a dynamic field to the microsite
+        $this->subscriptionMicrosite->fields()->create([
+            'name' => 'color',
+            'type' => 'text',
+            'label' => 'Color',
+            'modifiable' => true,
+        ]);
+
         $response = $this->post(route('subscription-payments.store', [
             'microsite' => $this->subscriptionMicrosite,
             'subscription' => $this->subscription,
@@ -58,6 +66,7 @@ class SubscriptionPaymentTest extends TestCase
             'document_number' => '123456789',
             'document_type' => 'CC',
             'phone' => '3001234567',
+            'color' => '#000000',
         ]);
 
         $response->assertRedirect('/success');

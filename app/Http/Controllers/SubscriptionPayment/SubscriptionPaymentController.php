@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\SubscriptionPayment;
 
 use App\Constants\SubscriptionStatus;
+use App\Contracts\SubscriptionServiceInterface;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\SubscriptionPayment\CreateSubscriptionPaymentRequest;
 use App\Http\Resources\MicrositeField\MicrositeFieldDetailResource;
@@ -19,7 +20,7 @@ use Inertia\Response;
 
 class SubscriptionPaymentController extends Controller
 {
-    private SubscriptionService $subscriptionService;
+    private SubscriptionServiceInterface $subscriptionService;
 
     public function __construct(SubscriptionService $subscriptionService)
     {

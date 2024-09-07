@@ -39,32 +39,32 @@ trait PlaceToPayMockTrait
 
     public function fakeSubscriptionCreationSuccess(): void
     {
-        $this->createPlaceToPayMock('created_subscription.json', 'createPayment');
+        $this->createPlaceToPayMock('created_subscription.json', 'createSubscription');
     }
 
     public function fakeSubscriptionCreationFailed(): void
     {
-        $this->createPlaceToPayMock('failed_subscription.json', 'createPayment', 400);
+        $this->createPlaceToPayMock('failed_subscription.json', 'createSubscription', 400);
     }
 
     public function fakeSubscriptionCheckApproved(): void
     {
-        $this->createPlaceToPayMock('approved_subscription.json', 'checkPayment');
+        $this->createPlaceToPayMock('approved_subscription.json', 'checkSubscription');
     }
 
     public function fakeSubscriptionCheckRejected(): void
     {
-        $this->createPlaceToPayMock('rejected_subscription.json', 'checkPayment');
+        $this->createPlaceToPayMock('rejected_subscription.json', 'checkSubscription');
     }
 
     public function fakeSubscriptionCheckPending(): void
     {
-        $this->createPlaceToPayMock('pending_subscription.json', 'checkPayment');
+        $this->createPlaceToPayMock('pending_subscription.json', 'checkSubscription');
     }
 
     public function fakeSubscriptionCheckFailed(): void
     {
-        $this->createPlaceToPayMock('failed_subscription.json', 'checkPayment', 400);
+        $this->createPlaceToPayMock('failed_subscription.json', 'checkSubscription', 400);
     }
     private function createPlaceToPayMock(string $file, string $method, int $statusCode = 200): void
     {
