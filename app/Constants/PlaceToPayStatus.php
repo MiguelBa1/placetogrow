@@ -4,6 +4,7 @@ namespace App\Constants;
 
 enum PlaceToPayStatus: string
 {
+    case OK = 'OK';
     case PENDING = 'PENDING';
     case APPROVED = 'APPROVED';
     case REJECTED = 'REJECTED';

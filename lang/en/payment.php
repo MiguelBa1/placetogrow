@@ -6,7 +6,6 @@ return [
     "invoice_not_found" => "Invoice not found",
     "statuses" => [
         PaymentStatus::FAILED->value => "Failed",
-        PaymentStatus::OK->value => "OK",
         PaymentStatus::PENDING->value => "Pending",
         PaymentStatus::APPROVED->value => "Approved",
         PaymentStatus::REJECTED->value => "Rejected",

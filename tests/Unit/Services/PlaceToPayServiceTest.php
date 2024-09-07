@@ -5,6 +5,7 @@ namespace Tests\Unit\Services;
 use App\Constants\CurrencyType;
 use App\Constants\DocumentType;
 use App\Constants\PaymentStatus;
+use App\Constants\PlaceToPayStatus;
 use App\Models\Customer;
 use App\Models\Payment;
 use App\Services\PlaceToPayService;
@@ -20,7 +21,7 @@ class PlaceToPayServiceTest extends TestCase
     public function test_can_create_a_payment()
     {
         Http::fake([
-            config('payments.placetopay.url') => Http::response(['status' => PaymentStatus::OK->value]),
+            config('payments.placetopay.url') => Http::response(['status' => PlaceToPayStatus::OK->value]),
         ]);
 
         $customer = Customer::factory()->create([
@@ -46,7 +47,7 @@ class PlaceToPayServiceTest extends TestCase
         $this->assertEquals(200, $response->status());
 
         $this->assertArrayHasKey('status', $response->json());
-        $this->assertEquals('OK', $response->json()['status']);
+        $this->assertEquals(PlaceToPayStatus::OK->value, $response->json()['status']);
     }
 
     public function test_can_check_a_payment()
