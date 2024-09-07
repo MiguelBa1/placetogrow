@@ -1,0 +1,100 @@
+{
+    "requestId": "85224",
+    "status": {
+        "status": "APPROVED",
+        "reason": "00",
+        "message": "La petición ha sido aprobada exitosamente",
+        "date": "2024-09-07T10:00:00-05:00"
+    },
+    "request": {
+        "locale": "es_CO",
+        "payer": {
+            "document": "321312312",
+            "documentType": "CC",
+            "name": "Aprueba",
+            "surname": "Knight",
+            "email": "bepyq@mailinator.com",
+            "mobile": "+573001770593"
+        },
+        "buyer": {
+            "name": "Kyla Walter",
+            "surname": "Knight",
+            "email": "bepyq@mailinator.com",
+            "mobile": "3001770593"
+        },
+        "subscription": {
+            "reference": "240907014910-C7Y9",
+            "description": "Kyla Walter 3"
+        },
+        "fields": [
+            {
+                "keyword": "_processUrl_",
+                "value": "https://checkout-co.placetopay.dev/spa/session/85224/690a0531357a00f678bd5dfbea19317f",
+                "displayOn": "none"
+            },
+            {
+                "keyword": "_session_",
+                "value": 85224,
+                "displayOn": "none"
+            }
+        ],
+        "returnUrl": "http://127.0.0.1:8000/subscription-payments/return/240907014910-C7Y9",
+        "ipAddress": "127.0.0.1",
+        "userAgent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36",
+        "expiration": "2024-09-07T07:04:10+00:00",
+        "captureAddress": false,
+        "skipResult": false,
+        "noBuyerFill": false
+    },
+    "subscription": {
+        "type": "token",
+        "status": {
+            "status": "OK",
+            "reason": "00",
+            "message": "La petición se ha procesado correctamente",
+            "date": "2024-09-07T01:49:24-05:00"
+        },
+        "instrument": [
+            {
+                "keyword": "token",
+                "value": "6a52a67c74834ba35413850b872588f76520ae41314936209d11be8a40a2e466",
+                "displayOn": "none"
+            },
+            {
+                "keyword": "subtoken",
+                "value": "8476459766420081",
+                "displayOn": "none"
+            },
+            {
+                "keyword": "franchise",
+                "value": "visa",
+                "displayOn": "none"
+            },
+            {
+                "keyword": "franchiseName",
+                "value": "Visa",
+                "displayOn": "none"
+            },
+            {
+                "keyword": "issuerName",
+                "value": "BANCO DE GUAYAQUIL, S.A.",
+                "displayOn": "none"
+            },
+            {
+                "keyword": "lastDigits",
+                "value": "0081",
+                "displayOn": "none"
+            },
+            {
+                "keyword": "validUntil",
+                "value": "2026-11-30",
+                "displayOn": "none"
+            },
+            {
+                "keyword": "installments",
+                "value": null,
+                "displayOn": "none"
+            }
+        ]
+    }
+}

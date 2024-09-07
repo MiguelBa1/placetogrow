@@ -15,6 +15,10 @@ class PlaceToPayServiceMock implements PlaceToPayServiceInterface
 
     private string $checkPaymentFile = 'approved_payment.json';
 
+    private string $createSubscriptionFile = 'create_subscription.json';
+
+    private string $checkSubscriptionFile = 'check_subscription.json';
+
     private int $statusCode = 200;
 
     public function createPayment(Customer $customer, Payment $payment): Response
@@ -33,6 +37,22 @@ class PlaceToPayServiceMock implements PlaceToPayServiceInterface
         return new Response($guzzleResponse);
     }
 
+    public function createSubscription(Customer $customer, Pivot $subscriptionPivot): Response
+    {
+        $data = json_decode(file_get_contents(app_path("../tests/Stubs/$this->createSubscriptionFile")), true);
+
+        $guzzleResponse = new GuzzleResponse($this->statusCode, ['Content-Type' => 'application/json'], json_encode($data));
+        return new Response($guzzleResponse);
+    }
+
+    public function checkSubscription(string $sessionId): Response
+    {
+        $data = json_decode(file_get_contents(app_path("../tests/Stubs/$this->checkSubscriptionFile")), true);
+
+        $guzzleResponse = new GuzzleResponse($this->statusCode, ['Content-Type' => 'application/json'], json_encode($data));
+        return new Response($guzzleResponse);
+    }
+
     public function setCreatePaymentInformation(string $file): void
     {
         $this->createPaymentFile = $file;
@@ -43,22 +63,18 @@ class PlaceToPayServiceMock implements PlaceToPayServiceInterface
         $this->checkPaymentFile = $file;
     }
 
+    public function setCreateSubscriptionInformation(string $file): void
+    {
+        $this->createSubscriptionFile = $file;
+    }
+
+    public function setCheckSubscriptionInformation(string $file): void
+    {
+        $this->checkSubscriptionFile = $file;
+    }
+
     public function setStatusCode(int $statusCode): void
     {
         $this->statusCode = $statusCode;
-    }
-
-    public function createSubscription(Customer $customer, Pivot $subscriptionPivot): Response
-    {
-        // TODO: Implement createSubscription() method.
-
-        return new Response(new GuzzleResponse(200, ['Content-Type' => 'application/json'], json_encode([])));
-    }
-
-    public function checkSubscription(string $subscriptionId): Response
-    {
-        // TODO: Implement checkSubscription() method.
-
-        return new Response(new GuzzleResponse(200, ['Content-Type' => 'application/json'], json_encode([])));
     }
 }

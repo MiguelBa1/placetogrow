@@ -37,6 +37,35 @@ trait PlaceToPayMockTrait
         $this->createPlaceToPayMock('failed_payment.json', 'checkPayment', 400);
     }
 
+    public function fakeSubscriptionCreationSuccess(): void
+    {
+        $this->createPlaceToPayMock('created_subscription.json', 'createPayment');
+    }
+
+    public function fakeSubscriptionCreationFailed(): void
+    {
+        $this->createPlaceToPayMock('failed_subscription.json', 'createPayment', 400);
+    }
+
+    public function fakeSubscriptionCheckApproved(): void
+    {
+        $this->createPlaceToPayMock('approved_subscription.json', 'checkPayment');
+    }
+
+    public function fakeSubscriptionCheckRejected(): void
+    {
+        $this->createPlaceToPayMock('rejected_subscription.json', 'checkPayment');
+    }
+
+    public function fakeSubscriptionCheckPending(): void
+    {
+        $this->createPlaceToPayMock('pending_subscription.json', 'checkPayment');
+    }
+
+    public function fakeSubscriptionCheckFailed(): void
+    {
+        $this->createPlaceToPayMock('failed_subscription.json', 'checkPayment', 400);
+    }
     private function createPlaceToPayMock(string $file, string $method, int $statusCode = 200): void
     {
         $this->app->bind(PlaceToPayServiceInterface::class, function () use ($file, $statusCode, $method) {
@@ -44,6 +73,8 @@ trait PlaceToPayMockTrait
             match ($method) {
                 'createPayment' => $mock->setCreatePaymentInformation($file),
                 'checkPayment' => $mock->setCheckPaymentInformation($file),
+                'createSubscription' => $mock->setCreateSubscriptionInformation($file),
+                'checkSubscription' => $mock->setCheckSubscriptionInformation($file),
             };
 
             $mock->setStatusCode($statusCode);

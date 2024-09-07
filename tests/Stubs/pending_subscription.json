@@ -1,0 +1,31 @@
+{
+    "requestId": "85238",
+    "status": {
+        "status": "PENDING",
+        "reason": "PC",
+        "message": "La petición se encuentra activa",
+        "date": "2024-09-07T10:08:48-05:00"
+    },
+    "request": {
+        "locale": "es_CO",
+        "buyer": {
+            "document": "67332132",
+            "documentType": "CC",
+            "name": "Phillip Copeland",
+            "surname": "Sherman",
+            "email": "rona@mailinator.com",
+            "mobile": "3000014737"
+        },
+        "subscription": {
+            "reference": "240907100705-EAIT",
+            "description": "Phillip Copeland 1"
+        },
+        "returnUrl": "http://127.0.0.1:8000/subscription-payments/return/240907100705-EAIT",
+        "ipAddress": "127.0.0.1",
+        "userAgent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36",
+        "expiration": "2024-09-07T15:22:09+00:00",
+        "captureAddress": false,
+        "skipResult": false,
+        "noBuyerFill": false
+    }
+}

@@ -28,7 +28,6 @@ export const result = {
 
         active: 'ACTIVA',
         inactive: 'INACTIVA',
-        pendig: 'PENDIENTE',
     },
     greeting: '¡Hola!',
     payment_status: 'Tu pago a {micrositeName} se encuentra en estado:',

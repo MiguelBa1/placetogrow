@@ -117,8 +117,11 @@ const handleSubmit = () => {
                 @click="() => {
                     handleSubmit();
                 }"
+                :disabled="isSubmitting"
             >
-                {{ t('payments.show.subscription.form.submit') }}
+                {{
+                    isSubmitting ? t('common.loading') : t('payments.show.subscription.form.submit')
+                }}
             </Button>
         </template>
     </Modal>
