@@ -7,7 +7,6 @@ use App\Constants\MicrositeType;
 use App\Constants\PaymentStatus;
 use App\Models\Microsite;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Support\Facades\Storage;
 use Inertia\Testing\AssertableInertia as Assert;
 use Tests\TestCase;
 use Tests\Traits\CreatesMicrosites;
@@ -22,9 +21,6 @@ class BasicPaymentTest extends TestCase
     public function setUp(): void
     {
         parent::setUp();
-
-        Storage::fake('microsites_logos');
-        Storage::fake('category_icons');
 
         $this->basicMicrosite = $this->createMicrositeWithFields(MicrositeType::BASIC);
     }
@@ -44,7 +40,7 @@ class BasicPaymentTest extends TestCase
 
     public function test_store_payment(): void
     {
-        $this->fakeCreatePaymentSuccess();
+        $this->fakePaymentCreationSuccess();
 
         $response = $this->post(route('payments.store', $this->basicMicrosite), [
             'name' => 'John',
@@ -75,7 +71,7 @@ class BasicPaymentTest extends TestCase
 
     public function test_store_payment_error(): void
     {
-        $this->fakeCreatePaymentFailed();
+        $this->fakePaymentCreationFailed();
 
         $response = $this->post(route('payments.store', $this->basicMicrosite), [
             'name' => 'John',

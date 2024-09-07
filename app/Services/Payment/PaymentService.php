@@ -2,34 +2,31 @@
 
 namespace App\Services\Payment;
 
+use App\Actions\Customer\StoreCustomerAction;
 use App\Constants\InvoiceStatus;
 use App\Constants\MicrositeType;
 use App\Constants\PaymentStatus;
 use App\Contracts\PaymentServiceInterface;
 use App\Contracts\PlaceToPayServiceInterface;
-use App\Models\Customer;
 use App\Models\Payment;
 use Illuminate\Support\Str;
 
 class PaymentService implements PaymentServiceInterface
 {
+
+    private PlaceToPayServiceInterface $placeToPayService;
+
+    public function __construct(PlaceToPayServiceInterface $placeToPayService)
+    {
+        $this->placeToPayService = $placeToPayService;
+    }
+
     public function createPayment(array $paymentData): array
     {
-        /** @var Customer $customer */
-        $customer = Customer::query()->firstOrCreate(
-            ['document_number' => $paymentData['document_number']],
-            [
-                'name' => $paymentData['name'],
-                'last_name' => $paymentData['last_name'],
-                'document_type' => $paymentData['document_type'],
-                'document_number' => $paymentData['document_number'],
-                'phone' => $paymentData['phone'],
-                'email' => $paymentData['email'],
-            ]
-        );
+        $customerData = (new StoreCustomerAction())->execute($paymentData);
 
         /** @var Payment $payment */
-        $payment = $customer->payments()->create([
+        $payment = $customerData->payments()->create([
             'microsite_id' => $paymentData['microsite_id'],
             'invoice_id' => $paymentData['invoice_id'] ?? null,
             'description' => $paymentData['payment_description'],
@@ -39,7 +36,7 @@ class PaymentService implements PaymentServiceInterface
             'additional_data' => $paymentData['additional_data'],
         ]);
 
-        $result = app(PlaceToPayServiceInterface::class)->createPayment($customer, $payment);
+        $result = $this->placeToPayService->createPayment($customerData, $payment);
 
         if (!$result->ok()) {
 
@@ -64,13 +61,12 @@ class PaymentService implements PaymentServiceInterface
             'success' => $result->ok(),
             'url' => $result['processUrl'] ?? null,
             'message' => $result['status']['message'] ?? null,
-            'microsite_slug' => $payment->microsite->slug,
         ];
     }
 
     public function checkPayment(Payment $payment): array
     {
-        $result = app(PlaceToPayServiceInterface::class)->checkPayment($payment->request_id);
+        $result = $this->placeToPayService->checkPayment($payment->request_id);
 
         if ($result->ok()) {
             $payment = $this->updatePayment($payment, $result->json());
@@ -78,8 +74,6 @@ class PaymentService implements PaymentServiceInterface
             return [
                 'success' => true,
                 'payment' => $payment,
-                'customerName' => $payment->customer->name . ' ' . $payment->customer->last_name,
-                'micrositeName' => $payment->microsite->name,
             ];
         } else {
             return [

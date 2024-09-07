@@ -5,6 +5,7 @@ export type Microsite = {
     name: string;
     logo: string;
     slug: string;
+    type: string;
 };
 
 export type MicrositesPaginatedResponse = PaginatedResponse<Microsite>;

@@ -15,7 +15,7 @@ class PaymentDataProviderFactory
         return match ($micrositeType) {
             MicrositeType::BASIC => new BasicPaymentDataProvider(),
             MicrositeType::INVOICE => new InvoicePaymentDataProvider(),
-            default => throw new InvalidArgumentException("Unsupported microsite type: $micrositeType"),
+            default => throw new InvalidArgumentException("Unsupported microsite type: $micrositeType->value"),
         };
     }
 }

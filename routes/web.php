@@ -9,6 +9,7 @@ use App\Http\Controllers\Payment\PaymentController;
 use App\Http\Controllers\Profile\ProfileController;
 use App\Http\Controllers\RolePermission\RolePermissionController;
 use App\Http\Controllers\Subscription\SubscriptionController;
+use App\Http\Controllers\SubscriptionPayment\SubscriptionPaymentController;
 use App\Http\Controllers\Support\LanguageController;
 use App\Http\Controllers\Transaction\TransactionController;
 use App\Http\Controllers\User\UserController;
@@ -98,6 +99,14 @@ Route::prefix('payments')->name('payments.')->group(function () {
         Route::post('/payment', [PaymentController::class, 'store'])->name('store');
     });
     Route::get('/return/{payment}', [PaymentController::class, 'return'])->name('return');
+});
+
+Route::prefix('subscription-payments')->name('subscription-payments.')->group(function () {
+    Route::prefix('{microsite}')->group(function () {
+        Route::get('/', [SubscriptionPaymentController::class, 'show'])->name('show');
+        Route::post('{subscription}/payment', [SubscriptionPaymentController::class, 'store'])->name('store');
+    });
+    Route::get('/return/{customerSubscription:reference}', [SubscriptionPaymentController::class, 'return'])->name('return');
 });
 
 Route::prefix('transactions')->name('transactions.')->group(function () {

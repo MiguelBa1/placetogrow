@@ -5,11 +5,13 @@ namespace App\Models;
 use App\Constants\DocumentType;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Collection;
 
 /**
+ * @property int id
  * @property string name
  * @property string last_name
  * @property DocumentType document_type
@@ -34,5 +36,12 @@ class Customer extends Model
     public function payments(): HasMany
     {
         return $this->hasMany(Payment::class);
+    }
+
+    public function subscriptions(): BelongsToMany
+    {
+        return $this->belongsToMany(Subscription::class, 'customer_subscription')
+            ->using(CustomerSubscription::class)
+            ->withTimestamps();
     }
 }
