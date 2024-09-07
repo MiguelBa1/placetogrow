@@ -2,11 +2,11 @@
 
 namespace App\Services;
 
+use App\Actions\Customer\StoreCustomerAction;
 use App\Constants\PlaceToPayStatus;
 use App\Constants\SubscriptionStatus;
 use App\Contracts\PlaceToPayServiceInterface;
 use App\Contracts\SubscriptionServiceInterface;
-use App\Models\Customer;
 use App\Models\CustomerSubscription;
 use DateInterval;
 use Illuminate\Support\Str;
@@ -23,18 +23,7 @@ class SubscriptionService implements SubscriptionServiceInterface
 
     public function createSubscription(array $subscriptionData): array
     {
-        /** @var Customer $customer */
-        $customer = Customer::query()->firstOrCreate(
-            ['document_number' => $subscriptionData['document_number']],
-            [
-                'name' => $subscriptionData['name'],
-                'last_name' => $subscriptionData['last_name'],
-                'document_type' => $subscriptionData['document_type'],
-                'document_number' => $subscriptionData['document_number'],
-                'phone' => $subscriptionData['phone'],
-                'email' => $subscriptionData['email'],
-            ]
-        );
+        $customerData = (new StoreCustomerAction())->execute($subscriptionData);
 
         $start_date = now();
         $end_date = now()->add(DateInterval::createFromDateString("{$subscriptionData['total_duration']} {$subscriptionData['time_unit']}"));
@@ -42,20 +31,20 @@ class SubscriptionService implements SubscriptionServiceInterface
         /** @var CustomerSubscription $subscriptionPivot */
         $subscriptionPivot = CustomerSubscription::query()->firstOrCreate(
             [
-                'customer_id' => $customer->id,
+                'customer_id' => $customerData->id,
                 'subscription_id' => $subscriptionData['subscription_id'],
             ],
             [
                 'start_date' => $start_date,
                 'end_date' => $end_date,
                 'reference' => date('ymdHis') . '-' . strtoupper(Str::random(4)),
-                'description' => $customer->name . ' ' . $subscriptionData['subscription_id'],
+                'description' => $customerData->name . ' ' . $subscriptionData['subscription_id'],
                 'currency' => $subscriptionData['currency'],
                 'additional_data' => $subscriptionData['additional_data'],
             ]
         );
 
-        $result = $this->placeToPayService->createSubscription($customer, $subscriptionPivot);
+        $result = $this->placeToPayService->createSubscription($customerData, $subscriptionPivot);
 
         $dataResponse = $result->json();
         if (!$result->ok()) {
