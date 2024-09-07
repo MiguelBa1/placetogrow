@@ -17,7 +17,7 @@ class CheckPaymentsCommandTest extends TestCase
 
     public function test_can_check_payments()
     {
-        $this->fakeCheckApprovedPayment();
+        $this->fakePaymentCheckApproved();
 
         $customer = Customer::factory()->create();
         $payment = Payment::factory()->create([
@@ -42,7 +42,7 @@ class CheckPaymentsCommandTest extends TestCase
 
     public function test_only_check_pending_payments_after_interval()
     {
-        $this->fakeCheckApprovedPayment();
+        $this->fakePaymentCheckApproved();
 
         $customer = Customer::factory()->create();
         $payment = Payment::factory()->create([

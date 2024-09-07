@@ -44,7 +44,7 @@ class BasicPaymentTest extends TestCase
 
     public function test_store_payment(): void
     {
-        $this->fakeCreatePaymentSuccess();
+        $this->fakePaymentCreationSuccess();
 
         $response = $this->post(route('payments.store', $this->basicMicrosite), [
             'name' => 'John',
@@ -75,7 +75,7 @@ class BasicPaymentTest extends TestCase
 
     public function test_store_payment_error(): void
     {
-        $this->fakeCreatePaymentFailed();
+        $this->fakePaymentCreationFailed();
 
         $response = $this->post(route('payments.store', $this->basicMicrosite), [
             'name' => 'John',

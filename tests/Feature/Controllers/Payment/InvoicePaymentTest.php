@@ -56,7 +56,7 @@ class InvoicePaymentTest extends TestCase
 
     public function test_store_payment(): void
     {
-        $this->fakeCreatePaymentSuccess();
+        $this->fakePaymentCreationSuccess();
 
         $response = $this->post(route('payments.store', $this->invoiceMicrosite), [
             'reference' => 'test_reference',

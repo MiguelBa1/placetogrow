@@ -33,7 +33,7 @@ class PaymentReturnTest extends TestCase
 
     public function test_return_after_payment(): void
     {
-        $this->fakeCheckApprovedPayment();
+        $this->fakePaymentCheckApproved();
 
         $paymentReference = 'test_reference';
 
@@ -62,7 +62,7 @@ class PaymentReturnTest extends TestCase
 
     public function test_return_after_payment_error(): void
     {
-        $this->fakeCheckFailedPayment();
+        $this->fakePaymentCheckFailed();
 
         $paymentReference = 'test_reference';
         Payment::factory()->create([
@@ -79,7 +79,7 @@ class PaymentReturnTest extends TestCase
 
     public function test_rejected_payment(): void
     {
-        $this->fakeCheckRejectedPayment();
+        $this->fakePaymentCheckRejected();
 
         $paymentReference = 'test_reference';
         $payment = Payment::factory()->create([
@@ -103,7 +103,7 @@ class PaymentReturnTest extends TestCase
 
     public function test_already_approved_payment(): void
     {
-        $this->fakeCheckApprovedPayment();
+        $this->fakePaymentCheckApproved();
 
         $paymentReference = 'test_reference';
         $payment = Payment::factory()->create([
