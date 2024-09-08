@@ -23,6 +23,8 @@ use Illuminate\Database\Eloquent\Relations\Pivot;
  * @property array $additional_data
  * @property Subscription $subscription
  * @property Customer $customer
+ * @property string $created_at
+ * @property string $updated_at
  */
 class CustomerSubscription extends Pivot
 {

@@ -4,4 +4,5 @@ export const enGuestLayout = {
     register: "Register",
     home: "Home",
     invoices: "View Invoices",
+    subscriptions: "View Subscriptions",
 }

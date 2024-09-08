@@ -1,5 +1,7 @@
 <?php
 
+use App\Constants\SubscriptionStatus;
+
 return [
     'plans' => [
         'basic' => [
@@ -14,5 +16,11 @@ return [
             'name' => 'Plan Premium',
             'description' => "Acceso a funciones premium, incluyendo soporte prioritario.\n\n### Beneficios\n\n- ✅ Atención al cliente por correo electrónico y chat 24/7.\n- 📦 Envío gratis en pedidos superiores a $ 30.\n- 🛒 Acceso exclusivo a ofertas y descuentos.\n- 🔔 Notificaciones sobre nuevos productos y colecciones.\n- ✅ Devoluciones gratuitas.",
         ],
+    ],
+    'statuses' => [
+        SubscriptionStatus::ACTIVE->value => 'Activo',
+        SubscriptionStatus::INACTIVE->value => 'Inactivo',
+        SubscriptionStatus::CANCELED->value => 'Cancelado',
+        SubscriptionStatus::PENDING->value => 'Pendiente',
     ],
 ];

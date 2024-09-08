@@ -37,7 +37,7 @@ class CustomerSubscriptionController extends Controller
 
         Mail::to($customer->email)->send(new CustomerSubscriptionLinkMail($url));
 
-        return redirect()->back()->with('success', 'Subscription link sent successfully.');
+        return redirect()->back();
     }
 
     public function show(Request $request, string $email, string $documentNumber): Response
@@ -57,11 +57,11 @@ class CustomerSubscriptionController extends Controller
 
         $subscriptionsResource = CustomerSubscriptionResource::collection($subscriptions);
 
-        return Inertia::render('CustomerSubscription/Show', [
+        return Inertia::render('CustomerSubscriptions/Show', [
             'subscriptions' => $subscriptionsResource,
             'customer' => [
-                'email' => $request->get('email'),
-                'document_number' => $request->get('document_number'),
+                'email' => $email,
+                'document_number' => $documentNumber,
             ]
         ]);
     }
