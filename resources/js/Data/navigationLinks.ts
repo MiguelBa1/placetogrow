@@ -10,6 +10,7 @@ const authenticatedNavigationLinks = [
 const guestNavigationLinks = [
     { name: 'home', route: 'home', label: 'home' },
     { name: 'invoices', route: 'invoices.index', label: 'invoices' },
+    { name: 'subscriptions', route: 'subscriptions.index', label: 'subscriptions' },
 ]
 
 export const getNavigationLinks = (t: (key: string) => string, requiredPermissions: string[] = [], isAuthenticated: boolean = false) => {

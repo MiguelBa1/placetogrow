@@ -4,4 +4,5 @@ export const esGuestLayout = {
     register: "Registrarse",
     home: "Inicio",
     invoices: "Ver Facturas",
+    subscriptions: "Ver Suscripciones",
 }

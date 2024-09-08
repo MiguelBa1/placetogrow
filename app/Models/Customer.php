@@ -19,6 +19,7 @@ use Illuminate\Support\Collection;
  * @property string phone
  * @property string email
  * @property Collection payments
+ * @property Collection subscriptions
  */
 class Customer extends Model
 {

@@ -43,7 +43,7 @@ class CustomerInvoiceController extends Controller
     public function show(Request $request): Response
     {
         if (! $request->hasValidSignature()) {
-            abort(403, 'Invalid or expired link.');
+            abort(403, __('message.invalid_link'));
         }
 
         $invoices = Invoice::where('email', $request->get('email'))

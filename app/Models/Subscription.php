@@ -15,7 +15,6 @@ use Illuminate\Support\Carbon;
 /**
  * @property int $id
  * @property int $microsite_id
- * @property string $name
  * @property string|null $description
  * @property int $price
  * @property int $total_duration
@@ -34,7 +33,6 @@ class Subscription extends Model
 
     protected $fillable = [
         'microsite_id',
-        'name',
         'description',
         'price',
         'total_duration',
