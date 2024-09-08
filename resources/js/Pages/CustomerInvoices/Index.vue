@@ -1,37 +1,83 @@
 <script setup lang="ts">
-import { Head } from '@inertiajs/vue3';
+import { Head, useForm } from '@inertiajs/vue3';
 import { MainLayout } from '@/Layouts';
-import { Button } from '@/Components';
+import { Button, InputField } from '@/Components';
 import { useI18n } from 'vue-i18n';
+import { useToast } from 'vue-toastification';
 
 const { t } = useI18n();
-const goBack = () => {
-    history.back();
-};
+const toast = useToast();
 
+const form = useForm({
+    document_number: '4796715084',
+    email: 'naia.rojo@example.com',
+})
+
+const submit = () => {
+    form.post(route('invoices.send-link'), {
+        preserveScroll: true,
+        onSuccess: () => {
+            toast.success(t('customerInvoices.index.linkSent'));
+        },
+        onError: (errors) => {
+            toast.error(t('customerInvoices.index.linkError'));
+        },
+        onFinish: () => {
+            form.reset();
+        },
+    });
+}
 </script>
 
 <template>
     <Head>
         <title>
-            Mis Facturas
+            {{ t('customerInvoices.index.title') }}
         </title>
     </Head>
 
     <MainLayout>
-        <template #header>
-            <div class="flex justify-between items-center">
-                <h2 class="font-semibold text-xl text-gray-800">
-                    Mis Facturas
-                </h2>
+        <form @submit.prevent="submit"
+              class="space-y-4 w-full mx-auto sm:max-w-md px-6 py-4 bg-white shadow-md overflow-hidden sm:rounded-lg"
+        >
+            <div class="space-y-2">
+                <h1 class="font-semibold text-xl text-gray-800">
+                    {{ t('customerInvoices.index.accessInvoices') }}
+                </h1>
+                <p class="text-sm text-gray-600">
+                    {{ t('customerInvoices.index.enterDetails') }}
+                </p>
+            </div>
+            <InputField
+                id="document_number"
+                type="text"
+                :label="t('customerInvoices.index.documentNumberLabel')"
+                v-model="form.document_number"
+                required
+                :errors="form.errors?.document_number"
+            />
+            <InputField
+                id="email"
+                type="email"
+                :label="t('customerInvoices.index.emailLabel')"
+                v-model="form.email"
+                required
+                :errors="form.errors?.email"
+            />
+            <div class="w-full">
                 <Button
-                    variant="secondary"
-                    color="gray"
-                    @click="goBack"
+                    type="submit"
+                    variant="primary"
+                    color="blue"
+                    class="w-full"
+                    :disabled="form.processing"
                 >
-                    {{ t('common.back') }}
+                    {{ t('customerInvoices.index.sendLinkButton') }}
                 </Button>
             </div>
-        </template>
+            <p class="text-sm text-gray-600">
+                {{ t('customerInvoices.index.afterSend') }}
+            </p>
+        </form>
     </MainLayout>
 </template>

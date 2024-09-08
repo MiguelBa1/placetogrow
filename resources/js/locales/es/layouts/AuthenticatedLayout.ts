@@ -1,4 +1,5 @@
 export const esAuthenticatedLayout = {
+    home: "Inicio",
     dashboard: "Panel",
     profile: "Perfil",
     logOut: "Cerrar Sesión",
