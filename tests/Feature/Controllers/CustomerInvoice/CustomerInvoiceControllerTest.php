@@ -82,6 +82,6 @@ class CustomerInvoiceControllerTest extends TestCase
         $response = $this->get($url);
 
         $response->assertForbidden();
-        $response->assertSee('Invalid or expired link.');
+        $response->assertSee(__('message.invalid_link'));
     }
 }

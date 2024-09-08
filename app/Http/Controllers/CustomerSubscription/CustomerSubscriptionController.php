@@ -45,7 +45,7 @@ class CustomerSubscriptionController extends Controller
     public function show(Request $request, string $email, string $documentNumber): Response
     {
         if (! $request->hasValidSignature()) {
-            abort(403, 'Invalid or expired link.');
+            abort(403, __('message.invalid_link'));
         }
 
         /** @var Customer $customer */

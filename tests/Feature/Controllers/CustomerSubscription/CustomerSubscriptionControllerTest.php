@@ -94,7 +94,7 @@ class CustomerSubscriptionControllerTest extends TestCase
         $response = $this->get($url);
 
         $response->assertForbidden();
-        $response->assertSee('Invalid or expired link.');
+        $response->assertSee(__('message.invalid_link'));
     }
 
     public function test_cancels_a_subscription_successfully()
