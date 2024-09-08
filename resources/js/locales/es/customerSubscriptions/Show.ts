@@ -3,10 +3,10 @@ export const esShow = {
     table: {
         subscriptionName: 'Suscripción',
         micrositeName: 'Micrositio',
-        description: 'Descripción',
         price: 'Precio',
         startDate: 'Fecha de inicio',
         endDate: 'Fecha de fin',
+        createdAt: 'Fecha de creación',
         status: 'Estado',
         actions: 'Acciones',
     }

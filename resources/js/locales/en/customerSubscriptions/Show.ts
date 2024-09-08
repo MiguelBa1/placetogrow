@@ -2,11 +2,10 @@ export const enShow = {
     title: 'Subscriptions of {email}',
     table: {
         subscriptionName: 'Subscription',
-        micrositeName: 'Microsite',
-        description: 'Description',
         price: 'Price',
-        startDate: 'Start date',
-        endDate: 'End date',
+        startDate: 'Start Date',
+        endDate: 'End Date',
+        createdAt: 'Created At',
         status: 'Status',
         actions: 'Actions',
     }
