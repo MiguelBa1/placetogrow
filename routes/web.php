@@ -1,6 +1,7 @@
 <?php
 
 use App\Constants\Permission;
+use App\Http\Controllers\CustomerInvoice\CustomerInvoiceController;
 use App\Http\Controllers\Home\HomeController;
 use App\Http\Controllers\Invoice\InvoiceController;
 use App\Http\Controllers\Microsite\MicrositeController;
@@ -107,6 +108,12 @@ Route::prefix('subscription-payments')->name('subscription-payments.')->group(fu
         Route::post('{subscription}/payment', [SubscriptionPaymentController::class, 'store'])->name('store');
     });
     Route::get('/return/{customerSubscription:reference}', [SubscriptionPaymentController::class, 'return'])->name('return');
+});
+
+Route::prefix('invoices')->name('invoices.')->group(function () {
+    Route::get('index', [CustomerInvoiceController::class, 'index'])->name('index');
+    //    Route::get('show', [CustomerInvoiceController::class, 'show'])->name('invoices.show');
+    //    Route::post('send-link', [CustomerInvoiceController::class, 'sendLink'])->name('invoices.send-link');
 });
 
 Route::prefix('transactions')->name('transactions.')->group(function () {

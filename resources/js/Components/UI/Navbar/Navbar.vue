@@ -10,15 +10,15 @@ import {
     HamburgerIcon,
     LanguageSwitcher,
 } from '@/Components';
-import { getNavigationLinks, getGuestLinks } from '@/Data';
+import { getNavigationLinks, getGuestDropdownLinks } from '@/Data';
 
 const { t } = useI18n();
 const showingNavigationDropdown = ref(false);
 const page = usePage();
 const isAuthenticated = page.props.auth && page.props.auth.user;
 
-const navigationLinks = getNavigationLinks(t, page.props.auth.permissions);
-const guestLinks = getGuestLinks(t);
+const navigationLinks = getNavigationLinks(t, page.props.auth.permissions, isAuthenticated);
+const guestLinks = getGuestDropdownLinks(t);
 </script>
 
 <template>
@@ -35,10 +35,7 @@ const guestLinks = getGuestLinks(t);
                         </Link>
                     </div>
                     <!-- Desktop Navigation Links -->
-                    <DesktopNav
-                        v-if="isAuthenticated"
-                        :links="navigationLinks"
-                    />
+                    <DesktopNav :links="navigationLinks" />
                 </div>
                 <!-- Auth Links -->
                 <div class="hidden sm:flex sm:items-center sm:ms-6">
