@@ -112,8 +112,8 @@ Route::prefix('subscription-payments')->name('subscription-payments.')->group(fu
 
 Route::prefix('invoices')->name('invoices.')->group(function () {
     Route::get('index', [CustomerInvoiceController::class, 'index'])->name('index');
-    //    Route::get('show', [CustomerInvoiceController::class, 'show'])->name('invoices.show');
-    //    Route::post('send-link', [CustomerInvoiceController::class, 'sendLink'])->name('invoices.send-link');
+    Route::post('send-link', [CustomerInvoiceController::class, 'sendLink'])->name('send-link');
+    Route::get('show', [CustomerInvoiceController::class, 'show'])->name('show');
 });
 
 Route::prefix('transactions')->name('transactions.')->group(function () {
