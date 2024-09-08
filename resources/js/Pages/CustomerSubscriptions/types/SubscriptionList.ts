@@ -1,6 +1,7 @@
 export type SubscriptionListItem = {
     id: number;
     subscription_name: string;
+    microsite_name: string;
     price: number;
     start_date: string;
     end_date: string;

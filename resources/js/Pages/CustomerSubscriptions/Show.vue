@@ -22,7 +22,7 @@ const subscriptionColumns = getSubscriptionTableColumns(t);
 
 const isCancelSubscriptionModalOpen = ref(false);
 
-const selectedSubscription = ref(null);
+const selectedSubscription = ref<SubscriptionListItem | null>(null);
 
 const openCancelSubscriptionModal = (subscription: SubscriptionListItem) => {
     selectedSubscription.value = subscription;
@@ -62,7 +62,7 @@ const openCancelSubscriptionModal = (subscription: SubscriptionListItem) => {
                 <button
                     v-if="SubscriptionStatus.ACTIVE === row.status.value"
                     class="text-red-600 hover:text-red-800"
-                    @click="openCancelSubscriptionModal(row)"
+                    @click="openCancelSubscriptionModal(row as SubscriptionListItem)"
                 >
                     <TrashIcon class="w-5 h-5" />
                 </button>

@@ -10,7 +10,7 @@ const toast = useToast();
 
 const { customer, customerSubscription }  = defineProps<{
     isOpen: boolean;
-    customerSubscription: SubscriptionListItem;
+    customerSubscription: SubscriptionListItem | null;
     customer: {
         document_number: string;
         email: string;
@@ -24,6 +24,9 @@ const closeModal = () => {
 };
 
 const submit = () => {
+    if (!customerSubscription) {
+        return;
+    }
 
     router.post(route('subscriptions.cancel', {
         subscriptionId: customerSubscription.id,
@@ -52,8 +55,8 @@ const submit = () => {
     >
         <p>
             {{ t('customerSubscriptions.show.cancel.message', {
-                subscriptionName: customerSubscription.subscription_name,
-                micrositeName: customerSubscription.microsite_name,
+                subscriptionName: customerSubscription?.subscription_name,
+                micrositeName: customerSubscription?.microsite_name,
             }) }}
         </p>
         <template #footerButtons>
