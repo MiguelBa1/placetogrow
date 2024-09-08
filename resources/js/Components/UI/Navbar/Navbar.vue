@@ -17,7 +17,7 @@ const showingNavigationDropdown = ref(false);
 const page = usePage();
 const isAuthenticated = page.props.auth && page.props.auth.user;
 
-const navigationLinks = getNavigationLinks(t, page.props.auth.permissions, isAuthenticated);
+const navigationLinks = getNavigationLinks(t, page.props.auth.permissions, !!isAuthenticated);
 const guestLinks = getGuestDropdownLinks(t);
 </script>
 
