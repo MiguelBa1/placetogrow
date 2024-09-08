@@ -23,7 +23,7 @@ class CustomerSubscriptionLinkMail extends Mailable implements ShouldQueue
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Subscription Access Link',
+            subject: __('subscription.mail.subject'),
         );
     }
 

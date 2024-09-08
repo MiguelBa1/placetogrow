@@ -23,4 +23,12 @@ return [
         SubscriptionStatus::CANCELED->value => 'Cancelado',
         SubscriptionStatus::PENDING->value => 'Pendiente',
     ],
+    'mail' => [
+        'subject' => 'Enlace de acceso a suscripciones',
+        'greeting' => 'Accede a tus suscripciones',
+        'message' => 'Haz clic en el botón de abajo para ver tus suscripciones activas.',
+        'button_text' => 'Ver Suscripciones',
+        'alt_message' => 'Si tienes problemas para hacer clic en el botón "Ver Suscripciones", copia y pega la siguiente URL en tu navegador web:',
+        'thanks' => 'Gracias,',
+    ],
 ];

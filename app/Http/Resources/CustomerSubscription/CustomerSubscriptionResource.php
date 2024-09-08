@@ -34,7 +34,6 @@ class CustomerSubscriptionResource extends JsonResource
                 'label' => __("subscription.statuses.{$this->status}"),
                 'value' => $this->status,
             ],
-            'created_at' => date('d/m/Y H:i', strtotime($this->created_at)),
         ];
     }
 }

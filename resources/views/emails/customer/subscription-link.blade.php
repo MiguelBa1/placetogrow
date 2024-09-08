@@ -1,16 +1,16 @@
 @component('mail::message')
-# Access Your Subscriptions
+# {{ __('subscription.mail.greeting') }}
 
-Click the button below to view your active subscriptions.
+{{ __('subscription.mail.message') }}
 
 @component('mail::button', ['url' => $url])
-    View Subscriptions
+    {{ __('subscription.mail.button_text') }}
 @endcomponent
 
-If you’re having trouble clicking the "View Subscriptions" button, copy and paste the URL below into your web browser:
+{{ __('subscription.mail.alt_message') }}
 
 [{{ $url }}]({{ $url }})
 
-Thanks,<br>
+{{ __('subscription.mail.thanks') }}<br>
 {{ config('app.name') }}
 @endcomponent

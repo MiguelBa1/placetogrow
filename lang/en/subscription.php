@@ -24,4 +24,12 @@ return [
         SubscriptionStatus::CANCELED->value => 'Canceled',
         SubscriptionStatus::PENDING->value => 'Pending',
     ],
+    'mail' => [
+        'subject' => 'Subscription Access Link',
+        'greeting' => 'Access your subscriptions',
+        'message' => 'Click the button below to view your active subscriptions.',
+        'button_text' => 'View Subscriptions',
+        'alt_message' => 'If you’re having trouble clicking the "View Subscriptions" button, copy and paste the URL below into your web browser:',
+        'thanks' => 'Thanks,',
+    ],
 ];

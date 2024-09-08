@@ -4,7 +4,6 @@ export type SubscriptionListItem = {
     price: number;
     start_date: string;
     end_date: string;
-    created_at: string;
     status: string;
     actions: string;
 }
