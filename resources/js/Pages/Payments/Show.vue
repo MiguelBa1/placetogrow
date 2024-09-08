@@ -52,18 +52,16 @@ const goBack = () => {
             </div>
         </template>
 
-        <div class="p-10 bg-white rounded-xl shadow-sm">
-            <DynamicForm
-                v-if="['basic', 'invoice'].includes(microsite.type)"
-                :fields="fields.data"
-                :microsite="microsite"
-            />
-            <SubscriptionPlans
-                v-if="microsite.type === 'subscription' && subscriptions"
-                :subscriptions="subscriptions"
-                :microsite="microsite"
-                :fields="fields.data"
-            />
-        </div>
+        <DynamicForm
+            v-if="['basic', 'invoice'].includes(microsite.type)"
+            :fields="fields.data"
+            :microsite="microsite"
+        />
+        <SubscriptionPlans
+            v-if="microsite.type === 'subscription' && subscriptions"
+            :subscriptions="subscriptions"
+            :microsite="microsite"
+            :fields="fields.data"
+        />
     </MainLayout>
 </template>

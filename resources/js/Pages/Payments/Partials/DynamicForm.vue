@@ -61,7 +61,7 @@ const handleSubmit = () => {
 </script>
 
 <template>
-    <form @submit.prevent="handleSubmit" class="space-y-4">
+    <form @submit.prevent="handleSubmit" class="space-y-4 p-10 bg-white rounded-xl shadow-sm">
         <div
             class="grid grid-cols-1 md:grid-cols-2 gap-4"
         >

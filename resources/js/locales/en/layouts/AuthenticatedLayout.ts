@@ -1,4 +1,5 @@
 export const enAuthenticatedLayout = {
+    home: "Home",
     dashboard: "Dashboard",
     profile: "Profile",
     logOut: "Log Out",

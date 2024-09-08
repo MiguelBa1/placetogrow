@@ -96,6 +96,5 @@ const isImportInvoiceModalOpen = ref(false);
             :micrositeSlug="microsite.slug"
             @closeModal="isImportInvoiceModalOpen = false"
         />
-
     </MainLayout>
 </template>
