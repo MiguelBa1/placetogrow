@@ -121,6 +121,7 @@ Route::prefix('subscriptions')->name('subscriptions.')->group(function () {
     Route::get('/', [CustomerSubscriptionController::class, 'index'])->name('index');
     Route::post('/send-link', [CustomerSubscriptionController::class, 'sendLink'])->name('send-link');
     Route::get('/{email}/{document_number}', [CustomerSubscriptionController::class, 'show'])->name('show');
+    Route::post('/cancel/{subscriptionId}', [CustomerSubscriptionController::class, 'cancel'])->name('cancel');
 });
 
 Route::prefix('transactions')->name('transactions.')->group(function () {

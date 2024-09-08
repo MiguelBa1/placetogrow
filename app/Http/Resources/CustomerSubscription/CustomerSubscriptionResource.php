@@ -24,6 +24,7 @@ class CustomerSubscriptionResource extends JsonResource
         $subscriptionName = $subscriptionTranslation?->name ?? $this->subscription->id;
 
         return [
+            'id' => $this->id,
             'subscription_name' => $subscriptionName,
             'microsite_name' => $this->subscription->microsite->name,
             'price' => "$ " . number_format($this->subscription->price),

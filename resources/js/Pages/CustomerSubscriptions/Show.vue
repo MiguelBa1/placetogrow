@@ -1,9 +1,10 @@
 <script setup lang="ts">
+import { ref } from 'vue';
 import { Head } from '@inertiajs/vue3';
 import { TrashIcon } from '@heroicons/vue/16/solid';
 import { useI18n } from 'vue-i18n';
 import { DataTable } from '@/Components';
-import { SubscriptionsList, getSubscriptionTableColumns, getStatusClass } from '@/Pages/CustomerSubscriptions';
+import { SubscriptionListItem, SubscriptionsList, getSubscriptionTableColumns, getStatusClass, CancelSubscriptionModal } from '@/Pages/CustomerSubscriptions';
 import { MainLayout } from '@/Layouts';
 import { SubscriptionStatus } from '@/types/enums';
 
@@ -18,6 +19,15 @@ const { subscriptions } = defineProps<{
 }>();
 
 const subscriptionColumns = getSubscriptionTableColumns(t);
+
+const isCancelSubscriptionModalOpen = ref(false);
+
+const selectedSubscription = ref(null);
+
+const openCancelSubscriptionModal = (subscription: SubscriptionListItem) => {
+    selectedSubscription.value = subscription;
+    isCancelSubscriptionModalOpen.value = true;
+};
 
 </script>
 
@@ -52,7 +62,7 @@ const subscriptionColumns = getSubscriptionTableColumns(t);
                 <button
                     v-if="SubscriptionStatus.ACTIVE === row.status.value"
                     class="text-red-600 hover:text-red-800"
-                    @click="() => console.log('Delete subscription', row)"
+                    @click="openCancelSubscriptionModal(row)"
                 >
                     <TrashIcon class="w-5 h-5" />
                 </button>
@@ -67,5 +77,11 @@ const subscriptionColumns = getSubscriptionTableColumns(t);
             </p>
         </div>
     </MainLayout>
-
+    <CancelSubscriptionModal
+        v-if="isCancelSubscriptionModalOpen"
+        :isOpen="isCancelSubscriptionModalOpen"
+        :customerSubscription="selectedSubscription"
+        :customer="customer"
+        @closeModal="isCancelSubscriptionModalOpen = false"
+    />
 </template>

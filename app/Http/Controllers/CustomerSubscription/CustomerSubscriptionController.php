@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers\CustomerSubscription;
 
+use App\Constants\SubscriptionStatus;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\CustomerSubscription\CancelSubscriptionRequest;
 use App\Http\Requests\CustomerSubscription\SendSubscriptionLinkRequest;
 use App\Http\Resources\CustomerSubscription\CustomerSubscriptionResource;
 use App\Mail\CustomerSubscriptionLinkMail;
@@ -52,6 +54,7 @@ class CustomerSubscriptionController extends Controller
             ->firstOrFail();
 
         $subscriptions = CustomerSubscription::where('customer_id', $customer->id)
+            ->where('status', SubscriptionStatus::ACTIVE)
             ->with('subscription.microsite')
             ->get();
 
@@ -64,5 +67,22 @@ class CustomerSubscriptionController extends Controller
                 'document_number' => $documentNumber,
             ]
         ]);
+    }
+
+    public function cancel(CancelSubscriptionRequest $request, int $subscriptionId): RedirectResponse
+    {
+        $customer = Customer::where('email', $request->get('email'))
+            ->where('document_number', $request->get('document_number'))
+            ->firstOrFail();
+
+        $customerSubscription = CustomerSubscription::where('id', $subscriptionId)
+            ->where('customer_id', $customer->id)
+            ->firstOrFail();
+
+        $customerSubscription->update([
+            'status' => SubscriptionStatus::INACTIVE,
+        ]);
+
+        return redirect()->back();
     }
 }
