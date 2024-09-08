@@ -9,8 +9,8 @@ const { t } = useI18n();
 const toast = useToast();
 
 const form = useForm({
-    document_number: '4796715084',
-    email: 'naia.rojo@example.com',
+    document_number: '',
+    email: '',
 })
 
 const submit = () => {

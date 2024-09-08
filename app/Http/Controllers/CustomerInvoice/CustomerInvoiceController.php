@@ -4,8 +4,11 @@ namespace App\Http\Controllers\CustomerInvoice;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CustomerInvoice\SendInvoiceLinkRequest;
+use App\Http\Resources\CustomerInvoice\CustomerInvoiceResource;
 use App\Mail\CustomerInvoiceLinkMail;
+use App\Models\Invoice;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\URL;
 use Inertia\Inertia;
@@ -37,8 +40,25 @@ class CustomerInvoiceController extends Controller
         return redirect()->back();
     }
 
-    public function show(): Response
+    public function show(Request $request): Response
     {
-        return Inertia::render('CustomerInvoices/Show');
+        if (! $request->hasValidSignature()) {
+            abort(403, 'Invalid or expired link.');
+        }
+
+        $invoices = Invoice::where('email', $request->get('email'))
+            ->where('document_number', $request->get('document_number'))
+            ->with(['microsite', 'payment'])
+            ->get();
+
+        $invoicesResource = CustomerInvoiceResource::collection($invoices);
+
+        return Inertia::render('CustomerInvoices/Show', [
+            'invoices' => $invoicesResource,
+            'customer' => [
+                'email' => $request->get('email'),
+                'document_number' => $request->get('document_number'),
+            ]
+        ]);
     }
 }
