@@ -2,6 +2,17 @@
 
 All notable changes to "Placetogrow" will be documented in this file.
 
+## [0.3.0] - 2024-09-08
+### Added
+- Subscription payment functionality allowing administrators to create and manage subscription plans.
+    - Subscription plans include: name, description, value (amount and currency), subscription expiration time, billing frequency.
+    - Administrators can import invoices for users.
+    - View received payments from users.
+- Guest users can subscribe to available plans, manage active subscriptions, and view/pay generated invoices.
+    - View list of subscription plans.
+    - Manage subscriptions (cancel).
+    - View invoices (pending, overdue, paid) and make payments.
+
 ## [0.2.0] - 2024-08-04
 ### Added
 - ACL (Access Control List) functionality for role-based permission management.

@@ -41,7 +41,6 @@ Placetogrow is a platform that allows administrators to create and manage micros
     - `P2P_LOGIN`
     - `P2P_SECRET_KEY`
     - `P2P_URL`
-   
 
 4. Run `composer install` to install the dependencies.
 5. Run `php artisan key:generate` to set the `APP_KEY` value in the `.env` file.
@@ -52,7 +51,7 @@ Placetogrow is a platform that allows administrators to create and manage micros
 
 **Note:** To use the image manipulation features in the application, the PHP `gd` extension must be enabled. Please ensure that this extension is enabled on your server.
 
-## Creating an Admin User
+### Creating an Admin User
 To access the admin panel, you need an admin user. You can create this user in one of the following ways:
 
 1. By filling in the admin user variables in the `.env` file as mentioned above.
@@ -64,3 +63,12 @@ To access the admin panel, you need an admin user. You can create this user in o
 This command allows you to directly create an admin user with the specified name, email, and password.
 
 The system commands are defined in the `routes/console.php` file.
+
+### Queue Configuration
+The application uses queues for background jobs. You can set the queue driver in the `.env` file:
+
+- `QUEUE_CONNECTION=sync` (processes jobs immediately)
+- `QUEUE_CONNECTION=database` (processes jobs in the background using the database)
+
+If using `database`, run the artisan command `php artisan queue:work` to start processing the jobs.
+

@@ -15,7 +15,7 @@ enum TimeUnit: string
     public static function toSelectArray(): array
     {
         return array_map(fn ($case) => [
-            'label' => __("time_units.{$case->value}"),
+            'label' => trans_choice("time_units.{$case->value}", 2),
             'value' => $case->value
         ], self::cases());
     }

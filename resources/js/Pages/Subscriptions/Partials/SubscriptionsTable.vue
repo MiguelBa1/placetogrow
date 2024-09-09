@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import dayjs from "dayjs";
 import { Link, router } from "@inertiajs/vue3";
 import { DataTable } from "@/Components";
 import { PencilSquareIcon, TrashIcon, ArrowUturnLeftIcon } from '@heroicons/vue/16/solid';
@@ -52,16 +51,6 @@ const restoreSubscription = (subscriptionId: number) => {
         :rows="subscriptions.data"
         :columns="columns"
     >
-        <template #cell-price="{ row }">
-            {{ '$ ' + new Intl.NumberFormat().format(row.price) }}
-        </template>
-        <template #cell-created_at="{ row }">
-            {{
-                row.created_at ?
-                    dayjs(row.created_at).format('DD/MM/YYYY HH:mm')
-                    : '-'
-            }}
-        </template>
         <template #cell-actions="{ row }">
             <div class="flex justify-center">
                 <div

@@ -22,7 +22,7 @@ class CustomerInvoiceResource extends JsonResource
             'name' => "{$this->name} {$this->last_name}",
             'email' => $this->email,
             'phone' => $this->phone,
-            'amount' => number_format($this->amount, 2),
+            'amount' => "$ " . number_format($this->amount),
             'expiration_date' => date('Y-m-d', strtotime($this->expiration_date)),
             'status' => [
                 'label' => __("invoices.statuses.{$this->status->value}"),
