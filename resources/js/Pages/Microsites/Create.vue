@@ -57,7 +57,7 @@ watch(() => createForm.logo, (newFile) => {
 });
 
 watch(() => createForm.type, (newType) => {
-    if (newType === MicrositeType.BASIC) {
+    if ([MicrositeType.BASIC, MicrositeType.SUBSCRIPTION].includes(newType as MicrositeType)) {
         createForm.payment_expiration = '';
     }
 });
@@ -180,7 +180,7 @@ const goBack = () => {
                 :label="t('microsites.create.form.paymentExpiration')"
                 v-model="createForm.payment_expiration"
                 :error="createForm.errors.payment_expiration"
-                :disabled="![MicrositeType.SUBSCRIPTION, MicrositeType.INVOICE].includes(createForm.type as MicrositeType)"
+                :disabled="![MicrositeType.INVOICE].includes(createForm.type as MicrositeType)"
             />
 
             <div class="col-span-2 grid grid-cols-2 gap-4">
