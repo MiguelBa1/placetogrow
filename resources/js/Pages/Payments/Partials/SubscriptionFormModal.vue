@@ -86,7 +86,7 @@ const handleSubmit = () => {
         <form
             ref="formRef"
             @submit.prevent="handleSubmit"
-            class="grid grid-cols-2 gap-6"
+            class="grid sm:grid-cols-2 gap-6"
         >
             <div v-for="field in fields">
                 <component
