@@ -12,16 +12,22 @@ use Illuminate\Database\Eloquent\Factories\Factory;
  */
 class SubscriptionFactory extends Factory
 {
-
     protected $model = Subscription::class;
 
     public function definition(): array
     {
+        $durations = [3, 6, 12];
+        $billingFrequencies = [1, 2, 3, 6];
+
+        $totalDuration = $this->faker->randomElement($durations);
+
+        $validBillingFrequencies = array_filter($billingFrequencies, fn ($frequency) => $totalDuration % $frequency === 0);
+
         return [
             'microsite_id' => Microsite::factory(),
             'price' => $this->faker->numberBetween(1000, 10000),
-            'total_duration' => $this->faker->numberBetween(1, 12),
-            'billing_frequency' => $this->faker->numberBetween(3, 12),
+            'total_duration' => $totalDuration,
+            'billing_frequency' => $this->faker->randomElement($validBillingFrequencies),
             'time_unit' => $this->faker->randomElement(TimeUnit::toArray()),
         ];
     }
