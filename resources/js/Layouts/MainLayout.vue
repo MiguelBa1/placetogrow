@@ -13,13 +13,13 @@ const enableDevtools = ref(import.meta.env.VITE_ENABLE_DEVTOOLS === 'true');
 
             <!-- Page Heading -->
             <header class="bg-white shadow" v-if="$slots.header">
-                <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
+                <div class="max-w-[90rem] mx-auto py-6 px-4 sm:px-6 lg:px-8">
                     <slot name="header" />
                 </div>
             </header>
 
             <!-- Page Content -->
-            <main class="w-full max-w-7xl mx-auto mt-6 py-6 sm:pt-0 px-4 sm:px-6 lg:px-8">
+            <main class="w-full max-w-[90rem] mx-auto mt-6 py-6 sm:pt-0 px-4 sm:px-6 lg:px-8">
                 <slot />
             </main>
         </div>

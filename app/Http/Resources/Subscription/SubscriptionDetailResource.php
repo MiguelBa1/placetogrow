@@ -22,8 +22,8 @@ class SubscriptionDetailResource extends JsonResource
             'name' => $translation?->name,
             'description' => $translation?->description,
             'price' => $this->price,
-            'total_duration' => $this->total_duration . ' ' . __('time_units.' . $this->time_unit->value),
-            'billing_frequency' => $this->billing_frequency . ' ' . __('time_units.' . $this->time_unit->value),
+            'total_duration' => $this->total_duration . ' ' . trans_choice('time_units.' . $this->time_unit->value, $this->total_duration),
+            'billing_frequency' => $this->billing_frequency . ' ' . trans_choice('time_units.' . $this->time_unit->value, $this->billing_frequency),
             'created_at' => $this->created_at,
         ];
     }

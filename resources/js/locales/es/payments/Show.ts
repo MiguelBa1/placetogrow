@@ -4,6 +4,7 @@ export const esShow = {
         pay: 'Pagar',
     },
     subscription: {
+        duration: 'Duración',
         month: 'mes',
         button: 'Seleccionar Plan',
         form: {

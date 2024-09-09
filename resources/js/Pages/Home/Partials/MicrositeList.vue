@@ -13,7 +13,7 @@ defineProps<{
 
 <template>
     <div class="space-y-4">
-        <h2 class="text-xl font-bold text-left">
+        <h2 class="text-xl font-semibold text-left">
             {{ t('home.index.microsites') }}
         </h2>
         <div class="grid gap-4 grid-cols-2 lg:grid-cols-4">

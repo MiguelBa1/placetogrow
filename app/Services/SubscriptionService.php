@@ -8,7 +8,6 @@ use App\Constants\SubscriptionStatus;
 use App\Contracts\PlaceToPayServiceInterface;
 use App\Contracts\SubscriptionServiceInterface;
 use App\Models\CustomerSubscription;
-use DateInterval;
 use Illuminate\Support\Str;
 
 class SubscriptionService implements SubscriptionServiceInterface
@@ -26,23 +25,19 @@ class SubscriptionService implements SubscriptionServiceInterface
         $customerData = (new StoreCustomerAction())->execute($subscriptionData);
 
         $start_date = now();
-        $end_date = now()->add(DateInterval::createFromDateString("{$subscriptionData['total_duration']} {$subscriptionData['time_unit']}"));
+        $end_date = now()->add($subscriptionData['total_duration'], $subscriptionData['time_unit']);
 
         /** @var CustomerSubscription $subscriptionPivot */
-        $subscriptionPivot = CustomerSubscription::query()->firstOrCreate(
-            [
-                'customer_id' => $customerData->id,
-                'subscription_id' => $subscriptionData['subscription_id'],
-            ],
-            [
-                'start_date' => $start_date,
-                'end_date' => $end_date,
-                'reference' => date('ymdHis') . '-' . strtoupper(Str::random(4)),
-                'description' => $customerData->name . ' ' . $subscriptionData['subscription_id'],
-                'currency' => $subscriptionData['currency'],
-                'additional_data' => $subscriptionData['additional_data'],
-            ]
-        );
+        $subscriptionPivot = CustomerSubscription::create([
+            'customer_id' => $customerData->id,
+            'subscription_id' => $subscriptionData['subscription_id'],
+            'start_date' => $start_date,
+            'end_date' => $end_date,
+            'reference' => date('ymdHis') . '-' . strtoupper(Str::random(4)),
+            'description' => $customerData->name . ' ' . $subscriptionData['subscription_id'],
+            'currency' => $subscriptionData['currency'],
+            'additional_data' => $subscriptionData['additional_data'],
+        ]);
 
         $result = $this->placeToPayService->createSubscription($customerData, $subscriptionPivot);
 

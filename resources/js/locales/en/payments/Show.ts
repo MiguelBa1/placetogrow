@@ -4,6 +4,7 @@ export const enShow = {
         pay: 'Pay',
     },
     subscription: {
+        duration: 'Duration',
         month: 'month',
         button: 'Select Plan',
         form: {
