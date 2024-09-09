@@ -46,6 +46,6 @@ const getMicrositeRoute = () => {
                 loading="lazy"
             />
         </div>
-        <div class="font-bold text-xl text-center">{{ microsite.name }}</div>
+        <div class="text-xl text-center">{{ microsite.name }}</div>
     </Link>
 </template>
