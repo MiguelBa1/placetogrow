@@ -30,11 +30,11 @@ class SubscriptionService implements SubscriptionServiceInterface
         /** @var CustomerSubscription $subscriptionPivot */
         $subscriptionPivot = CustomerSubscription::create([
             'customer_id' => $customerData->id,
-            'subscription_id' => $subscriptionData['subscription_id'],
+            'plan_id' => $subscriptionData['plan_id'],
             'start_date' => $start_date,
             'end_date' => $end_date,
             'reference' => date('ymdHis') . '-' . strtoupper(Str::random(4)),
-            'description' => $customerData->name . ' ' . $subscriptionData['subscription_id'],
+            'description' => $customerData->name . ' ' . $subscriptionData['plan_id'],
             'currency' => $subscriptionData['currency'],
             'additional_data' => $subscriptionData['additional_data'],
         ]);

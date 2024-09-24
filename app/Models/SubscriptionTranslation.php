@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
  * @property int $id
- * @property int $subscription_id
+ * @property int $plan_id
  * @property string $locale
  * @property string $name
  * @property string|null $description
@@ -19,7 +19,7 @@ class SubscriptionTranslation extends Model
     use HasFactory;
 
     protected $fillable = [
-        'subscription_id',
+        'plan_id',
         'locale',
         'name',
         'description',

@@ -81,7 +81,7 @@ class SubscriptionPaymentTest extends TestCase
         ]);
 
         $this->assertDatabaseHas('customer_subscription', [
-            'subscription_id' => $this->subscription->id,
+            'plan_id' => $this->subscription->id,
             'status' => SubscriptionStatus::PENDING->value,
         ]);
     }

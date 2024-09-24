@@ -67,7 +67,7 @@ class SubscriptionPaymentController extends Controller
         }
 
         $subscriptionData['currency'] = $microsite->payment_currency->value;
-        $subscriptionData['subscription_id'] = $plan->id;
+        $subscriptionData['plan_id'] = $plan->id;
         $subscriptionData['total_duration'] = $plan->total_duration;
         $subscriptionData['time_unit'] = $plan->time_unit->value;
 

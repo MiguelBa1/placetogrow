@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Relations\Pivot;
 /**
  * @property int $id
  * @property int $customer_id
- * @property int $subscription_id
+ * @property int $plan_id
  * @property string $start_date
  * @property string $end_date
  * @property string $status
@@ -36,7 +36,7 @@ class CustomerSubscription extends Pivot
 
     protected $fillable = [
         'customer_id',
-        'subscription_id',
+        'plan_id',
         'start_date',
         'end_date',
         'status',

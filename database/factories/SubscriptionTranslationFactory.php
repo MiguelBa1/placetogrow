@@ -32,7 +32,7 @@ class SubscriptionTranslationFactory extends Factory
         $description = __('subscription.plans.' . $planKey . '.description', [], $locale);
 
         return [
-            'subscription_id' => Plan::factory(),
+            'plan_id' => Plan::factory(),
             'locale' => $locale,
             'name' => $name,
             'description' => $description,

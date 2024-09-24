@@ -29,7 +29,7 @@ class PlanController extends Controller
                 'created_at',
                 'deleted_at',
             )
-            ->with('translations:subscription_id,locale,name')
+            ->with('translations:plan_id,locale,name')
             ->get();
 
         $microsite = $microsite->only('id', 'slug', 'name');
@@ -73,7 +73,7 @@ class PlanController extends Controller
         $microsite = $microsite->only('id', 'slug');
 
         $plan = $plan
-            ->load('translations:subscription_id,locale,name,description')
+            ->load('translations:plan_id,locale,name,description')
             ->only('id', 'price', 'total_duration', 'billing_frequency', 'time_unit', 'translations');
 
         return Inertia::render('Subscriptions/Edit', [

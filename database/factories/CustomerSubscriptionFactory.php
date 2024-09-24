@@ -24,7 +24,7 @@ class CustomerSubscriptionFactory extends Factory
     {
         return [
             'customer_id' => Customer::factory(),
-            'subscription_id' => Plan::factory(),
+            'plan_id' => Plan::factory(),
             'start_date' => $this->faker->date(),
             'end_date' => $this->faker->date(),
             'status' => SubscriptionStatus::PENDING->value,

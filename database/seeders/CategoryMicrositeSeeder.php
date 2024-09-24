@@ -51,7 +51,7 @@ class CategoryMicrositeSeeder extends Seeder
         foreach ($plans as $plan) {
             foreach (['en', 'es'] as $locale) {
                 SubscriptionTranslation::factory()->create([
-                    'subscription_id' => $plan->id,
+                    'plan_id' => $plan->id,
                     'locale' => $locale,
                 ]);
             }

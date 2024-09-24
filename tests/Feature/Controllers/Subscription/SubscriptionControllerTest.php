@@ -124,12 +124,12 @@ class SubscriptionControllerTest extends TestCase
             'total_duration' => 6,
         ]);
         $this->assertDatabaseHas('subscription_translations', [
-            'subscription_id' => $subscription->id,
+            'plan_id' => $subscription->id,
             'locale' => 'en',
             'name' => 'Updated Plan',
         ]);
         $this->assertDatabaseHas('subscription_translations', [
-            'subscription_id' => $subscription->id,
+            'plan_id' => $subscription->id,
             'locale' => 'es',
             'name' => 'Plan Actualizado',
         ]);

@@ -63,7 +63,7 @@ class CustomerSubscriptionControllerTest extends TestCase
         $subscription = Plan::factory()->create(['microsite_id' => $microsite->id]);
         CustomerSubscription::factory()->create([
             'customer_id' => $customer->id,
-            'subscription_id' => $subscription->id,
+            'plan_id' => $subscription->id,
             'status' => SubscriptionStatus::ACTIVE,
         ]);
 
@@ -107,7 +107,7 @@ class CustomerSubscriptionControllerTest extends TestCase
         $subscription = Plan::factory()->create();
         $customerSubscription = CustomerSubscription::factory()->create([
             'customer_id' => $customer->id,
-            'subscription_id' => $subscription->id,
+            'plan_id' => $subscription->id,
             'status' => SubscriptionStatus::ACTIVE,
         ]);
 

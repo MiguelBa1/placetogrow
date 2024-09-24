@@ -12,7 +12,7 @@ return new class extends Migration {
         Schema::create('customer_subscription', function (Blueprint $table) {
             $table->id();
             $table->foreignId('customer_id')->constrained('customers')->onDelete('cascade');
-            $table->foreignId('subscription_id')->constrained('subscriptions')->onDelete('cascade');
+            $table->foreignId('plan_id')->constrained('plans')->onDelete('cascade');
             $table->date('start_date');
             $table->date('end_date')->nullable();
             $table->enum('status', array_column(SubscriptionStatus::cases(), 'value'))->default(SubscriptionStatus::PENDING);
