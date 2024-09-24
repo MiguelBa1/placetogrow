@@ -3,7 +3,7 @@
 namespace Tests\Feature\Controllers\Subscription;
 
 use App\Constants\SubscriptionStatus;
-use App\Mail\CustomerSubscriptionLinkMail;
+use App\Mail\ActiveSubscriptionsLinkMail;
 use App\Models\Customer;
 use App\Models\Microsite;
 use App\Models\Plan;
@@ -47,7 +47,7 @@ class SubscriptionControllerTest extends TestCase
 
         $response->assertRedirect();
 
-        Mail::assertQueued(CustomerSubscriptionLinkMail::class, function ($mail) use ($requestData) {
+        Mail::assertQueued(ActiveSubscriptionsLinkMail::class, function ($mail) use ($requestData) {
             return $mail->hasTo($requestData['email']);
         });
     }

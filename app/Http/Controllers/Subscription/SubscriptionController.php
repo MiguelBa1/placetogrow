@@ -7,7 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Subscription\CancelSubscriptionRequest;
 use App\Http\Requests\Subscription\SendSubscriptionLinkRequest;
 use App\Http\Resources\Subscription\SubscriptionResource;
-use App\Mail\CustomerSubscriptionLinkMail;
+use App\Mail\ActiveSubscriptionsLinkMail;
 use App\Models\Customer;
 use App\Models\Subscription;
 use Illuminate\Http\RedirectResponse;
@@ -37,7 +37,7 @@ class SubscriptionController extends Controller
             ]
         );
 
-        Mail::to($customer->email)->send(new CustomerSubscriptionLinkMail($url));
+        Mail::to($customer->email)->send(new ActiveSubscriptionsLinkMail($url));
 
         return redirect()->back();
     }
