@@ -13,7 +13,7 @@ use Illuminate\Support\Str;
 /**
  * @extends Factory<Subscription>
  */
-class CustomerSubscriptionFactory extends Factory
+class SubscriptionFactory extends Factory
 {
     /**
      * Define the model's default state.
