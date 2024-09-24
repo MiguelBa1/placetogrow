@@ -8,6 +8,7 @@ use App\Constants\SubscriptionStatus;
 use App\Contracts\PlaceToPayServiceInterface;
 use App\Contracts\SubscriptionServiceInterface;
 use App\Models\Subscription;
+use DateInterval;
 use Illuminate\Support\Str;
 
 class SubscriptionService implements SubscriptionServiceInterface
@@ -25,7 +26,7 @@ class SubscriptionService implements SubscriptionServiceInterface
         $customerData = (new StoreCustomerAction())->execute($subscriptionData);
 
         $start_date = now();
-        $end_date = now()->add($subscriptionData['total_duration'], $subscriptionData['time_unit']);
+        $end_date = now()->add(DateInterval::createFromDateString("{$subscriptionData['total_duration']} {$subscriptionData['time_unit']}"));
 
         /** @var Subscription $subscription */
         $subscription = Subscription::create([
@@ -41,52 +42,51 @@ class SubscriptionService implements SubscriptionServiceInterface
 
         $result = $this->placeToPayService->createSubscription($customerData, $subscription);
 
-        $dataResponse = $result->json();
-        if (!$result->ok()) {
+        if (!$result['success']) {
             $subscription->update([
-                'request_id' => $dataResponse['requestId'],
+                'request_id' => $result['data']['requestId'],
                 'status' => SubscriptionStatus::INACTIVE->value,
-                'status_message' => $dataResponse['status']['message'],
+                'status_message' => $result['message'],
             ]);
 
             return [
                 'success' => false,
-                'message' => $dataResponse['status']['message'],
+                'message' => $result['message'],
             ];
         }
 
+        $resultData = $result['data'];
         $subscription->update([
-            'request_id' => $dataResponse['requestId'],
-            'status_message' => $dataResponse['status']['message'],
+            'request_id' => $resultData['requestId'],
+            'status_message' => $resultData['status']['message'],
         ]);
 
         return [
-            'success' => $result->ok(),
-            'url' => $result['processUrl'] ?? null,
-            'message' => $dataResponse['status']['message'] ?? null,
+            'success' => true,
+            'url' => $resultData['processUrl'],
+            'message' => $resultData['status']['message'],
         ];
     }
 
     public function checkSubscription(Subscription $subscription): array
     {
-        $result = $this->placeToPayService->checkSubscription($subscription->request_id);
-        $dataResponse = $result->json();
+        $result = $this->placeToPayService->checkSession($subscription->request_id);
 
-        if ($result->ok()) {
-            $this->updateSubscription($subscription, $dataResponse);
-
-            return [
-                'success' => true,
-                'message' => $dataResponse['status']['message'],
-                'subscription' => $subscription,
-            ];
-        } else {
+        if (!$result['success']) {
             return [
                 'success' => false,
-                'message' => $dataResponse['status']['message'],
+                'message' => $result['message'],
             ];
         }
 
+        $resultData = $result['data'];
+
+        $this->updateSubscription($subscription, $resultData);
+
+        return [
+            'success' => true,
+            'message' => $resultData['status']['message'],
+        ];
     }
 
     private function updateSubscription(Subscription $subscription, array $dataResponse): void

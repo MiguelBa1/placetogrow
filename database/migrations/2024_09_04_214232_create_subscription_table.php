@@ -21,8 +21,8 @@ return new class extends Migration {
             $table->string('request_id', 50)->nullable();
             $table->string('status_message', 255)->nullable();
             $table->enum('currency', array_column(CurrencyType::cases(), 'value'));
-            $table->string('token', 255)->nullable();
-            $table->string('subtoken', 255)->nullable();
+            $table->text('token')->nullable();
+            $table->text('subtoken')->nullable();
             $table->text('additional_data')->nullable();
             $table->timestamps();
         });

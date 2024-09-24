@@ -6,7 +6,7 @@ use App\Contracts\PlaceToPayServiceInterface;
 use App\Models\Customer;
 use App\Models\Payment;
 use App\Models\Subscription;
-use Illuminate\Http\Client\Response;
+use Exception;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
@@ -14,7 +14,6 @@ use Illuminate\Support\Str;
 class PlaceToPayService implements PlaceToPayServiceInterface
 {
     private array $data;
-
     private array $config;
 
     public function __construct()
@@ -26,7 +25,6 @@ class PlaceToPayService implements PlaceToPayServiceInterface
             'ipAddress' => request()->ip(),
             'userAgent' => request()->userAgent(),
         ];
-
     }
 
     public function prepare(): self
@@ -92,7 +90,7 @@ class PlaceToPayService implements PlaceToPayServiceInterface
         return $this;
     }
 
-    public function createPayment(Customer $customer, Payment $payment): Response
+    public function createPayment(Customer $customer, Payment $payment): array
     {
         $this->prepare();
         $this->payment($payment);
@@ -100,23 +98,10 @@ class PlaceToPayService implements PlaceToPayServiceInterface
 
         Log::info('PlaceToPayService: Creating payment', array_merge($this->data['payment'], $this->data['buyer']));
 
-        return Http::post($this->config['url'] . '/api/session', $this->data);
+        return $this->handleHttpRequest('/api/session');
     }
 
-    public function checkPayment(string $sessionId): Response
-    {
-        $this->prepare();
-
-        $result = Http::post($this->config['url'] . '/api/session/' . $sessionId, [
-            'auth' => $this->data['auth'],
-        ]);
-
-        Log::info('PlaceToPayService: Checking payment', $result->json());
-
-        return $result;
-    }
-
-    public function createSubscription(Customer $customer, Subscription $subscription): Response
+    public function createSubscription(Customer $customer, Subscription $subscription): array
     {
         $this->prepare();
         $this->subscription($subscription);
@@ -124,18 +109,47 @@ class PlaceToPayService implements PlaceToPayServiceInterface
 
         Log::info('PlaceToPayService: Creating subscription', array_merge($this->data['subscription'], $this->data['buyer']));
 
-        return Http::post($this->config['url'] . '/api/session', $this->data);
+        return $this->handleHttpRequest('/api/session');
     }
-    public function checkSubscription(string $sessionId): Response
+
+    public function checkSession(string $sessionId): array
     {
         $this->prepare();
 
-        $result = Http::post($this->config['url'] . '/api/session/' . $sessionId, [
-            'auth' => $this->data['auth'],
-        ]);
+        return $this->handleHttpRequest('/api/session/' . $sessionId);
+    }
 
-        Log::info('PlaceToPayService: Checking subscription', $result->json());
+    private function handleHttpRequest(string $endpoint): array
+    {
+        try {
+            $response = Http::post($this->config['url'] . $endpoint, $this->data);
 
-        return $result;
+            if ($response->successful()) {
+                return [
+                    'success' => true,
+                    'data' => $response->json(),
+                ];
+            }
+
+            Log::error('PlaceToPayService: Request failed', [
+                'response' => $response->json(),
+                'status_code' => $response->status(),
+            ]);
+
+            return [
+                'success' => false,
+                'message' => __('placetopay.request_failed'),
+                'error' => $response->json(),
+            ];
+        } catch (Exception $e) {
+            Log::error('PlaceToPayService: Error during HTTP request', [
+                'exception' => $e->getMessage(),
+            ]);
+
+            return [
+                'success' => false,
+                'message' => __('placetopay.error_occurred'),
+            ];
+        }
     }
 }

@@ -90,7 +90,7 @@ class PaymentController extends Controller
                         ]);
                 }
 
-                $payment = $result['payment'];
+                $payment->refresh();
 
                 Cache::put($cacheKey, $payment->status->value, now()->addMinutes(10));
             } else {

@@ -38,52 +38,53 @@ class PaymentService implements PaymentServiceInterface
 
         $result = $this->placeToPayService->createPayment($customerData, $payment);
 
-        if (!$result->ok()) {
-
+        if (!$result['success']) {
             $payment->update([
                 'status' => PaymentStatus::REJECTED->value,
-                'status_message' => $result->json()['status']['message'],
+                'status_message' => $result['message'],
             ]);
 
             return [
                 'success' => false,
-                'message' => $result->json()['status']['message'],
+                'message' => $result['message'],
             ];
         }
 
+        $resultData = $result['data'];
+
         $payment->update([
-            'request_id' => $result->json()['requestId'],
+            'request_id' => $resultData['requestId'],
             'status' => PaymentStatus::PENDING->value,
-            'status_message' => $result->json()['status']['message'],
+            'status_message' => $resultData['status']['message'],
         ]);
 
         return [
-            'success' => $result->ok(),
-            'url' => $result['processUrl'] ?? null,
-            'message' => $result['status']['message'] ?? null,
+            'success' => true,
+            'url' => $resultData['processUrl'],
+            'message' => $resultData['status']['message'],
         ];
     }
 
+
     public function checkPayment(Payment $payment): array
     {
-        $result = $this->placeToPayService->checkPayment($payment->request_id);
+        $result = $this->placeToPayService->checkSession($payment->request_id);
 
-        if ($result->ok()) {
-            $payment = $this->updatePayment($payment, $result->json());
-
-            return [
-                'success' => true,
-                'payment' => $payment,
-            ];
-        } else {
+        if (!$result['success']) {
             return [
                 'success' => false,
-                'message' => $result['status']['message'],
+                'message' => $result['message'],
             ];
         }
+
+        $this->updatePayment($payment, $result['data']);
+
+        return [
+            'success' => true,
+        ];
     }
 
-    public function updatePayment(Payment $payment, array $response): Payment
+    public function updatePayment(Payment $payment, array $response): void
     {
         if ($response['status']['status'] === PaymentStatus::APPROVED->value) {
             $paymentResponse = $response['payment'][0];
@@ -108,7 +109,5 @@ class PaymentService implements PaymentServiceInterface
                 'status' => $response['status']['status'],
             ]);
         }
-
-        return $payment;
     }
 }
