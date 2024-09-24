@@ -4,8 +4,8 @@ namespace App\Http\Controllers\Subscription;
 
 use App\Constants\SubscriptionStatus;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\CustomerSubscription\CancelSubscriptionRequest;
-use App\Http\Requests\CustomerSubscription\SendSubscriptionLinkRequest;
+use App\Http\Requests\Subscription\CancelSubscriptionRequest;
+use App\Http\Requests\Subscription\SendSubscriptionLinkRequest;
 use App\Http\Resources\CustomerSubscription\CustomerSubscriptionResource;
 use App\Mail\CustomerSubscriptionLinkMail;
 use App\Models\Customer;
