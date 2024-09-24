@@ -8,9 +8,9 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\SubscriptionPayment\CreateSubscriptionPaymentRequest;
 use App\Http\Resources\MicrositeField\MicrositeFieldDetailResource;
 use App\Http\Resources\Plan\PlanDetailResource;
-use App\Models\CustomerSubscription;
 use App\Models\Microsite;
 use App\Models\Plan;
+use App\Models\Subscription;
 use App\Services\SubscriptionService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Cache;
@@ -83,19 +83,19 @@ class SubscriptionPaymentController extends Controller
         }
     }
 
-    public function return(CustomerSubscription $customerSubscription): Response|RedirectResponse
+    public function return(Subscription $subscription): Response|RedirectResponse
     {
         Log::withContext([
-            'customer_subscription_id' => $customerSubscription->id,
-            'request_id' => $customerSubscription->request_id,
+            'customer_subscription_id' => $subscription->id,
+            'request_id' => $subscription->request_id,
         ]);
 
-        $cacheKey = 'subscription_status_' . $customerSubscription->id;
+        $cacheKey = 'subscription_status_' . $subscription->id;
         $cachedStatus = Cache::get($cacheKey);
 
-        if ($customerSubscription->status === SubscriptionStatus::PENDING->value) {
+        if ($subscription->status === SubscriptionStatus::PENDING->value) {
             if (!$cachedStatus) {
-                $result = $this->subscriptionService->checkSubscription($customerSubscription);
+                $result = $this->subscriptionService->checkSubscription($subscription);
 
                 if (!$result['success']) {
                     return Inertia::render('Payments/Return', [
@@ -103,17 +103,17 @@ class SubscriptionPaymentController extends Controller
                     ]);
                 }
 
-                $customerSubscription = $result['subscription'];
+                $subscription = $result['subscription'];
 
-                Cache::put($cacheKey, $customerSubscription->status, now()->addMinutes(10));
+                Cache::put($cacheKey, $subscription->status, now()->addMinutes(10));
             } else {
-                $customerSubscription->status = $cachedStatus; // Use the cached status
+                $subscription->status = $cachedStatus; // Use the cached status
             }
         }
 
         return Inertia::render('Payments/Return', [
-            'subscription' => $customerSubscription,
-            'customer' => $customerSubscription->customer->only(['name', 'last_name']),
+            'subscription' => $subscription,
+            'customer' => $subscription->customer->only(['name', 'last_name']),
         ]);
     }
 }

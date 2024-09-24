@@ -9,7 +9,7 @@ use App\Http\Requests\CustomerSubscription\SendSubscriptionLinkRequest;
 use App\Http\Resources\CustomerSubscription\CustomerSubscriptionResource;
 use App\Mail\CustomerSubscriptionLinkMail;
 use App\Models\Customer;
-use App\Models\CustomerSubscription;
+use App\Models\Subscription;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
@@ -53,7 +53,7 @@ class SubscriptionController extends Controller
             ->where('document_number', $documentNumber)
             ->firstOrFail();
 
-        $subscriptions = CustomerSubscription::where('customer_id', $customer->id)
+        $subscriptions = Subscription::where('customer_id', $customer->id)
             ->where('status', SubscriptionStatus::ACTIVE)
             ->with('plan.microsite')
             ->get();
@@ -75,7 +75,7 @@ class SubscriptionController extends Controller
             ->where('document_number', $request->get('document_number'))
             ->firstOrFail();
 
-        $customerSubscription = CustomerSubscription::where('id', $subscriptionId)
+        $customerSubscription = Subscription::where('id', $subscriptionId)
             ->where('customer_id', $customer->id)
             ->firstOrFail();
 

@@ -5,13 +5,13 @@ namespace Database\Factories;
 use App\Constants\CurrencyType;
 use App\Constants\SubscriptionStatus;
 use App\Models\Customer;
-use App\Models\CustomerSubscription;
 use App\Models\Plan;
+use App\Models\Subscription;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
 
 /**
- * @extends Factory<CustomerSubscription>
+ * @extends Factory<Subscription>
  */
 class CustomerSubscriptionFactory extends Factory
 {

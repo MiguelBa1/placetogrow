@@ -7,8 +7,8 @@ use App\Constants\DocumentType;
 use App\Constants\PaymentStatus;
 use App\Constants\PlaceToPayStatus;
 use App\Models\Customer;
-use App\Models\CustomerSubscription;
 use App\Models\Payment;
+use App\Models\Subscription;
 use App\Services\PlaceToPayService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Http;
@@ -82,7 +82,7 @@ class PlaceToPayServiceTest extends TestCase
             'phone' => '1234567890',
         ]);
 
-        $subscription = CustomerSubscription::factory()->create([
+        $subscription = Subscription::factory()->create([
             'reference' => 'test_reference',
             'description' => 'Test Subscription',
         ]);

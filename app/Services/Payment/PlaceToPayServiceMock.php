@@ -37,7 +37,7 @@ class PlaceToPayServiceMock implements PlaceToPayServiceInterface
         return new Response($guzzleResponse);
     }
 
-    public function createSubscription(Customer $customer, Pivot $subscriptionPivot): Response
+    public function createSubscription(Customer $customer, Pivot $subscription): Response
     {
         $data = json_decode(file_get_contents(app_path("../tests/Stubs/$this->createSubscriptionFile")), true);
 

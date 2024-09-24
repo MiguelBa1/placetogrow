@@ -4,8 +4,8 @@ namespace Tests\Feature\Controllers\SubscriptionPayment;
 
 use App\Constants\MicrositeType;
 use App\Constants\SubscriptionStatus;
-use App\Models\CustomerSubscription;
 use App\Models\Microsite;
+use App\Models\Subscription;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Cache;
 use Mockery;
@@ -33,7 +33,7 @@ class SubscriptionPaymentReturnTest extends TestCase
 
         $subscriptionPaymentReference = 'test_reference';
 
-        $customerSubscription = CustomerSubscription::factory()->create([
+        $customerSubscription = Subscription::factory()->create([
             'reference' => $subscriptionPaymentReference,
             'request_id' => 'test_request_id',
         ]);
@@ -58,7 +58,7 @@ class SubscriptionPaymentReturnTest extends TestCase
         $this->fakeSubscriptionCheckFailed();
 
         $subscriptionPaymentReference = 'test_reference';
-        CustomerSubscription::factory()->create([
+        Subscription::factory()->create([
             'reference' => $subscriptionPaymentReference,
             'request_id' => 'test_request_id',
         ]);
@@ -79,7 +79,7 @@ class SubscriptionPaymentReturnTest extends TestCase
 
         $subscriptionPaymentReference = 'test_reference';
 
-        $customerSubscription = CustomerSubscription::factory()->create([
+        $customerSubscription = Subscription::factory()->create([
             'reference' => $subscriptionPaymentReference,
             'request_id' => 'test_request_id',
         ]);
@@ -106,7 +106,7 @@ class SubscriptionPaymentReturnTest extends TestCase
 
         $subscriptionPaymentReference = 'test_reference';
 
-        $customerSubscription = CustomerSubscription::factory()->create([
+        $customerSubscription = Subscription::factory()->create([
             'reference' => $subscriptionPaymentReference,
             'request_id' => 'test_request_id',
             'status' => SubscriptionStatus::ACTIVE->value,
@@ -125,7 +125,7 @@ class SubscriptionPaymentReturnTest extends TestCase
         $subscriptionPaymentReference = 'test_reference';
         $cachedStatus = SubscriptionStatus::PENDING->value;
 
-        $customerSubscription = CustomerSubscription::factory()->create([
+        $customerSubscription = Subscription::factory()->create([
             'reference' => $subscriptionPaymentReference,
             'request_id' => 'test_request_id',
             'status' => SubscriptionStatus::PENDING->value,

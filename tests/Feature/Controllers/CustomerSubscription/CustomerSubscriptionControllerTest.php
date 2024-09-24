@@ -5,9 +5,9 @@ namespace Tests\Feature\Controllers\CustomerSubscription;
 use App\Constants\SubscriptionStatus;
 use App\Mail\CustomerSubscriptionLinkMail;
 use App\Models\Customer;
-use App\Models\CustomerSubscription;
 use App\Models\Microsite;
 use App\Models\Plan;
+use App\Models\Subscription;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\URL;
@@ -61,7 +61,7 @@ class CustomerSubscriptionControllerTest extends TestCase
         ]);
 
         $subscription = Plan::factory()->create(['microsite_id' => $microsite->id]);
-        CustomerSubscription::factory()->create([
+        Subscription::factory()->create([
             'customer_id' => $customer->id,
             'plan_id' => $subscription->id,
             'status' => SubscriptionStatus::ACTIVE,
@@ -105,7 +105,7 @@ class CustomerSubscriptionControllerTest extends TestCase
         ]);
 
         $subscription = Plan::factory()->create();
-        $customerSubscription = CustomerSubscription::factory()->create([
+        $customerSubscription = Subscription::factory()->create([
             'customer_id' => $customer->id,
             'plan_id' => $subscription->id,
             'status' => SubscriptionStatus::ACTIVE,
