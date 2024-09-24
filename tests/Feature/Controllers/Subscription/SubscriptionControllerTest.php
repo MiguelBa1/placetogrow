@@ -1,31 +1,31 @@
 <?php
 
-namespace Tests\Feature\Controllers\CustomerSubscription;
+namespace Tests\Feature\Controllers\Subscription;
 
 use App\Constants\SubscriptionStatus;
-use App\Mail\CustomerSubscriptionLinkMail;
+use App\Mail\ActiveSubscriptionsLinkMail;
 use App\Models\Customer;
-use App\Models\CustomerSubscription;
 use App\Models\Microsite;
 use App\Models\Plan;
+use App\Models\Subscription;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\URL;
 use Inertia\Testing\AssertableInertia as Assert;
 use Tests\TestCase;
 
-class CustomerSubscriptionControllerTest extends TestCase
+class SubscriptionControllerTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function test_displays_the_customer_subscription_index_page()
+    public function test_displays_the_subscription_index_page()
     {
         $response = $this->get(route('subscriptions.index'));
 
         $response->assertOk();
         $response->assertInertia(
             fn (Assert $page) =>
-            $page->component('CustomerSubscriptions/Index')
+            $page->component('Subscriptions/Index')
         );
     }
 
@@ -47,7 +47,7 @@ class CustomerSubscriptionControllerTest extends TestCase
 
         $response->assertRedirect();
 
-        Mail::assertQueued(CustomerSubscriptionLinkMail::class, function ($mail) use ($requestData) {
+        Mail::assertQueued(ActiveSubscriptionsLinkMail::class, function ($mail) use ($requestData) {
             return $mail->hasTo($requestData['email']);
         });
     }
@@ -61,7 +61,7 @@ class CustomerSubscriptionControllerTest extends TestCase
         ]);
 
         $subscription = Plan::factory()->create(['microsite_id' => $microsite->id]);
-        CustomerSubscription::factory()->create([
+        Subscription::factory()->create([
             'customer_id' => $customer->id,
             'plan_id' => $subscription->id,
             'status' => SubscriptionStatus::ACTIVE,
@@ -77,7 +77,7 @@ class CustomerSubscriptionControllerTest extends TestCase
         $response->assertOk();
         $response->assertInertia(
             fn (Assert $page) =>
-            $page->component('CustomerSubscriptions/Show')
+            $page->component('Subscriptions/Show')
                 ->has('subscriptions')
                 ->where('customer.email', 'test@example.com')
                 ->where('customer.document_number', '1234567890')
@@ -105,7 +105,7 @@ class CustomerSubscriptionControllerTest extends TestCase
         ]);
 
         $subscription = Plan::factory()->create();
-        $customerSubscription = CustomerSubscription::factory()->create([
+        $customerSubscription = Subscription::factory()->create([
             'customer_id' => $customer->id,
             'plan_id' => $subscription->id,
             'status' => SubscriptionStatus::ACTIVE,
@@ -119,7 +119,7 @@ class CustomerSubscriptionControllerTest extends TestCase
         $response = $this->post(route('subscriptions.cancel', $customerSubscription->id), $requestData);
 
         $response->assertRedirect();
-        $this->assertDatabaseHas('customer_subscription', [
+        $this->assertDatabaseHas('subscription', [
             'id' => $customerSubscription->id,
             'status' => SubscriptionStatus::INACTIVE,
         ]);

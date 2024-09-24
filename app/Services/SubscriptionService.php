@@ -7,7 +7,7 @@ use App\Constants\PlaceToPayStatus;
 use App\Constants\SubscriptionStatus;
 use App\Contracts\PlaceToPayServiceInterface;
 use App\Contracts\SubscriptionServiceInterface;
-use App\Models\CustomerSubscription;
+use App\Models\Subscription;
 use Illuminate\Support\Str;
 
 class SubscriptionService implements SubscriptionServiceInterface
@@ -27,8 +27,8 @@ class SubscriptionService implements SubscriptionServiceInterface
         $start_date = now();
         $end_date = now()->add($subscriptionData['total_duration'], $subscriptionData['time_unit']);
 
-        /** @var CustomerSubscription $subscriptionPivot */
-        $subscriptionPivot = CustomerSubscription::create([
+        /** @var Subscription $subscription */
+        $subscription = Subscription::create([
             'customer_id' => $customerData->id,
             'plan_id' => $subscriptionData['plan_id'],
             'start_date' => $start_date,
@@ -39,11 +39,11 @@ class SubscriptionService implements SubscriptionServiceInterface
             'additional_data' => $subscriptionData['additional_data'],
         ]);
 
-        $result = $this->placeToPayService->createSubscription($customerData, $subscriptionPivot);
+        $result = $this->placeToPayService->createSubscription($customerData, $subscription);
 
         $dataResponse = $result->json();
         if (!$result->ok()) {
-            $subscriptionPivot->update([
+            $subscription->update([
                 'request_id' => $dataResponse['requestId'],
                 'status' => SubscriptionStatus::INACTIVE->value,
                 'status_message' => $dataResponse['status']['message'],
@@ -55,7 +55,7 @@ class SubscriptionService implements SubscriptionServiceInterface
             ];
         }
 
-        $subscriptionPivot->update([
+        $subscription->update([
             'request_id' => $dataResponse['requestId'],
             'status_message' => $dataResponse['status']['message'],
         ]);
@@ -67,18 +67,18 @@ class SubscriptionService implements SubscriptionServiceInterface
         ];
     }
 
-    public function checkSubscription(CustomerSubscription $customerSubscription): array
+    public function checkSubscription(Subscription $subscription): array
     {
-        $result = $this->placeToPayService->checkSubscription($customerSubscription->request_id);
+        $result = $this->placeToPayService->checkSubscription($subscription->request_id);
         $dataResponse = $result->json();
 
         if ($result->ok()) {
-            $this->updateSubscription($customerSubscription, $dataResponse);
+            $this->updateSubscription($subscription, $dataResponse);
 
             return [
                 'success' => true,
                 'message' => $dataResponse['status']['message'],
-                'customer_subscription' => $customerSubscription,
+                'subscription' => $subscription,
             ];
         } else {
             return [
@@ -89,14 +89,14 @@ class SubscriptionService implements SubscriptionServiceInterface
 
     }
 
-    private function updateSubscription(CustomerSubscription $customerSubscription, array $dataResponse): void
+    private function updateSubscription(Subscription $subscription, array $dataResponse): void
     {
         $subscriptionStatus = $dataResponse['status'];
 
         if ($subscriptionStatus['status'] === PlaceToPayStatus::APPROVED->value) {
             $subscriptionInstrument = $dataResponse['subscription']['instrument'];
 
-            $customerSubscription->update([
+            $subscription->update([
                 'status' => SubscriptionStatus::ACTIVE->value,
                 'status_message' => $subscriptionStatus['message'],
                 'token' => $subscriptionInstrument[0]['value'],
@@ -104,7 +104,7 @@ class SubscriptionService implements SubscriptionServiceInterface
             ]);
 
         } else {
-            $customerSubscription->update([
+            $subscription->update([
                 'status' => SubscriptionStatus::INACTIVE->value,
                 'status_message' => $subscriptionStatus['message'],
             ]);

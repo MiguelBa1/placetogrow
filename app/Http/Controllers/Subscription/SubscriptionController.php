@@ -1,15 +1,15 @@
 <?php
 
-namespace App\Http\Controllers\CustomerSubscription;
+namespace App\Http\Controllers\Subscription;
 
 use App\Constants\SubscriptionStatus;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\CustomerSubscription\CancelSubscriptionRequest;
-use App\Http\Requests\CustomerSubscription\SendSubscriptionLinkRequest;
-use App\Http\Resources\CustomerSubscription\CustomerSubscriptionResource;
-use App\Mail\CustomerSubscriptionLinkMail;
+use App\Http\Requests\Subscription\CancelSubscriptionRequest;
+use App\Http\Requests\Subscription\SendSubscriptionLinkRequest;
+use App\Http\Resources\Subscription\SubscriptionResource;
+use App\Mail\ActiveSubscriptionsLinkMail;
 use App\Models\Customer;
-use App\Models\CustomerSubscription;
+use App\Models\Subscription;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
@@ -17,11 +17,11 @@ use Illuminate\Support\Facades\URL;
 use Inertia\Inertia;
 use Inertia\Response;
 
-class CustomerSubscriptionController extends Controller
+class SubscriptionController extends Controller
 {
     public function index(): Response
     {
-        return Inertia::render('CustomerSubscriptions/Index');
+        return Inertia::render('Subscriptions/Index');
     }
 
     public function sendLink(SendSubscriptionLinkRequest $request): RedirectResponse
@@ -37,7 +37,7 @@ class CustomerSubscriptionController extends Controller
             ]
         );
 
-        Mail::to($customer->email)->send(new CustomerSubscriptionLinkMail($url));
+        Mail::to($customer->email)->send(new ActiveSubscriptionsLinkMail($url));
 
         return redirect()->back();
     }
@@ -53,14 +53,14 @@ class CustomerSubscriptionController extends Controller
             ->where('document_number', $documentNumber)
             ->firstOrFail();
 
-        $subscriptions = CustomerSubscription::where('customer_id', $customer->id)
+        $subscriptions = Subscription::where('customer_id', $customer->id)
             ->where('status', SubscriptionStatus::ACTIVE)
             ->with('plan.microsite')
             ->get();
 
-        $subscriptionsResource = CustomerSubscriptionResource::collection($subscriptions);
+        $subscriptionsResource = SubscriptionResource::collection($subscriptions);
 
-        return Inertia::render('CustomerSubscriptions/Show', [
+        return Inertia::render('Subscriptions/Show', [
             'subscriptions' => $subscriptionsResource,
             'customer' => [
                 'email' => $email,
@@ -75,11 +75,11 @@ class CustomerSubscriptionController extends Controller
             ->where('document_number', $request->get('document_number'))
             ->firstOrFail();
 
-        $customerSubscription = CustomerSubscription::where('id', $subscriptionId)
+        $subscription = Subscription::where('id', $subscriptionId)
             ->where('customer_id', $customer->id)
             ->firstOrFail();
 
-        $customerSubscription->update([
+        $subscription->update([
             'status' => SubscriptionStatus::INACTIVE,
         ]);
 

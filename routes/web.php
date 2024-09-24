@@ -2,7 +2,6 @@
 
 use App\Constants\Permission;
 use App\Http\Controllers\CustomerInvoice\CustomerInvoiceController;
-use App\Http\Controllers\CustomerSubscription\CustomerSubscriptionController;
 use App\Http\Controllers\Home\HomeController;
 use App\Http\Controllers\Invoice\InvoiceController;
 use App\Http\Controllers\Microsite\MicrositeController;
@@ -11,6 +10,7 @@ use App\Http\Controllers\Payment\PaymentController;
 use App\Http\Controllers\Plan\PlanController;
 use App\Http\Controllers\Profile\ProfileController;
 use App\Http\Controllers\RolePermission\RolePermissionController;
+use App\Http\Controllers\Subscription\SubscriptionController;
 use App\Http\Controllers\SubscriptionPayment\SubscriptionPaymentController;
 use App\Http\Controllers\Support\LanguageController;
 use App\Http\Controllers\Transaction\TransactionController;
@@ -108,7 +108,7 @@ Route::prefix('subscription-payments')->name('subscription-payments.')->group(fu
         Route::get('/', [SubscriptionPaymentController::class, 'show'])->name('show');
         Route::post('{plan}/payment', [SubscriptionPaymentController::class, 'store'])->name('store');
     });
-    Route::get('/return/{customerSubscription:reference}', [SubscriptionPaymentController::class, 'return'])->name('return');
+    Route::get('/return/{subscription:reference}', [SubscriptionPaymentController::class, 'return'])->name('return');
 });
 
 Route::prefix('invoices')->name('invoices.')->group(function () {
@@ -118,10 +118,10 @@ Route::prefix('invoices')->name('invoices.')->group(function () {
 });
 
 Route::prefix('subscriptions')->name('subscriptions.')->group(function () {
-    Route::get('/', [CustomerSubscriptionController::class, 'index'])->name('index');
-    Route::post('/send-link', [CustomerSubscriptionController::class, 'sendLink'])->name('send-link');
-    Route::get('/{email}/{document_number}', [CustomerSubscriptionController::class, 'show'])->name('show');
-    Route::post('/cancel/{subscriptionId}', [CustomerSubscriptionController::class, 'cancel'])->name('cancel');
+    Route::get('/', [SubscriptionController::class, 'index'])->name('index');
+    Route::post('/send-link', [SubscriptionController::class, 'sendLink'])->name('send-link');
+    Route::get('/{email}/{document_number}', [SubscriptionController::class, 'show'])->name('show');
+    Route::post('/cancel/{subscriptionId}', [SubscriptionController::class, 'cancel'])->name('cancel');
 });
 
 Route::prefix('transactions')->name('transactions.')->group(function () {

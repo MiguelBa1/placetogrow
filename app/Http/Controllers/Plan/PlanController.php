@@ -4,8 +4,8 @@ namespace App\Http\Controllers\Plan;
 
 use App\Constants\TimeUnit;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Subscription\CreateSubscriptionRequest;
-use App\Http\Requests\Subscription\UpdateSubscriptionRequest;
+use App\Http\Requests\Plan\CreatePlanRequest;
+use App\Http\Requests\Plan\UpdatePlanRequest;
 use App\Http\Resources\Plan\PlanListResource;
 use App\Models\Microsite;
 use App\Models\Plan;
@@ -52,7 +52,7 @@ class PlanController extends Controller
         ]);
     }
 
-    public function store(CreateSubscriptionRequest $request, Microsite $microsite): RedirectResponse
+    public function store(CreatePlanRequest $request, Microsite $microsite): RedirectResponse
     {
         $validated = $request->validated();
 
@@ -83,7 +83,7 @@ class PlanController extends Controller
         ]);
     }
 
-    public function update(UpdateSubscriptionRequest $request, Microsite $microsite, Plan $plan): RedirectResponse
+    public function update(UpdatePlanRequest $request, Microsite $microsite, Plan $plan): RedirectResponse
     {
         $validated = $request->validated();
 

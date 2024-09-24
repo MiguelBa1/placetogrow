@@ -80,7 +80,7 @@ class SubscriptionPaymentTest extends TestCase
             'email' => 'test@mail.com',
         ]);
 
-        $this->assertDatabaseHas('customer_subscription', [
+        $this->assertDatabaseHas('subscription', [
             'plan_id' => $this->plan->id,
             'status' => SubscriptionStatus::PENDING->value,
         ]);

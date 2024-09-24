@@ -26,13 +26,13 @@ use Illuminate\Database\Eloquent\Relations\Pivot;
  * @property string $created_at
  * @property string $updated_at
  */
-class CustomerSubscription extends Pivot
+class Subscription extends Pivot
 {
     use HasFactory;
 
     public $incrementing = true;
 
-    protected $table = 'customer_subscription';
+    protected $table = 'subscription';
 
     protected $fillable = [
         'customer_id',

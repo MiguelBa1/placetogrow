@@ -4,8 +4,8 @@ namespace App\Services;
 
 use App\Contracts\PlaceToPayServiceInterface;
 use App\Models\Customer;
-use App\Models\CustomerSubscription;
 use App\Models\Payment;
+use App\Models\Subscription;
 use Illuminate\Http\Client\Response;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
@@ -80,7 +80,7 @@ class PlaceToPayService implements PlaceToPayServiceInterface
         return $this;
     }
 
-    public function subscription(CustomerSubscription $data): self
+    public function subscription(Subscription $data): self
     {
         $this->data['subscription'] = [
             'reference' => $data->reference,
@@ -116,10 +116,10 @@ class PlaceToPayService implements PlaceToPayServiceInterface
         return $result;
     }
 
-    public function createSubscription(Customer $customer, CustomerSubscription $subscriptionPivot): Response
+    public function createSubscription(Customer $customer, Subscription $subscription): Response
     {
         $this->prepare();
-        $this->subscription($subscriptionPivot);
+        $this->subscription($subscription);
         $this->buyer($customer);
 
         Log::info('PlaceToPayService: Creating subscription', array_merge($this->data['subscription'], $this->data['buyer']));
