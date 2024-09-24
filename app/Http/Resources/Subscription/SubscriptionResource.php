@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Resources\CustomerSubscription;
+namespace App\Http\Resources\Subscription;
 
 use App\Models\Subscription;
 use Illuminate\Http\Request;
@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\App;
 /**
  * @mixin Subscription
  */
-class CustomerSubscriptionResource extends JsonResource
+class SubscriptionResource extends JsonResource
 {
 
     public function toArray(Request $request): array
