@@ -10,7 +10,7 @@ use App\Http\Controllers\MicrositeField\MicrositeFieldController;
 use App\Http\Controllers\Payment\PaymentController;
 use App\Http\Controllers\Profile\ProfileController;
 use App\Http\Controllers\RolePermission\RolePermissionController;
-use App\Http\Controllers\Subscription\SubscriptionController;
+use App\Http\Controllers\Plan\PlanController;
 use App\Http\Controllers\SubscriptionPayment\SubscriptionPaymentController;
 use App\Http\Controllers\Support\LanguageController;
 use App\Http\Controllers\Transaction\TransactionController;
@@ -72,14 +72,14 @@ Route::prefix('microsites')->name('microsites.')->group(function () {
             });
 
             Route::prefix('subscriptions')->name('subscriptions.')->group(function () {
-                Route::get('/', [SubscriptionController::class, 'index'])->name('index');
-                Route::get('/create', [SubscriptionController::class, 'create'])->name('create');
-                Route::post('/', [SubscriptionController::class, 'store'])->name('store');
+                Route::get('/', [PlanController::class, 'index'])->name('index');
+                Route::get('/create', [PlanController::class, 'create'])->name('create');
+                Route::post('/', [PlanController::class, 'store'])->name('store');
                 Route::prefix('{subscription}')->group(function () {
-                    Route::get('/edit', [SubscriptionController::class, 'edit'])->name('edit');
-                    Route::put('/', [SubscriptionController::class, 'update'])->name('update');
-                    Route::delete('/', [SubscriptionController::class, 'destroy'])->name('destroy');
-                    Route::put('/restore', [SubscriptionController::class, 'restore'])->name('restore')->withTrashed();
+                    Route::get('/edit', [PlanController::class, 'edit'])->name('edit');
+                    Route::put('/', [PlanController::class, 'update'])->name('update');
+                    Route::delete('/', [PlanController::class, 'destroy'])->name('destroy');
+                    Route::put('/restore', [PlanController::class, 'restore'])->name('restore')->withTrashed();
                 });
             });
         });

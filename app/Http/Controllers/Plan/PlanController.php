@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Subscription;
+namespace App\Http\Controllers\Plan;
 
 use App\Constants\TimeUnit;
 use App\Http\Controllers\Controller;
@@ -14,7 +14,7 @@ use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 use Inertia\Response;
 
-class SubscriptionController extends Controller
+class PlanController extends Controller
 {
     public function index(Microsite $microsite): Response
     {
