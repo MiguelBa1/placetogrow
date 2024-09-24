@@ -71,11 +71,11 @@ Route::prefix('microsites')->name('microsites.')->group(function () {
                 Route::get('/download-template', [InvoiceController::class, 'downloadTemplate'])->name('download-template');
             });
 
-            Route::prefix('subscriptions')->name('subscriptions.')->group(function () {
+            Route::prefix('plans')->name('plans.')->group(function () {
                 Route::get('/', [PlanController::class, 'index'])->name('index');
                 Route::get('/create', [PlanController::class, 'create'])->name('create');
                 Route::post('/', [PlanController::class, 'store'])->name('store');
-                Route::prefix('{subscription}')->group(function () {
+                Route::prefix('{plan}')->group(function () {
                     Route::get('/edit', [PlanController::class, 'edit'])->name('edit');
                     Route::put('/', [PlanController::class, 'update'])->name('update');
                     Route::delete('/', [PlanController::class, 'destroy'])->name('destroy');

@@ -65,7 +65,7 @@ class PlanController extends Controller
             }
         });
 
-        return redirect()->route('microsites.subscriptions.index', $microsite);
+        return redirect()->route('microsites.plans.index', $microsite);
     }
 
     public function edit(Microsite $microsite, Plan $plan): Response
@@ -99,20 +99,20 @@ class PlanController extends Controller
             }
         });
 
-        return redirect()->route('microsites.subscriptions.index', $microsite);
+        return redirect()->route('microsites.plans.index', $microsite);
     }
 
     public function destroy(Microsite $microsite, Plan $plan): RedirectResponse
     {
         $plan->delete();
 
-        return redirect()->route('microsites.subscriptions.index', $microsite);
+        return redirect()->route('microsites.plans.index', $microsite);
     }
 
     public function restore(Microsite $microsite, Plan $plan): RedirectResponse
     {
         $plan->restore();
 
-        return redirect()->route('microsites.subscriptions.index', $microsite);
+        return redirect()->route('microsites.plans.index', $microsite);
     }
 }

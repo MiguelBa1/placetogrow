@@ -18,7 +18,7 @@ const columns = getSubscriptionTableColumns(t);
 
 const deleteSubscription = (subscriptionId: number) => {
 
-    router.delete(route('microsites.subscriptions.destroy', { microsite, subscription: subscriptionId }), {
+    router.delete(route('microsites.plans.destroy', { microsite, subscription: subscriptionId }), {
         preserveScroll: true,
         preserveState: true,
         onSuccess: () => {
@@ -32,7 +32,7 @@ const deleteSubscription = (subscriptionId: number) => {
 
 const restoreSubscription = (subscriptionId: number) => {
 
-    router.put(route('microsites.subscriptions.restore', { microsite, subscription: subscriptionId }), {}, {
+    router.put(route('microsites.plans.restore', { microsite, subscription: subscriptionId }), {}, {
         preserveScroll: true,
         preserveState: true,
         onSuccess: () => {
@@ -58,7 +58,7 @@ const restoreSubscription = (subscriptionId: number) => {
                     class="flex justify-center gap-2"
                 >
                     <Link
-                        :href="route('microsites.subscriptions.edit', { microsite, subscription: row.id })"
+                        :href="route('microsites.plans.edit', { microsite, subscription: row.id })"
                         class="text-blue-600 hover:text-blue-800"
                     >
                         <PencilSquareIcon class="w-5 h-5" />

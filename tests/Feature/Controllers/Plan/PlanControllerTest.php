@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Feature\Controllers\Subscription;
+namespace Tests\Feature\Controllers\Plan;
 
 use App\Constants\MicrositeType;
 use App\Constants\Role;
@@ -12,7 +12,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 use Tests\Traits\SeedsRolesAndPermissions;
 
-class SubscriptionControllerTest extends TestCase
+class PlanControllerTest extends TestCase
 {
     use RefreshDatabase, SeedsRolesAndPermissions;
 
@@ -38,7 +38,7 @@ class SubscriptionControllerTest extends TestCase
 
         Plan::factory()->count(3)->create(['microsite_id' => $this->microsite->id]);
 
-        $response = $this->get(route('microsites.subscriptions.index', $this->microsite));
+        $response = $this->get(route('microsites.plans.index', $this->microsite));
 
         $response->assertOk();
         $response->assertInertia(fn ($page) => $page
@@ -48,7 +48,7 @@ class SubscriptionControllerTest extends TestCase
 
     public function test_admin_can_view_create_subscription_page()
     {
-        $response = $this->get(route('microsites.subscriptions.create', $this->microsite));
+        $response = $this->get(route('microsites.plans.create', $this->microsite));
 
         $response->assertOk();
         $response->assertInertia(fn ($page) => $page
@@ -61,7 +61,7 @@ class SubscriptionControllerTest extends TestCase
     {
         $subscription = Plan::factory()->create(['microsite_id' => $this->microsite->id]);
 
-        $response = $this->get(route('microsites.subscriptions.edit', [$this->microsite, $subscription]));
+        $response = $this->get(route('microsites.plans.edit', [$this->microsite, $subscription]));
 
         $response->assertOk();
         $response->assertInertia(fn ($page) => $page
@@ -74,7 +74,7 @@ class SubscriptionControllerTest extends TestCase
     public function test_admin_can_create_subscription()
     {
 
-        $response = $this->post(route('microsites.subscriptions.store', $this->microsite), [
+        $response = $this->post(route('microsites.plans.store', $this->microsite), [
             'price' => 1500,
             'total_duration' => 12,
             'billing_frequency' => 1,
@@ -85,9 +85,9 @@ class SubscriptionControllerTest extends TestCase
             ],
         ]);
 
-        $response->assertRedirect(route('microsites.subscriptions.index', $this->microsite));
+        $response->assertRedirect(route('microsites.plans.index', $this->microsite));
 
-        $this->assertDatabaseHas('subscriptions', [
+        $this->assertDatabaseHas('plans', [
             'microsite_id' => $this->microsite->id,
             'price' => 1500,
             'total_duration' => 12,
@@ -106,7 +106,7 @@ class SubscriptionControllerTest extends TestCase
     {
         $subscription = Plan::factory()->create(['microsite_id' => $this->microsite->id]);
 
-        $response = $this->put(route('microsites.subscriptions.update', [$this->microsite, $subscription]), [
+        $response = $this->put(route('microsites.plans.update', [$this->microsite, $subscription]), [
             'price' => 2000,
             'total_duration' => 6,
             'billing_frequency' => 2,
@@ -117,8 +117,8 @@ class SubscriptionControllerTest extends TestCase
             ],
         ]);
 
-        $response->assertRedirect(route('microsites.subscriptions.index', $this->microsite));
-        $this->assertDatabaseHas('subscriptions', [
+        $response->assertRedirect(route('microsites.plans.index', $this->microsite));
+        $this->assertDatabaseHas('plans', [
             'id' => $subscription->id,
             'price' => 2000,
             'total_duration' => 6,
@@ -139,13 +139,11 @@ class SubscriptionControllerTest extends TestCase
     {
         $subscription = Plan::factory()->create(['microsite_id' => $this->microsite->id]);
 
-        $response = $this->delete(route('microsites.subscriptions.destroy', [$this->microsite, $subscription]));
+        $response = $this->delete(route('microsites.plans.destroy', [$this->microsite, $subscription]));
 
-        $response->assertRedirect(route('microsites.subscriptions.index', $this->microsite));
+        $response->assertRedirect(route('microsites.plans.index', $this->microsite));
 
-        // This model implements soft deletes
-
-        $this->assertSoftDeleted('subscriptions', ['id' => $subscription->id]);
+        $this->assertSoftDeleted('plans', ['id' => $subscription->id]);
     }
 
     public function test_admin_can_restore_subscription()
@@ -155,10 +153,10 @@ class SubscriptionControllerTest extends TestCase
             'deleted_at' => now(),
         ]);
 
-        $response = $this->put(route('microsites.subscriptions.restore', [$this->microsite, $subscription]));
+        $response = $this->put(route('microsites.plans.restore', [$this->microsite, $subscription]));
 
-        $response->assertRedirect(route('microsites.subscriptions.index', $this->microsite));
+        $response->assertRedirect(route('microsites.plans.index', $this->microsite));
 
-        $this->assertDatabaseHas('subscriptions', ['id' => $subscription->id]);
+        $this->assertDatabaseHas('plans', ['id' => $subscription->id]);
     }
 }

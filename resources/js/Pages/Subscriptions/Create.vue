@@ -57,7 +57,7 @@ const submit = () => {
     isSubmitting.value = true;
 
     router.post(
-        route('microsites.subscriptions.store', microsite),
+        route('microsites.plans.store', microsite),
         form,
         {
             preserveScroll: true,

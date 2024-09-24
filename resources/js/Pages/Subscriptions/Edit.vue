@@ -58,7 +58,7 @@ const submit = () => {
     isSubmitting.value = true;
 
     router.put(
-        route('microsites.subscriptions.update', { microsite, subscription }),
+        route('microsites.plans.update', { microsite, subscription }),
         form,
         {
             preserveScroll: true,

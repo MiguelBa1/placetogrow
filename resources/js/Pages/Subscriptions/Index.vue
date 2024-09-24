@@ -33,7 +33,7 @@ const goBack = () => {
                 <div class="space-x-2">
                     <Button
                         variant="primary"
-                        @click="router.visit(route('microsites.subscriptions.create', { microsite }))"
+                        @click="router.visit(route('microsites.plans.create', { microsite }))"
                     >
                         {{ t('subscriptions.index.create') }}
                     </Button>

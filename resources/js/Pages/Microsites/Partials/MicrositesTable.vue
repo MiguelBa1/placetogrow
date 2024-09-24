@@ -87,7 +87,7 @@ const closeRestoreModal = () => {
                         </Link>
                         <Link
                             v-if="row.type.value === 'subscription'"
-                            :href="route('microsites.subscriptions.index', { microsite: row.slug })"
+                            :href="route('microsites.plans.index', { microsite: row.slug })"
                             title="Subscriptions"
                         >
                             <TagIcon class="w-5 h-5" />
