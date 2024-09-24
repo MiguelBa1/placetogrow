@@ -14,7 +14,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property string|null $description
  * @property Plan $plan
  */
-class SubscriptionTranslation extends Model
+class PlanTranslation extends Model
 {
     use HasFactory;
 

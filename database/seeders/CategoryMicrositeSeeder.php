@@ -8,7 +8,7 @@ use App\Models\Category;
 use App\Models\Invoice;
 use App\Models\Microsite;
 use App\Models\Plan;
-use App\Models\SubscriptionTranslation;
+use App\Models\PlanTranslation;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Storage;
 
@@ -50,7 +50,7 @@ class CategoryMicrositeSeeder extends Seeder
 
         foreach ($plans as $plan) {
             foreach (['en', 'es'] as $locale) {
-                SubscriptionTranslation::factory()->create([
+                PlanTranslation::factory()->create([
                     'plan_id' => $plan->id,
                     'locale' => $locale,
                 ]);

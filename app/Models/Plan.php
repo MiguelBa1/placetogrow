@@ -25,7 +25,7 @@ use Illuminate\Support\Carbon;
  * @property Carbon|null $deleted_at
  *
  * @property Microsite $microsite
- * @property Collection|SubscriptionTranslation[] $translations
+ * @property Collection|PlanTranslation[] $translations
  */
 class Plan extends Model
 {
@@ -51,7 +51,7 @@ class Plan extends Model
 
     public function translations(): HasMany
     {
-        return $this->hasMany(SubscriptionTranslation::class);
+        return $this->hasMany(PlanTranslation::class);
     }
 
     public function customers(): BelongsToMany
