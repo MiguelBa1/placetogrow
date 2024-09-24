@@ -103,7 +103,7 @@ class SubscriptionPaymentController extends Controller
                     ]);
                 }
 
-                $customerSubscription = $result['customer_subscription'];
+                $customerSubscription = $result['subscription'];
 
                 Cache::put($cacheKey, $customerSubscription->status, now()->addMinutes(10));
             } else {

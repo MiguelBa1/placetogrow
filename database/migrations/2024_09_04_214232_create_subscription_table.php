@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Schema;
 return new class extends Migration {
     public function up(): void
     {
-        Schema::create('customer_subscription', function (Blueprint $table) {
+        Schema::create('subscription', function (Blueprint $table) {
             $table->id();
             $table->foreignId('customer_id')->constrained('customers')->onDelete('cascade');
             $table->foreignId('plan_id')->constrained('plans')->onDelete('cascade');
@@ -30,6 +30,6 @@ return new class extends Migration {
 
     public function down(): void
     {
-        Schema::dropIfExists('customer_subscription');
+        Schema::dropIfExists('subscription');
     }
 };

@@ -32,7 +32,7 @@ class CustomerSubscription extends Pivot
 
     public $incrementing = true;
 
-    protected $table = 'customer_subscription';
+    protected $table = 'subscription';
 
     protected $fillable = [
         'customer_id',

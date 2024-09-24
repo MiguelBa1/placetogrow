@@ -2,7 +2,6 @@
 
 use App\Constants\Permission;
 use App\Http\Controllers\CustomerInvoice\CustomerInvoiceController;
-use App\Http\Controllers\Subscription\SubscriptionController;
 use App\Http\Controllers\Home\HomeController;
 use App\Http\Controllers\Invoice\InvoiceController;
 use App\Http\Controllers\Microsite\MicrositeController;
@@ -11,6 +10,7 @@ use App\Http\Controllers\Payment\PaymentController;
 use App\Http\Controllers\Plan\PlanController;
 use App\Http\Controllers\Profile\ProfileController;
 use App\Http\Controllers\RolePermission\RolePermissionController;
+use App\Http\Controllers\Subscription\SubscriptionController;
 use App\Http\Controllers\SubscriptionPayment\SubscriptionPaymentController;
 use App\Http\Controllers\Support\LanguageController;
 use App\Http\Controllers\Transaction\TransactionController;

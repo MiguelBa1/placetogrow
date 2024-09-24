@@ -78,7 +78,7 @@ class SubscriptionService implements SubscriptionServiceInterface
             return [
                 'success' => true,
                 'message' => $dataResponse['status']['message'],
-                'customer_subscription' => $customerSubscription,
+                'subscription' => $customerSubscription,
             ];
         } else {
             return [

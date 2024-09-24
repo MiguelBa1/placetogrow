@@ -114,7 +114,7 @@ class SubscriptionPaymentReturnTest extends TestCase
 
         $this->get(route('subscription-payments.return', $subscriptionPaymentReference));
 
-        $this->assertDatabaseHas('customer_subscription', [
+        $this->assertDatabaseHas('subscription', [
             'id' => $customerSubscription->id,
             'status' => SubscriptionStatus::ACTIVE->value,
         ]);
