@@ -12,8 +12,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property string $locale
  * @property string $name
  * @property string|null $description
- *
- * @property Subscription $subscription
+ * @property Plan $plan
  */
 class SubscriptionTranslation extends Model
 {
@@ -26,8 +25,8 @@ class SubscriptionTranslation extends Model
         'description',
     ];
 
-    public function subscription(): BelongsTo
+    public function plan(): BelongsTo
     {
-        return $this->belongsTo(Subscription::class);
+        return $this->belongsTo(Plan::class);
     }
 }

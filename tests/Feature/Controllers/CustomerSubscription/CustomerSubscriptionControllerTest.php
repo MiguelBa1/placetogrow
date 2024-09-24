@@ -7,7 +7,7 @@ use App\Mail\CustomerSubscriptionLinkMail;
 use App\Models\Customer;
 use App\Models\CustomerSubscription;
 use App\Models\Microsite;
-use App\Models\Subscription;
+use App\Models\Plan;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\URL;
@@ -60,7 +60,7 @@ class CustomerSubscriptionControllerTest extends TestCase
             'document_number' => '1234567890',
         ]);
 
-        $subscription = Subscription::factory()->create(['microsite_id' => $microsite->id]);
+        $subscription = Plan::factory()->create(['microsite_id' => $microsite->id]);
         CustomerSubscription::factory()->create([
             'customer_id' => $customer->id,
             'subscription_id' => $subscription->id,
@@ -104,7 +104,7 @@ class CustomerSubscriptionControllerTest extends TestCase
             'document_number' => '1234567890',
         ]);
 
-        $subscription = Subscription::factory()->create();
+        $subscription = Plan::factory()->create();
         $customerSubscription = CustomerSubscription::factory()->create([
             'customer_id' => $customer->id,
             'subscription_id' => $subscription->id,

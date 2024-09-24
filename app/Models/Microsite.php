@@ -29,7 +29,7 @@ use Spatie\Sluggable\SlugOptions;
  * @property MicrositeField[] fields
  * @property Invoice[] invoices
  * @property Payment[] payments
- * @property Subscription[] subscriptions
+ * @property Plan[] $plans
  */
 class Microsite extends Model implements HasMedia
 {
@@ -90,8 +90,8 @@ class Microsite extends Model implements HasMedia
         return 'slug';
     }
 
-    public function subscriptions(): HasMany
+    public function plans(): HasMany
     {
-        return $this->hasMany(Subscription::class);
+        return $this->hasMany(Plan::class);
     }
 }

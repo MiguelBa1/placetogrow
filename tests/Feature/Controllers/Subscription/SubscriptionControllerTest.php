@@ -6,7 +6,7 @@ use App\Constants\MicrositeType;
 use App\Constants\Role;
 use App\Constants\TimeUnit;
 use App\Models\Microsite;
-use App\Models\Subscription;
+use App\Models\Plan;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
@@ -36,7 +36,7 @@ class SubscriptionControllerTest extends TestCase
     public function test_admin_can_view_subscriptions_index()
     {
 
-        Subscription::factory()->count(3)->create(['microsite_id' => $this->microsite->id]);
+        Plan::factory()->count(3)->create(['microsite_id' => $this->microsite->id]);
 
         $response = $this->get(route('microsites.subscriptions.index', $this->microsite));
 
@@ -59,7 +59,7 @@ class SubscriptionControllerTest extends TestCase
 
     public function test_admin_can_view_edit_subscription_page()
     {
-        $subscription = Subscription::factory()->create(['microsite_id' => $this->microsite->id]);
+        $subscription = Plan::factory()->create(['microsite_id' => $this->microsite->id]);
 
         $response = $this->get(route('microsites.subscriptions.edit', [$this->microsite, $subscription]));
 
@@ -104,7 +104,7 @@ class SubscriptionControllerTest extends TestCase
 
     public function test_admin_can_update_subscription()
     {
-        $subscription = Subscription::factory()->create(['microsite_id' => $this->microsite->id]);
+        $subscription = Plan::factory()->create(['microsite_id' => $this->microsite->id]);
 
         $response = $this->put(route('microsites.subscriptions.update', [$this->microsite, $subscription]), [
             'price' => 2000,
@@ -137,7 +137,7 @@ class SubscriptionControllerTest extends TestCase
 
     public function test_admin_can_delete_subscription()
     {
-        $subscription = Subscription::factory()->create(['microsite_id' => $this->microsite->id]);
+        $subscription = Plan::factory()->create(['microsite_id' => $this->microsite->id]);
 
         $response = $this->delete(route('microsites.subscriptions.destroy', [$this->microsite, $subscription]));
 
@@ -150,7 +150,7 @@ class SubscriptionControllerTest extends TestCase
 
     public function test_admin_can_restore_subscription()
     {
-        $subscription = Subscription::factory()->create([
+        $subscription = Plan::factory()->create([
             'microsite_id' => $this->microsite->id,
             'deleted_at' => now(),
         ]);

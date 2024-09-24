@@ -2,7 +2,7 @@
 
 namespace Database\Factories;
 
-use App\Models\Subscription;
+use App\Models\Plan;
 use App\Models\SubscriptionTranslation;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
@@ -32,7 +32,7 @@ class SubscriptionTranslationFactory extends Factory
         $description = __('subscription.plans.' . $planKey . '.description', [], $locale);
 
         return [
-            'subscription_id' => Subscription::factory(),
+            'subscription_id' => Plan::factory(),
             'locale' => $locale,
             'name' => $name,
             'description' => $description,

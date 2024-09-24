@@ -27,7 +27,7 @@ use Illuminate\Support\Carbon;
  * @property Microsite $microsite
  * @property Collection|SubscriptionTranslation[] $translations
  */
-class Subscription extends Model
+class Plan extends Model
 {
     use HasFactory, SoftDeletes;
 

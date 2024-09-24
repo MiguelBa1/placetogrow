@@ -21,7 +21,7 @@ use Illuminate\Database\Eloquent\Relations\Pivot;
  * @property string $token
  * @property string $subtoken
  * @property array $additional_data
- * @property Subscription $subscription
+ * @property Plan $plan
  * @property Customer $customer
  * @property string $created_at
  * @property string $updated_at
@@ -54,9 +54,9 @@ class CustomerSubscription extends Pivot
         'additional_data' => 'array',
     ];
 
-    public function subscription(): BelongsTo
+    public function plan(): BelongsTo
     {
-        return $this->belongsTo(Subscription::class);
+        return $this->belongsTo(Plan::class);
     }
 
     public function customer(): BelongsTo

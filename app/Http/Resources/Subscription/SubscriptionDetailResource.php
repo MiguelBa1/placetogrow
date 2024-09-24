@@ -2,12 +2,12 @@
 
 namespace App\Http\Resources\Subscription;
 
-use App\Models\Subscription;
+use App\Models\Plan;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 /**
- * @mixin Subscription
+ * @mixin Plan
  */
 class SubscriptionDetailResource extends JsonResource
 {
