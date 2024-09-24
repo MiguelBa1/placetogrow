@@ -1,7 +1,7 @@
 import { enCommon } from './common';
 import enAuth from './auth';
 import enCustomerInvoices from './customerInvoices';
-import esCustomerSubscriptions from './customerSubscriptions';
+import esSubscriptions from './subscriptions';
 import enProfile from './profile';
 import enRolePermission from './rolePermissions'
 import enMicrosites from './microsites';
@@ -18,7 +18,7 @@ export default {
     common: enCommon,
     auth: enAuth,
     customerInvoices: enCustomerInvoices,
-    customerSubscriptions: esCustomerSubscriptions,
+    subscriptions: esSubscriptions,
     profile: enProfile,
     rolePermissions: enRolePermission,
     microsites: enMicrosites,

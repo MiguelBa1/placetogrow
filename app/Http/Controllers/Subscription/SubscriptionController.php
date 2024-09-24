@@ -21,7 +21,7 @@ class SubscriptionController extends Controller
 {
     public function index(): Response
     {
-        return Inertia::render('CustomerSubscriptions/Index');
+        return Inertia::render('Subscriptions/Index');
     }
 
     public function sendLink(SendSubscriptionLinkRequest $request): RedirectResponse
@@ -60,7 +60,7 @@ class SubscriptionController extends Controller
 
         $subscriptionsResource = SubscriptionResource::collection($subscriptions);
 
-        return Inertia::render('CustomerSubscriptions/Show', [
+        return Inertia::render('Subscriptions/Show', [
             'subscriptions' => $subscriptionsResource,
             'customer' => [
                 'email' => $email,
@@ -75,11 +75,11 @@ class SubscriptionController extends Controller
             ->where('document_number', $request->get('document_number'))
             ->firstOrFail();
 
-        $customerSubscription = Subscription::where('id', $subscriptionId)
+        $subscription = Subscription::where('id', $subscriptionId)
             ->where('customer_id', $customer->id)
             ->firstOrFail();
 
-        $customerSubscription->update([
+        $subscription->update([
             'status' => SubscriptionStatus::INACTIVE,
         ]);
 

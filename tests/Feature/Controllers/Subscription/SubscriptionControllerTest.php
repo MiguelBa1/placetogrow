@@ -25,7 +25,7 @@ class SubscriptionControllerTest extends TestCase
         $response->assertOk();
         $response->assertInertia(
             fn (Assert $page) =>
-            $page->component('CustomerSubscriptions/Index')
+            $page->component('Subscriptions/Index')
         );
     }
 
@@ -77,7 +77,7 @@ class SubscriptionControllerTest extends TestCase
         $response->assertOk();
         $response->assertInertia(
             fn (Assert $page) =>
-            $page->component('CustomerSubscriptions/Show')
+            $page->component('Subscriptions/Show')
                 ->has('subscriptions')
                 ->where('customer.email', 'test@example.com')
                 ->where('customer.document_number', '1234567890')
