@@ -10,10 +10,10 @@ import { useI18n } from "vue-i18n";
 const toast = useToast();
 const { t } = useI18n();
 
-const { microsite, timeUnits, subscription } = defineProps<{
+const { microsite, timeUnits, plan } = defineProps<{
     microsite: { id: string; slug: string };
     timeUnits: { label: string; value: string }[];
-    subscription: {
+    plan: {
         id: number;
         billing_frequency: number;
         price: number;
@@ -30,11 +30,11 @@ const { microsite, timeUnits, subscription } = defineProps<{
 const isSubmitting = ref(false);
 
 const form = reactive({
-    price: subscription.price,
-    total_duration: subscription.total_duration,
-    billing_frequency: subscription.billing_frequency,
-    time_unit: subscription.time_unit,
-    translations: subscription.translations,
+    price: plan.price,
+    total_duration: plan.total_duration,
+    billing_frequency: plan.billing_frequency,
+    time_unit: plan.time_unit,
+    translations: plan.translations,
 });
 
 const errors = reactive({
@@ -58,12 +58,12 @@ const submit = () => {
     isSubmitting.value = true;
 
     router.put(
-        route('microsites.plans.update', { microsite, subscription }),
+        route('microsites.plans.update', { microsite, plan }),
         form,
         {
             preserveScroll: true,
             onSuccess: () => {
-                toast.success(t('subscriptions.edit.success'));
+                toast.success(t('plans.edit.success'));
             },
             onError: (error) => {
                 errors.price = error?.price;
@@ -81,7 +81,7 @@ const submit = () => {
                     }
                 ];
 
-                toast.error(t('subscriptions.edit.error'));
+                toast.error(t('plans.edit.error'));
             },
             onFinish: () => {
                 isSubmitting.value = false;
@@ -98,7 +98,7 @@ const goBack = () => {
 <template>
     <Head>
         <title>
-            {{ t('subscriptions.edit.title') }}
+            {{ t('plans.edit.title') }}
         </title>
     </Head>
 
@@ -106,7 +106,7 @@ const goBack = () => {
         <template #header>
             <div class="flex justify-between items-center">
                 <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-                    {{ t('subscriptions.edit.header') }}
+                    {{ t('plans.edit.header') }}
                 </h2>
 
                 <div class="space-x-2">
@@ -128,28 +128,28 @@ const goBack = () => {
             <InputField
                 id="price"
                 v-model="form.price"
-                :label="t('subscriptions.edit.form.price')"
+                :label="t('plans.edit.form.price')"
                 type="number"
                 :error="errors.price"
             />
             <InputField
                 id="total_duration"
                 v-model="form.total_duration"
-                :label="t('subscriptions.edit.form.totalDuration')"
+                :label="t('plans.edit.form.totalDuration')"
                 type="number"
                 :error="errors.total_duration"
             />
             <Listbox
                 id="time_unit"
                 v-model="form.time_unit"
-                :label="t('subscriptions.edit.form.timeUnit')"
+                :label="t('plans.edit.form.timeUnit')"
                 :options="timeUnits"
                 :error="errors.time_unit"
             />
             <InputField
                 id="billing_frequency"
                 v-model="form.billing_frequency"
-                :label="t('subscriptions.edit.form.billingFrequency')"
+                :label="t('plans.edit.form.billingFrequency')"
                 type="number"
                 :error="errors.billing_frequency"
             />
@@ -158,21 +158,21 @@ const goBack = () => {
                 <h3 class="flex items-center gap-1 text-lg font-medium text-gray-900">
                     <GlobeAmericasIcon class="h-5 w-5 inline-block text-blue-500" />
                     <span>
-                        {{ t('subscriptions.edit.form.content', { locale: translation.locale }) }}
+                        {{ t('plans.edit.form.content', { locale: translation.locale }) }}
                     </span>
                 </h3>
 
                 <InputField
                     id="name"
                     v-model="translation.name"
-                    :label="t('subscriptions.edit.form.name')"
+                    :label="t('plans.edit.form.name')"
                     type="text"
                     :error="errors.translations[index].name"
                 />
                 <TextareaField
                     id="description"
                     v-model="translation.description"
-                    :label="t('subscriptions.edit.form.description')"
+                    :label="t('plans.edit.form.description')"
                     :error="errors.translations[index]?.description"
                     :rows="6"
                 />

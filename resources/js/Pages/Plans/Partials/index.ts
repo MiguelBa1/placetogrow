@@ -1,2 +1,2 @@
-export { default as SubscriptionsTable } from './SubscriptionsTable.vue';
+export { default as PlansTable } from './PlansTable.vue';
 

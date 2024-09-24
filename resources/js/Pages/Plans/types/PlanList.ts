@@ -1,4 +1,4 @@
-export type SubscriptionListItem = {
+export type PlanListItem = {
     id: number;
     name: string;
     price: string;
@@ -9,6 +9,6 @@ export type SubscriptionListItem = {
     deleted_at: string | null;
 }
 
-export type SubscriptionsList = {
-    data: SubscriptionListItem[];
+export type PlansList = {
+    data: PlanListItem[];
 }

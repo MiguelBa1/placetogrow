@@ -38,7 +38,7 @@ class PlanController extends Controller
 
         return Inertia::render('Plans/Index', [
             'microsite' => $microsite,
-            'subscriptions' => $plans,
+            'plans' => $plans,
         ]);
     }
 
@@ -78,7 +78,7 @@ class PlanController extends Controller
 
         return Inertia::render('Plans/Edit', [
             'microsite' => $microsite,
-            'subscription' => $plan,
+            'plan' => $plan,
             'timeUnits' => TimeUnit::toSelectArray(),
         ]);
     }
