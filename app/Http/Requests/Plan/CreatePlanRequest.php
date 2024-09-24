@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Http\Requests\Subscription;
+namespace App\Http\Requests\Plan;
 
-class CreateSubscriptionRequest extends BaseSubscriptionRequest
+class CreatePlanRequest extends BasePlanRequest
 {
     public function rules(): array
     {

@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Http\Requests\Subscription;
+namespace App\Http\Requests\Plan;
 
-class UpdateSubscriptionRequest extends BaseSubscriptionRequest
+class UpdatePlanRequest extends BasePlanRequest
 {
     public function authorize(): bool
     {

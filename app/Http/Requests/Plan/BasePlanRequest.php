@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Http\Requests\Subscription;
+namespace App\Http\Requests\Plan;
 
 use App\Constants\TimeUnit;
 use Closure;
 use Illuminate\Foundation\Http\FormRequest;
 
-abstract class BaseSubscriptionRequest extends FormRequest
+abstract class BasePlanRequest extends FormRequest
 {
     protected function commonRules(): array
     {
