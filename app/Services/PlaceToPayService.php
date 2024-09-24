@@ -119,7 +119,7 @@ class PlaceToPayService implements PlaceToPayServiceInterface
     public function createSubscription(Customer $customer, CustomerSubscription $subscriptionPivot): Response
     {
         $this->prepare();
-        $this->plan($subscriptionPivot);
+        $this->subscription($subscriptionPivot);
         $this->buyer($customer);
 
         Log::info('PlaceToPayService: Creating subscription', array_merge($this->data['subscription'], $this->data['buyer']));

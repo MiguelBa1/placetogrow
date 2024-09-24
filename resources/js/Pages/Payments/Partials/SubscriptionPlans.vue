@@ -24,16 +24,16 @@ const formattedPrice = (price: number) => {
 };
 
 const showModal = ref(false);
-const selectedSubscription = ref<number | null>(null);
+const selectedPlan = ref<number | null>(null);
 
 const openModal = (subscriptionId: number) => {
-    selectedSubscription.value = subscriptionId;
+    selectedPlan.value = subscriptionId;
     showModal.value = true;
 };
 
 const closeModal = () => {
     showModal.value = false;
-    selectedSubscription.value = null;
+    selectedPlan.value = null;
 };
 </script>
 
@@ -63,7 +63,7 @@ const closeModal = () => {
         v-if="showModal"
         :isOpen="showModal"
         :fields="fields"
-        :subscriptionId="selectedSubscription"
+        :planId="selectedPlan"
         :micrositeSlug="microsite.slug"
         @closeModal="closeModal"
     />

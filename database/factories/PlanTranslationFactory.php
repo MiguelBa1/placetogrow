@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Factories\Factory;
 /**
  * @extends Factory<PlanTranslation>
  */
-class SubscriptionTranslationFactory extends Factory
+class PlanTranslationFactory extends Factory
 {
     protected $model = PlanTranslation::class;
 

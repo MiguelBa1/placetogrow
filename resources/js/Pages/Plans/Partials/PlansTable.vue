@@ -16,9 +16,9 @@ const { microsite, plans } = defineProps<{
 
 const columns = getPlanTableColumns(t);
 
-const deletePlan = (subscriptionId: number) => {
+const deletePlan = (planId: number) => {
 
-    router.delete(route('microsites.plans.destroy', { microsite, subscription: subscriptionId }), {
+    router.delete(route('microsites.plans.destroy', { microsite, plan: planId }), {
         preserveScroll: true,
         preserveState: true,
         onSuccess: () => {
@@ -30,9 +30,9 @@ const deletePlan = (subscriptionId: number) => {
     });
 };
 
-const restorePlan = (subscriptionId: number) => {
+const restorePlan = (planId: number) => {
 
-    router.put(route('microsites.plans.restore', { microsite, subscription: subscriptionId }), {}, {
+    router.put(route('microsites.plans.restore', { microsite, plan: planId }), {}, {
         preserveScroll: true,
         preserveState: true,
         onSuccess: () => {
@@ -58,7 +58,7 @@ const restorePlan = (subscriptionId: number) => {
                     class="flex justify-center gap-2"
                 >
                     <Link
-                        :href="route('microsites.plans.edit', { microsite, subscription: row.id })"
+                        :href="route('microsites.plans.edit', { microsite, plan: row.id })"
                         class="text-blue-600 hover:text-blue-800"
                     >
                         <PencilSquareIcon class="w-5 h-5" />
