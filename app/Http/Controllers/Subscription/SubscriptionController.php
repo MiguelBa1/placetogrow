@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\CustomerSubscription;
+namespace App\Http\Controllers\Subscription;
 
 use App\Constants\SubscriptionStatus;
 use App\Http\Controllers\Controller;
@@ -17,7 +17,7 @@ use Illuminate\Support\Facades\URL;
 use Inertia\Inertia;
 use Inertia\Response;
 
-class CustomerSubscriptionController extends Controller
+class SubscriptionController extends Controller
 {
     public function index(): Response
     {
