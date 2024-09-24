@@ -36,7 +36,7 @@ class PlanController extends Controller
 
         $plans = PlanListResource::collection($plans);
 
-        return Inertia::render('Subscriptions/Index', [
+        return Inertia::render('Plans/Index', [
             'microsite' => $microsite,
             'subscriptions' => $plans,
         ]);
@@ -46,7 +46,7 @@ class PlanController extends Controller
     {
         $microsite = $microsite->only('id', 'slug');
 
-        return Inertia::render('Subscriptions/Create', [
+        return Inertia::render('Plans/Create', [
             'microsite' => $microsite,
             'timeUnits' => TimeUnit::toSelectArray(),
         ]);
@@ -76,7 +76,7 @@ class PlanController extends Controller
             ->load('translations:plan_id,locale,name,description')
             ->only('id', 'price', 'total_duration', 'billing_frequency', 'time_unit', 'translations');
 
-        return Inertia::render('Subscriptions/Edit', [
+        return Inertia::render('Plans/Edit', [
             'microsite' => $microsite,
             'subscription' => $plan,
             'timeUnits' => TimeUnit::toSelectArray(),

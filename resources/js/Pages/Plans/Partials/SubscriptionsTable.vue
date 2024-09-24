@@ -2,7 +2,7 @@
 import { Link, router } from "@inertiajs/vue3";
 import { DataTable } from "@/Components";
 import { PencilSquareIcon, TrashIcon, ArrowUturnLeftIcon } from '@heroicons/vue/16/solid';
-import { SubscriptionsList, getSubscriptionTableColumns } from "@/Pages/Subscriptions";
+import { SubscriptionsList, getSubscriptionTableColumns } from "@/Pages/Plans";
 import { useI18n } from "vue-i18n";
 import { useToast } from "vue-toastification";
 

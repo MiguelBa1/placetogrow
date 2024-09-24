@@ -42,7 +42,7 @@ class PlanControllerTest extends TestCase
 
         $response->assertOk();
         $response->assertInertia(fn ($page) => $page
-            ->component('Subscriptions/Index')
+            ->component('Plans/Index')
             ->has('subscriptions.data', 3));
     }
 
@@ -52,7 +52,7 @@ class PlanControllerTest extends TestCase
 
         $response->assertOk();
         $response->assertInertia(fn ($page) => $page
-            ->component('Subscriptions/Create')
+            ->component('Plans/Create')
             ->has('microsite')
             ->has('timeUnits'));
     }
@@ -65,7 +65,7 @@ class PlanControllerTest extends TestCase
 
         $response->assertOk();
         $response->assertInertia(fn ($page) => $page
-            ->component('Subscriptions/Edit')
+            ->component('Plans/Edit')
             ->has('subscription')
             ->has('microsite')
             ->has('timeUnits'));

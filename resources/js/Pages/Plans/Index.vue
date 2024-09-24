@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { Head, router } from '@inertiajs/vue3';
 import { MainLayout } from "@/Layouts";
-import { SubscriptionsList, SubscriptionsTable } from "@/Pages/Subscriptions";
+import { SubscriptionsList, SubscriptionsTable } from "@/Pages/Plans";
 import { useI18n } from "vue-i18n";
 import { Button } from "@/Components";
 
@@ -33,7 +33,7 @@ const goBack = () => {
                 <div class="space-x-2">
                     <Button
                         variant="primary"
-                        @click="router.visit(route('microsites.plans.create', { microsite }))"
+                        @click="router.visit(route('microsites.subscriptions.create', { microsite }))"
                     >
                         {{ t('subscriptions.index.create') }}
                     </Button>
