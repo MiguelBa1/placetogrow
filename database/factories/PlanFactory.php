@@ -4,15 +4,15 @@ namespace Database\Factories;
 
 use App\Constants\TimeUnit;
 use App\Models\Microsite;
-use App\Models\Subscription;
+use App\Models\Plan;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends Factory<Subscription>
+ * @extends Factory<Plan>
  */
-class SubscriptionFactory extends Factory
+class PlanFactory extends Factory
 {
-    protected $model = Subscription::class;
+    protected $model = Plan::class;
 
     public function definition(): array
     {

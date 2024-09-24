@@ -9,7 +9,7 @@ import enPayment from './payments';
 import enUsers from './users';
 import enHome from './home';
 import enInvoices from './invoices';
-import enSubscriptions from './subscriptions';
+import enPlans from './plans';
 import enTransactions from "./transactions";
 import enLayouts from './layouts';
 import enComponents from './components';
@@ -26,7 +26,7 @@ export default {
     users: enUsers,
     home: enHome,
     invoices: enInvoices,
-    subscriptions: enSubscriptions,
+    plans: enPlans,
     transactions: enTransactions,
     layouts: enLayouts,
     components: enComponents,

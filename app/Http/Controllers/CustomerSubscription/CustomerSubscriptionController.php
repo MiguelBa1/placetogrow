@@ -55,7 +55,7 @@ class CustomerSubscriptionController extends Controller
 
         $subscriptions = CustomerSubscription::where('customer_id', $customer->id)
             ->where('status', SubscriptionStatus::ACTIVE)
-            ->with('subscription.microsite')
+            ->with('plan.microsite')
             ->get();
 
         $subscriptionsResource = CustomerSubscriptionResource::collection($subscriptions);

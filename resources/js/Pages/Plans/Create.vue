@@ -57,16 +57,16 @@ const submit = () => {
     isSubmitting.value = true;
 
     router.post(
-        route('microsites.subscriptions.store', microsite),
+        route('microsites.plans.store', microsite),
         form,
         {
             preserveScroll: true,
             onSuccess: () => {
-                toast.success(t('subscriptions.create.success'));
+                toast.success(t('plans.create.success'));
                 isSubmitting.value = false;
             },
             onError: (error) => {
-                toast.error(t('subscriptions.create.error'));
+                toast.error(t('plans.create.error'));
                 errors.price = error?.price;
                 errors.total_duration = error?.total_duration;
                 errors.billing_frequency = error?.billing_frequency;
@@ -97,14 +97,14 @@ const goBack = () => {
 <template>
     <Head>
         <title>
-            {{ t('subscriptions.create.header') }}
+            {{ t('plans.create.header') }}
         </title>
     </Head>
     <MainLayout>
         <template #header>
             <div class="flex justify-between items-center">
                 <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-                    {{ t('subscriptions.create.header') }}
+                    {{ t('plans.create.header') }}
                 </h2>
 
                 <div class="space-x-2">
@@ -125,7 +125,7 @@ const goBack = () => {
             <InputField
                 id="price"
                 type="number"
-                :label="t('subscriptions.create.form.price')"
+                :label="t('plans.create.form.price')"
                 v-model="form.price"
                 :error="errors.price"
                 required
@@ -134,7 +134,7 @@ const goBack = () => {
             <InputField
                 id="total_duration"
                 type="number"
-                :label="t('subscriptions.create.form.totalDuration')"
+                :label="t('plans.create.form.totalDuration')"
                 v-model="form.total_duration"
                 :error="errors.total_duration"
                 required
@@ -143,7 +143,7 @@ const goBack = () => {
             <InputField
                 id="billing_frequency"
                 type="number"
-                :label="t('subscriptions.create.form.billingFrequency')"
+                :label="t('plans.create.form.billingFrequency')"
                 v-model="form.billing_frequency"
                 :error="errors.billing_frequency"
                 required
@@ -151,7 +151,7 @@ const goBack = () => {
 
             <Listbox
                 id="time_unit"
-                :label="t('subscriptions.create.form.timeUnit')"
+                :label="t('plans.create.form.timeUnit')"
                 v-model="form.time_unit"
                 :options="timeUnits"
                 :error="errors.time_unit"
@@ -162,20 +162,20 @@ const goBack = () => {
                 <h3 class="flex items-center gap-1 text-lg font-medium text-gray-900">
                     <GlobeAmericasIcon class="h-5 w-5 inline-block text-blue-500" />
                     <span>
-                        {{ t('subscriptions.create.form.content', { locale: translation.locale }) }}
+                        {{ t('plans.create.form.content', { locale: translation.locale }) }}
                     </span>
                 </h3>
 
                 <InputField
                     :id="`translation-name-${index}`"
                     type="text"
-                    :label="t('subscriptions.create.form.name')"
+                    :label="t('plans.create.form.name')"
                     v-model="translation.name"
                     :error="errors.translations[index]?.name"
                 />
                 <TextareaField
                     :id="`translation-description-${index}`"
-                    :label="t('subscriptions.create.form.description')"
+                    :label="t('plans.create.form.description')"
                     v-model="translation.description"
                     :error="errors.translations[index]?.description"
                 />

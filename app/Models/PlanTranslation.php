@@ -8,26 +8,25 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
  * @property int $id
- * @property int $subscription_id
+ * @property int $plan_id
  * @property string $locale
  * @property string $name
  * @property string|null $description
- *
- * @property Subscription $subscription
+ * @property Plan $plan
  */
-class SubscriptionTranslation extends Model
+class PlanTranslation extends Model
 {
     use HasFactory;
 
     protected $fillable = [
-        'subscription_id',
+        'plan_id',
         'locale',
         'name',
         'description',
     ];
 
-    public function subscription(): BelongsTo
+    public function plan(): BelongsTo
     {
-        return $this->belongsTo(Subscription::class);
+        return $this->belongsTo(Plan::class);
     }
 }

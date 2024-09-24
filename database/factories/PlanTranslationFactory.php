@@ -2,16 +2,16 @@
 
 namespace Database\Factories;
 
-use App\Models\Subscription;
-use App\Models\SubscriptionTranslation;
+use App\Models\Plan;
+use App\Models\PlanTranslation;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends Factory<SubscriptionTranslation>
+ * @extends Factory<PlanTranslation>
  */
-class SubscriptionTranslationFactory extends Factory
+class PlanTranslationFactory extends Factory
 {
-    protected $model = SubscriptionTranslation::class;
+    protected $model = PlanTranslation::class;
 
     public function definition(): array
     {
@@ -32,7 +32,7 @@ class SubscriptionTranslationFactory extends Factory
         $description = __('subscription.plans.' . $planKey . '.description', [], $locale);
 
         return [
-            'subscription_id' => Subscription::factory(),
+            'plan_id' => Plan::factory(),
             'locale' => $locale,
             'name' => $name,
             'description' => $description,

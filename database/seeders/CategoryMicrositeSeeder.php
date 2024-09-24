@@ -7,8 +7,8 @@ use App\Constants\MicrositeType;
 use App\Models\Category;
 use App\Models\Invoice;
 use App\Models\Microsite;
-use App\Models\Subscription;
-use App\Models\SubscriptionTranslation;
+use App\Models\Plan;
+use App\Models\PlanTranslation;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Storage;
 
@@ -46,12 +46,12 @@ class CategoryMicrositeSeeder extends Seeder
 
     private function createSubscriptionsWithTranslations(Microsite $microsite): void
     {
-        $subscriptions = Subscription::factory()->count(2)->create(['microsite_id' => $microsite->id]);
+        $plans = Plan::factory()->count(2)->create(['microsite_id' => $microsite->id]);
 
-        foreach ($subscriptions as $subscription) {
+        foreach ($plans as $plan) {
             foreach (['en', 'es'] as $locale) {
-                SubscriptionTranslation::factory()->create([
-                    'subscription_id' => $subscription->id,
+                PlanTranslation::factory()->create([
+                    'plan_id' => $plan->id,
                     'locale' => $locale,
                 ]);
             }

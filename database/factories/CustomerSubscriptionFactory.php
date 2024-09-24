@@ -6,7 +6,7 @@ use App\Constants\CurrencyType;
 use App\Constants\SubscriptionStatus;
 use App\Models\Customer;
 use App\Models\CustomerSubscription;
-use App\Models\Subscription;
+use App\Models\Plan;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
 
@@ -24,7 +24,7 @@ class CustomerSubscriptionFactory extends Factory
     {
         return [
             'customer_id' => Customer::factory(),
-            'subscription_id' => Subscription::factory(),
+            'plan_id' => Plan::factory(),
             'start_date' => $this->faker->date(),
             'end_date' => $this->faker->date(),
             'status' => SubscriptionStatus::PENDING->value,

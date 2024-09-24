@@ -25,9 +25,9 @@ use Illuminate\Support\Carbon;
  * @property Carbon|null $deleted_at
  *
  * @property Microsite $microsite
- * @property Collection|SubscriptionTranslation[] $translations
+ * @property Collection|PlanTranslation[] $translations
  */
-class Subscription extends Model
+class Plan extends Model
 {
     use HasFactory, SoftDeletes;
 
@@ -51,7 +51,7 @@ class Subscription extends Model
 
     public function translations(): HasMany
     {
-        return $this->hasMany(SubscriptionTranslation::class);
+        return $this->hasMany(PlanTranslation::class);
     }
 
     public function customers(): BelongsToMany

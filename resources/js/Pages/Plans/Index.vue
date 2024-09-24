@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { Head, router } from '@inertiajs/vue3';
 import { MainLayout } from "@/Layouts";
-import { SubscriptionsList, SubscriptionsTable } from "@/Pages/Subscriptions";
+import { PlansList, PlansTable } from "@/Pages/Plans";
 import { useI18n } from "vue-i18n";
 import { Button } from "@/Components";
 
@@ -9,7 +9,7 @@ const { t } = useI18n();
 
 defineProps<{
     microsite: { id: string; slug: string; name: string };
-    subscriptions: SubscriptionsList;
+    plans: PlansList;
 }>();
 
 const goBack = () => {
@@ -27,15 +27,15 @@ const goBack = () => {
         <template #header>
             <div class="flex justify-between items-center">
                 <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-                    {{ t('subscriptions.index.title', { microsite: microsite.name }) }}
+                    {{ t('plans.index.title', { microsite: microsite.name }) }}
                 </h2>
 
                 <div class="space-x-2">
                     <Button
                         variant="primary"
-                        @click="router.visit(route('microsites.subscriptions.create', { microsite }))"
+                        @click="router.visit(route('microsites.plans.create', { microsite }))"
                     >
-                        {{ t('subscriptions.index.create') }}
+                        {{ t('plans.index.create') }}
                     </Button>
                     <Button
                         variant="secondary"
@@ -48,9 +48,9 @@ const goBack = () => {
             </div>
         </template>
 
-        <SubscriptionsTable
-            v-if="subscriptions.data.length > 0"
-            :subscriptions="subscriptions"
+        <PlansTable
+            v-if="plans.data.length > 0"
+            :plans="plans"
             :microsite="microsite"
         />
         <div
@@ -58,7 +58,7 @@ const goBack = () => {
             class="flex items-center justify-center h-96"
         >
             <p class="text-gray-500 text-lg">
-                {{ t('subscriptions.index.table.no_subscriptions') }}
+                {{ t('plans.index.table.no_plans') }}
             </p>
         </div>
     </MainLayout>

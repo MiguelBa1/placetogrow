@@ -17,17 +17,17 @@ class CustomerSubscriptionResource extends JsonResource
     {
         $locale = App::getLocale();
 
-        $subscriptionTranslation = $this->subscription->translations
+        $subscriptionTranslation = $this->plan->translations
             ->where('locale', $locale)
             ->first();
 
-        $subscriptionName = $subscriptionTranslation?->name ?? $this->subscription->id;
+        $subscriptionName = $subscriptionTranslation?->name ?? $this->plan->id;
 
         return [
             'id' => $this->id,
             'subscription_name' => $subscriptionName,
-            'microsite_name' => $this->subscription->microsite->name,
-            'price' => "$ " . number_format($this->subscription->price),
+            'microsite_name' => $this->plan->microsite->name,
+            'price' => "$ " . number_format($this->plan->price),
             'start_date' => date('d/m/Y', strtotime($this->start_date)),
             'end_date' => date('d/m/Y', strtotime($this->end_date)),
             'status' => [

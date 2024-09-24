@@ -5,7 +5,7 @@ namespace Tests\Feature\Controllers\SubscriptionPayment;
 use App\Constants\MicrositeType;
 use App\Constants\SubscriptionStatus;
 use App\Models\Microsite;
-use App\Models\Subscription;
+use App\Models\Plan;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Inertia\Testing\AssertableInertia as Assert;
 use Tests\TestCase;
@@ -17,14 +17,14 @@ class SubscriptionPaymentTest extends TestCase
     use RefreshDatabase, CreatesMicrosites, PlaceToPayMockTrait;
 
     private Microsite $subscriptionMicrosite;
-    private Subscription $subscription;
+    private Plan $subscription;
 
     public function setUp(): void
     {
         parent::setUp();
 
         $this->subscriptionMicrosite = $this->createMicrositeWithFields(MicrositeType::SUBSCRIPTION);
-        $this->subscription = Subscription::factory()->create([
+        $this->plan = Plan::factory()->create([
             'microsite_id' => $this->subscriptionMicrosite->id,
         ]);
     }
@@ -58,7 +58,7 @@ class SubscriptionPaymentTest extends TestCase
 
         $response = $this->post(route('subscription-payments.store', [
             'microsite' => $this->subscriptionMicrosite,
-            'subscription' => $this->subscription,
+            'plan' => $this->plan,
         ]), [
             'name' => 'John',
             'last_name' => 'Doe',
@@ -81,7 +81,7 @@ class SubscriptionPaymentTest extends TestCase
         ]);
 
         $this->assertDatabaseHas('customer_subscription', [
-            'subscription_id' => $this->subscription->id,
+            'plan_id' => $this->plan->id,
             'status' => SubscriptionStatus::PENDING->value,
         ]);
     }
@@ -92,7 +92,7 @@ class SubscriptionPaymentTest extends TestCase
 
         $response = $this->post(route('subscription-payments.store', [
             'microsite' => $this->subscriptionMicrosite,
-            'subscription' => $this->subscription,
+            'plan' => $this->plan,
         ]), [
             'name' => 'John',
             'last_name' => 'Doe',

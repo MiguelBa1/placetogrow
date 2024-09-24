@@ -1,24 +1,24 @@
 <?php
 
-namespace App\Http\Controllers\Subscription;
+namespace App\Http\Controllers\Plan;
 
 use App\Constants\TimeUnit;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Subscription\CreateSubscriptionRequest;
 use App\Http\Requests\Subscription\UpdateSubscriptionRequest;
-use App\Http\Resources\Subscription\SubscriptionListResource;
+use App\Http\Resources\Plan\PlanListResource;
 use App\Models\Microsite;
-use App\Models\Subscription;
+use App\Models\Plan;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 use Inertia\Response;
 
-class SubscriptionController extends Controller
+class PlanController extends Controller
 {
     public function index(Microsite $microsite): Response
     {
-        $subscriptions = Subscription::withTrashed()
+        $plans = Plan::withTrashed()
             ->where('microsite_id', $microsite->id)
             ->select(
                 'id',
@@ -29,16 +29,16 @@ class SubscriptionController extends Controller
                 'created_at',
                 'deleted_at',
             )
-            ->with('translations:subscription_id,locale,name')
+            ->with('translations:plan_id,locale,name')
             ->get();
 
         $microsite = $microsite->only('id', 'slug', 'name');
 
-        $subscriptions = SubscriptionListResource::collection($subscriptions);
+        $plans = PlanListResource::collection($plans);
 
-        return Inertia::render('Subscriptions/Index', [
+        return Inertia::render('Plans/Index', [
             'microsite' => $microsite,
-            'subscriptions' => $subscriptions,
+            'plans' => $plans,
         ]);
     }
 
@@ -46,7 +46,7 @@ class SubscriptionController extends Controller
     {
         $microsite = $microsite->only('id', 'slug');
 
-        return Inertia::render('Subscriptions/Create', [
+        return Inertia::render('Plans/Create', [
             'microsite' => $microsite,
             'timeUnits' => TimeUnit::toSelectArray(),
         ]);
@@ -57,41 +57,41 @@ class SubscriptionController extends Controller
         $validated = $request->validated();
 
         DB::transaction(function () use ($microsite, $validated) {
-            /** @var Subscription $subscription */
-            $subscription = $microsite->subscriptions()->create($validated);
+            /** @var Plan $plan */
+            $plan = $microsite->plans()->create($validated);
 
             foreach ($validated['translations'] as $translation) {
-                $subscription->translations()->create($translation);
+                $plan->translations()->create($translation);
             }
         });
 
-        return redirect()->route('microsites.subscriptions.index', $microsite);
+        return redirect()->route('microsites.plans.index', $microsite);
     }
 
-    public function edit(Microsite $microsite, Subscription $subscription): Response
+    public function edit(Microsite $microsite, Plan $plan): Response
     {
         $microsite = $microsite->only('id', 'slug');
 
-        $subscription = $subscription
-            ->load('translations:subscription_id,locale,name,description')
+        $plan = $plan
+            ->load('translations:plan_id,locale,name,description')
             ->only('id', 'price', 'total_duration', 'billing_frequency', 'time_unit', 'translations');
 
-        return Inertia::render('Subscriptions/Edit', [
+        return Inertia::render('Plans/Edit', [
             'microsite' => $microsite,
-            'subscription' => $subscription,
+            'plan' => $plan,
             'timeUnits' => TimeUnit::toSelectArray(),
         ]);
     }
 
-    public function update(UpdateSubscriptionRequest $request, Microsite $microsite, Subscription $subscription): RedirectResponse
+    public function update(UpdateSubscriptionRequest $request, Microsite $microsite, Plan $plan): RedirectResponse
     {
         $validated = $request->validated();
 
-        DB::transaction(function () use ($subscription, $validated) {
-            $subscription->update($validated);
+        DB::transaction(function () use ($plan, $validated) {
+            $plan->update($validated);
 
             foreach ($validated['translations'] as $translationData) {
-                $subscription->translations()
+                $plan->translations()
                     ->updateOrCreate(
                         ['locale' => $translationData['locale']],
                         $translationData
@@ -99,20 +99,20 @@ class SubscriptionController extends Controller
             }
         });
 
-        return redirect()->route('microsites.subscriptions.index', $microsite);
+        return redirect()->route('microsites.plans.index', $microsite);
     }
 
-    public function destroy(Microsite $microsite, Subscription $subscription): RedirectResponse
+    public function destroy(Microsite $microsite, Plan $plan): RedirectResponse
     {
-        $subscription->delete();
+        $plan->delete();
 
-        return redirect()->route('microsites.subscriptions.index', $microsite);
+        return redirect()->route('microsites.plans.index', $microsite);
     }
 
-    public function restore(Microsite $microsite, Subscription $subscription): RedirectResponse
+    public function restore(Microsite $microsite, Plan $plan): RedirectResponse
     {
-        $subscription->restore();
+        $plan->restore();
 
-        return redirect()->route('microsites.subscriptions.index', $microsite);
+        return redirect()->route('microsites.plans.index', $microsite);
     }
 }

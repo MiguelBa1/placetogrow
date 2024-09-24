@@ -7,10 +7,10 @@ use App\Contracts\SubscriptionServiceInterface;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\SubscriptionPayment\CreateSubscriptionPaymentRequest;
 use App\Http\Resources\MicrositeField\MicrositeFieldDetailResource;
-use App\Http\Resources\Subscription\SubscriptionDetailResource;
+use App\Http\Resources\Plan\PlanDetailResource;
 use App\Models\CustomerSubscription;
 use App\Models\Microsite;
-use App\Models\Subscription;
+use App\Models\Plan;
 use App\Services\SubscriptionService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Cache;
@@ -42,8 +42,8 @@ class SubscriptionPaymentController extends Controller
             $microsite->fields()->with('translations')->get()
         );
 
-        $subscriptions = SubscriptionDetailResource::collection(
-            $microsite->subscriptions()
+        $subscriptions = PlanDetailResource::collection(
+            $microsite->plans()
                 ->with('translations')
                 ->get()
         );
@@ -55,7 +55,7 @@ class SubscriptionPaymentController extends Controller
         ]);
     }
 
-    public function store(CreateSubscriptionPaymentRequest $request, Microsite $microsite, Subscription $subscription): \Symfony\Component\HttpFoundation\Response
+    public function store(CreateSubscriptionPaymentRequest $request, Microsite $microsite, Plan $plan): \Symfony\Component\HttpFoundation\Response
     {
         $subscriptionData = $request->validated();
         $subscriptionData['additional_data'] = [];
@@ -67,9 +67,9 @@ class SubscriptionPaymentController extends Controller
         }
 
         $subscriptionData['currency'] = $microsite->payment_currency->value;
-        $subscriptionData['subscription_id'] = $subscription->id;
-        $subscriptionData['total_duration'] = $subscription->total_duration;
-        $subscriptionData['time_unit'] = $subscription->time_unit->value;
+        $subscriptionData['plan_id'] = $plan->id;
+        $subscriptionData['total_duration'] = $plan->total_duration;
+        $subscriptionData['time_unit'] = $plan->time_unit->value;
 
         $result = $this->subscriptionService->createSubscription($subscriptionData);
 

@@ -41,7 +41,7 @@ class Customer extends Model
 
     public function subscriptions(): BelongsToMany
     {
-        return $this->belongsToMany(Subscription::class, 'customer_subscription')
+        return $this->belongsToMany(Plan::class, 'customer_subscription')
             ->using(CustomerSubscription::class)
             ->withTimestamps();
     }

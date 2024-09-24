@@ -8,9 +8,9 @@ use App\Http\Controllers\Invoice\InvoiceController;
 use App\Http\Controllers\Microsite\MicrositeController;
 use App\Http\Controllers\MicrositeField\MicrositeFieldController;
 use App\Http\Controllers\Payment\PaymentController;
+use App\Http\Controllers\Plan\PlanController;
 use App\Http\Controllers\Profile\ProfileController;
 use App\Http\Controllers\RolePermission\RolePermissionController;
-use App\Http\Controllers\Subscription\SubscriptionController;
 use App\Http\Controllers\SubscriptionPayment\SubscriptionPaymentController;
 use App\Http\Controllers\Support\LanguageController;
 use App\Http\Controllers\Transaction\TransactionController;
@@ -71,15 +71,15 @@ Route::prefix('microsites')->name('microsites.')->group(function () {
                 Route::get('/download-template', [InvoiceController::class, 'downloadTemplate'])->name('download-template');
             });
 
-            Route::prefix('subscriptions')->name('subscriptions.')->group(function () {
-                Route::get('/', [SubscriptionController::class, 'index'])->name('index');
-                Route::get('/create', [SubscriptionController::class, 'create'])->name('create');
-                Route::post('/', [SubscriptionController::class, 'store'])->name('store');
-                Route::prefix('{subscription}')->group(function () {
-                    Route::get('/edit', [SubscriptionController::class, 'edit'])->name('edit');
-                    Route::put('/', [SubscriptionController::class, 'update'])->name('update');
-                    Route::delete('/', [SubscriptionController::class, 'destroy'])->name('destroy');
-                    Route::put('/restore', [SubscriptionController::class, 'restore'])->name('restore')->withTrashed();
+            Route::prefix('plans')->name('plans.')->group(function () {
+                Route::get('/', [PlanController::class, 'index'])->name('index');
+                Route::get('/create', [PlanController::class, 'create'])->name('create');
+                Route::post('/', [PlanController::class, 'store'])->name('store');
+                Route::prefix('{plan}')->group(function () {
+                    Route::get('/edit', [PlanController::class, 'edit'])->name('edit');
+                    Route::put('/', [PlanController::class, 'update'])->name('update');
+                    Route::delete('/', [PlanController::class, 'destroy'])->name('destroy');
+                    Route::put('/restore', [PlanController::class, 'restore'])->name('restore')->withTrashed();
                 });
             });
         });
@@ -106,7 +106,7 @@ Route::prefix('payments')->name('payments.')->group(function () {
 Route::prefix('subscription-payments')->name('subscription-payments.')->group(function () {
     Route::prefix('{microsite}')->group(function () {
         Route::get('/', [SubscriptionPaymentController::class, 'show'])->name('show');
-        Route::post('{subscription}/payment', [SubscriptionPaymentController::class, 'store'])->name('store');
+        Route::post('{plan}/payment', [SubscriptionPaymentController::class, 'store'])->name('store');
     });
     Route::get('/return/{customerSubscription:reference}', [SubscriptionPaymentController::class, 'return'])->name('return');
 });
