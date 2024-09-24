@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Feature\Controllers\CustomerSubscription;
+namespace Tests\Feature\Controllers\Subscription;
 
 use App\Constants\SubscriptionStatus;
 use App\Mail\CustomerSubscriptionLinkMail;
@@ -14,11 +14,11 @@ use Illuminate\Support\Facades\URL;
 use Inertia\Testing\AssertableInertia as Assert;
 use Tests\TestCase;
 
-class CustomerSubscriptionControllerTest extends TestCase
+class SubscriptionControllerTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function test_displays_the_customer_subscription_index_page()
+    public function test_displays_the_subscription_index_page()
     {
         $response = $this->get(route('subscriptions.index'));
 
