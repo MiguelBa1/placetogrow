@@ -106,7 +106,7 @@ Route::prefix('payments')->name('payments.')->group(function () {
 Route::prefix('subscription-payments')->name('subscription-payments.')->group(function () {
     Route::prefix('{microsite}')->group(function () {
         Route::get('/', [SubscriptionPaymentController::class, 'show'])->name('show');
-        Route::post('{subscription}/payment', [SubscriptionPaymentController::class, 'store'])->name('store');
+        Route::post('{plan}/payment', [SubscriptionPaymentController::class, 'store'])->name('store');
     });
     Route::get('/return/{customerSubscription:reference}', [SubscriptionPaymentController::class, 'return'])->name('return');
 });
