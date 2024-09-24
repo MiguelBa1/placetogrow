@@ -99,8 +99,8 @@ class SubscriptionService implements SubscriptionServiceInterface
             $subscription->update([
                 'status' => SubscriptionStatus::ACTIVE->value,
                 'status_message' => $subscriptionStatus['message'],
-                'token' => $subscriptionInstrument[0]['value'],
-                'subtoken' => $subscriptionInstrument[1]['value'],
+                'token' => encrypt($subscriptionInstrument[0]['value']),
+                'subtoken' => encrypt($subscriptionInstrument[1]['value']),
             ]);
 
         } else {
