@@ -7,7 +7,7 @@ use App\Contracts\SubscriptionServiceInterface;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\SubscriptionPayment\CreateSubscriptionPaymentRequest;
 use App\Http\Resources\MicrositeField\MicrositeFieldDetailResource;
-use App\Http\Resources\Subscription\SubscriptionDetailResource;
+use App\Http\Resources\Plan\PlanDetailResource;
 use App\Models\CustomerSubscription;
 use App\Models\Microsite;
 use App\Models\Plan;
@@ -42,7 +42,7 @@ class SubscriptionPaymentController extends Controller
             $microsite->fields()->with('translations')->get()
         );
 
-        $subscriptions = SubscriptionDetailResource::collection(
+        $subscriptions = PlanDetailResource::collection(
             $microsite->plans()
                 ->with('translations')
                 ->get()

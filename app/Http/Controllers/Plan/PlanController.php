@@ -6,7 +6,7 @@ use App\Constants\TimeUnit;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Subscription\CreateSubscriptionRequest;
 use App\Http\Requests\Subscription\UpdateSubscriptionRequest;
-use App\Http\Resources\Subscription\SubscriptionListResource;
+use App\Http\Resources\Plan\PlanListResource;
 use App\Models\Microsite;
 use App\Models\Plan;
 use Illuminate\Http\RedirectResponse;
@@ -34,7 +34,7 @@ class PlanController extends Controller
 
         $microsite = $microsite->only('id', 'slug', 'name');
 
-        $plans = SubscriptionListResource::collection($plans);
+        $plans = PlanListResource::collection($plans);
 
         return Inertia::render('Subscriptions/Index', [
             'microsite' => $microsite,
