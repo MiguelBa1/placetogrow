@@ -10,7 +10,7 @@ interface SubscriptionServiceInterface
 {
     public function createSubscription(Plan $plan, Microsite $microsite, array $data): array;
 
-    public function checkSubscription(Subscription $subscription): array;
+    public function checkSubscription(Subscription $subscription): bool;
 
     public function cancelSubscription(Subscription $subscription): array;
 }

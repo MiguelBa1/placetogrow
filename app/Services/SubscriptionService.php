@@ -11,6 +11,7 @@ use App\Models\Microsite;
 use App\Models\Plan;
 use App\Models\Subscription;
 use DateInterval;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Str;
 
 class SubscriptionService implements SubscriptionServiceInterface
@@ -53,11 +54,11 @@ class SubscriptionService implements SubscriptionServiceInterface
 
             return [
                 'success' => false,
-                'message' => $result['message'],
             ];
         }
 
         $resultData = $result['data'];
+
         $subscription->update([
             'request_id' => $resultData['requestId'],
             'status_message' => $resultData['status']['message'],
@@ -66,29 +67,29 @@ class SubscriptionService implements SubscriptionServiceInterface
         return [
             'success' => true,
             'url' => $resultData['processUrl'],
-            'message' => $resultData['status']['message'],
         ];
     }
 
-    public function checkSubscription(Subscription $subscription): array
+    public function checkSubscription(Subscription $subscription): bool
     {
+        $cacheKey = 'subscription_checked_' . $subscription->id;
+        $isRecentlyChecked = Cache::get($cacheKey);
+
+        if ($isRecentlyChecked || $subscription->status !== SubscriptionStatus::PENDING->value) {
+            return true;
+        }
+
         $result = $this->placeToPayService->checkSession($subscription->request_id);
 
         if (!$result['success']) {
-            return [
-                'success' => false,
-                'message' => $result['message'],
-            ];
+            return false;
         }
 
-        $resultData = $result['data'];
+        $this->updateSubscription($subscription, $result['data']);
 
-        $this->updateSubscription($subscription, $resultData);
+        Cache::put($cacheKey, true, now()->addMinutes(10));
 
-        return [
-            'success' => true,
-            'message' => $resultData['status']['message'],
-        ];
+        return true;
     }
 
     private function updateSubscription(Subscription $subscription, array $dataResponse): void
