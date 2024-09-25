@@ -12,5 +12,5 @@ interface SubscriptionServiceInterface
 
     public function checkSubscription(Subscription $subscription): bool;
 
-    public function cancelSubscription(Subscription $subscription): array;
+    public function cancelSubscription(Subscription $subscription): bool;
 }

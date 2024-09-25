@@ -88,14 +88,14 @@ class SubscriptionController extends Controller
             ->where('customer_id', $customer->id)
             ->firstOrFail();
 
-        $result = $this->subscriptionService->cancelSubscription($subscription);
+        $isCancelled = $this->subscriptionService->cancelSubscription($subscription);
 
-        if (!$result['success']) {
-            return redirect()->back()->withErrors([
-                'cancel' => $result['message'],
+        if (!$isCancelled) {
+            return back()->withErrors([
+                'cancel' => __('subscription_payment.cancel_failed'),
             ]);
         }
 
-        return redirect()->back();
+        return back();
     }
 }

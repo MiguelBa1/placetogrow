@@ -68,7 +68,7 @@ class SubscriptionPaymentController extends Controller
 
         if (!$result['success']) {
             return back()->withErrors([
-                    'payment' => $result['message'],
+                    'payment' => __('subscription_payment.create_failed'),
                 ]);
         }
 
@@ -86,7 +86,7 @@ class SubscriptionPaymentController extends Controller
 
         if (!$isSuccessful) {
             return Inertia::render('Payments/Return', [
-                'error' => __('subscription.payment_failed'),
+                'error' => __('subscription_payment.check_failed'),
             ]);
         }
 
