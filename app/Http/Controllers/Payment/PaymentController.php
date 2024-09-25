@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Payment;
 
-use App\Constants\PaymentStatus;
 use App\Contracts\PaymentServiceInterface;
 use App\Factories\PaymentDataProviderFactory;
 use App\Http\Controllers\Controller;
@@ -12,7 +11,6 @@ use App\Models\Microsite;
 use App\Models\Payment;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
 use Inertia\Inertia;
 use Symfony\Component\HttpFoundation\Response;
@@ -57,7 +55,7 @@ class PaymentController extends Controller
 
         if (!$result['success']) {
             return back()->withErrors([
-                    'payment' => $result['message'],
+                    'payment' => __('payment.create_failed'),
                 ]);
         }
 
@@ -71,27 +69,13 @@ class PaymentController extends Controller
             'request_id' => $payment->request_id,
         ]);
 
-        $cacheKey = 'payment_status_' . $payment->id;
+        $isSuccessful = $this->paymentService->checkPayment($payment);
 
-        $cachedStatus = Cache::get($cacheKey);
-
-        if ($payment->status->value === PaymentStatus::PENDING->value) {
-            if (!$cachedStatus) {
-                $result = $this->paymentService->checkPayment($payment);
-
-                if (!$result['success']) {
-                    return redirect()->route('payments.show', $payment->microsite->slug)
-                        ->withErrors([
-                            'payment' => $result['message'],
-                        ]);
-                }
-
-                $payment->refresh();
-
-                Cache::put($cacheKey, $payment->status->value, now()->addMinutes(10));
-            } else {
-                $payment->status = $cachedStatus; // Use the cached status
-            }
+        if (!$isSuccessful) {
+            return redirect()->route('payments.show', $payment->microsite->slug)
+                ->withErrors([
+                    'payment' => __('payment.check_failed'),
+                ]);
         }
 
         return Inertia::render('Payments/Return', [

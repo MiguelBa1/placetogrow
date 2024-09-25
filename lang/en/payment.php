@@ -11,4 +11,6 @@ return [
         PaymentStatus::REJECTED->value => "Rejected",
         PaymentStatus::UNKNOWN->value => "Unknown",
     ],
+    "create_failed" => "Payment could not be created",
+    "check_failed" => "Payment could not be verified",
 ];

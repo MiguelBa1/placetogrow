@@ -53,7 +53,7 @@ class PaymentReturnTest extends TestCase
 
         Cache::shouldHaveReceived('put')
             ->once()
-            ->with('payment_status_' . $payment->id, PaymentStatus::APPROVED->value, Mockery::any());
+            ->with('payment_checked_' . $payment->id, true, Mockery::any());
     }
 
     public function test_return_after_payment_error(): void
@@ -94,7 +94,7 @@ class PaymentReturnTest extends TestCase
 
         Cache::shouldHaveReceived('put')
             ->once()
-            ->with('payment_status_' . $payment->id, PaymentStatus::REJECTED->value, Mockery::any());
+            ->with('payment_checked_' . $payment->id, PaymentStatus::REJECTED->value, Mockery::any());
     }
 
     public function test_already_approved_payment(): void
@@ -130,7 +130,7 @@ class PaymentReturnTest extends TestCase
 
         Cache::shouldReceive('get')
             ->once()
-            ->with('payment_status_' . $payment->id)
+            ->with('payment_checked_' . $payment->id)
             ->andReturn($cachedStatus);
 
         $response = $this->get(route('payments.return', $paymentReference));

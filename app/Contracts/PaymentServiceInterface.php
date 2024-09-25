@@ -9,6 +9,6 @@ interface PaymentServiceInterface
 {
     public function createPayment(Microsite $microsite, array $paymentData): array;
 
-    public function checkPayment(Payment $payment): array;
+    public function checkPayment(Payment $payment): bool;
 
 }

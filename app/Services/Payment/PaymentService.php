@@ -10,6 +10,7 @@ use App\Contracts\PaymentServiceInterface;
 use App\Contracts\PlaceToPayServiceInterface;
 use App\Models\Microsite;
 use App\Models\Payment;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Str;
 
 class PaymentService implements PaymentServiceInterface
@@ -47,7 +48,6 @@ class PaymentService implements PaymentServiceInterface
 
             return [
                 'success' => false,
-                'message' => $result['message'],
             ];
         }
 
@@ -62,47 +62,51 @@ class PaymentService implements PaymentServiceInterface
         return [
             'success' => true,
             'url' => $resultData['processUrl'],
-            'message' => $resultData['status']['message'],
         ];
     }
-
-
-    public function checkPayment(Payment $payment): array
+    public function checkPayment(Payment $payment): bool
     {
+        $cacheKey = 'payment_checked_' . $payment->id;
+        $isRecentlyChecked = Cache::get($cacheKey);
+
+        if ($isRecentlyChecked || $payment->status->value !== PaymentStatus::PENDING->value) {
+            return true;
+        }
+
         $result = $this->placeToPayService->checkSession($payment->request_id);
 
         if (!$result['success']) {
-            return [
-                'success' => false,
-                'message' => $result['message'],
-            ];
+            return false;
         }
 
         $this->updatePayment($payment, $result['data']);
 
-        return [
-            'success' => true,
-        ];
+        Cache::put($cacheKey, true, now()->addMinutes(10));
+
+        return true;
     }
 
     public function updatePayment(Payment $payment, array $response): void
     {
-        if ($response['status']['status'] !== PaymentStatus::APPROVED->value) {
+        $status = $response['status'];
+
+        if ($status['status'] !== PaymentStatus::APPROVED->value) {
             $payment->update([
-                'status_message' => $response['status']['message'],
-                'status' => $response['status']['status'],
+                'status_message' => $status['message'],
+                'status' => $status['status'],
             ]);
             return;
         }
 
         $paymentResponse = $response['payment'][0];
+        $paymentStatus = $paymentResponse['status'];
 
         $payment->update([
             'payment_method_name' => $paymentResponse['paymentMethodName'],
             'authorization' => $paymentResponse['authorization'],
-            'payment_date' => $paymentResponse['status']['date'],
-            'status_message' => $paymentResponse['status']['message'],
-            'status' => $paymentResponse['status']['status'],
+            'payment_date' => $paymentStatus['date'],
+            'status_message' => $paymentStatus['message'],
+            'status' => $paymentStatus['status'],
         ]);
 
         if ($payment->microsite->type === MicrositeType::INVOICE && $payment->invoice) {
