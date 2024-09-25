@@ -8,6 +8,7 @@ use App\Constants\MicrositeType;
 use App\Constants\PaymentStatus;
 use App\Contracts\PaymentServiceInterface;
 use App\Contracts\PlaceToPayServiceInterface;
+use App\Models\Microsite;
 use App\Models\Payment;
 use Illuminate\Support\Str;
 
@@ -21,17 +22,17 @@ class PaymentService implements PaymentServiceInterface
         $this->placeToPayService = $placeToPayService;
     }
 
-    public function createPayment(array $paymentData): array
+    public function createPayment(Microsite $microsite, array $paymentData): array
     {
         $customerData = (new StoreCustomerAction())->execute($paymentData);
 
         /** @var Payment $payment */
         $payment = $customerData->payments()->create([
-            'microsite_id' => $paymentData['microsite_id'],
+            'microsite_id' => $microsite->id,
             'invoice_id' => $paymentData['invoice_id'] ?? null,
             'description' => $paymentData['payment_description'],
             'reference' => date('ymdHis') . '-' . strtoupper(Str::random(4)),
-            'currency' => $paymentData['currency'],
+            'currency' => $microsite->payment_currency->value,
             'amount' => $paymentData['amount'],
             'additional_data' => $paymentData['additional_data'],
         ]);
@@ -86,27 +87,27 @@ class PaymentService implements PaymentServiceInterface
 
     public function updatePayment(Payment $payment, array $response): void
     {
-        if ($response['status']['status'] === PaymentStatus::APPROVED->value) {
-            $paymentResponse = $response['payment'][0];
-
-            $payment->update([
-                'payment_method_name' => $paymentResponse['paymentMethodName'],
-                'authorization' => $paymentResponse['authorization'],
-                'payment_date' => $paymentResponse['status']['date'],
-                'status_message' => $paymentResponse['status']['message'],
-                'status' => $paymentResponse['status']['status'],
-            ]);
-
-            if ($payment->microsite->type === MicrositeType::INVOICE && $payment->invoice) {
-                $payment->invoice->update([
-                    'status' => InvoiceStatus::PAID->value,
-                ]);
-            }
-
-        } else {
+        if ($response['status']['status'] !== PaymentStatus::APPROVED->value) {
             $payment->update([
                 'status_message' => $response['status']['message'],
                 'status' => $response['status']['status'],
+            ]);
+            return;
+        }
+
+        $paymentResponse = $response['payment'][0];
+
+        $payment->update([
+            'payment_method_name' => $paymentResponse['paymentMethodName'],
+            'authorization' => $paymentResponse['authorization'],
+            'payment_date' => $paymentResponse['status']['date'],
+            'status_message' => $paymentResponse['status']['message'],
+            'status' => $paymentResponse['status']['status'],
+        ]);
+
+        if ($payment->microsite->type === MicrositeType::INVOICE && $payment->invoice) {
+            $payment->invoice->update([
+                'status' => InvoiceStatus::PAID->value,
             ]);
         }
     }

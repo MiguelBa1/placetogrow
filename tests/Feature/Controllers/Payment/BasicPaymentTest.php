@@ -84,7 +84,7 @@ class BasicPaymentTest extends TestCase
             'payment_description' => 'Test payment',
         ]);
 
-        $response->assertRedirect(route('payments.show', $this->basicMicrosite));
+        $response->assertRedirect(url()->previous());
         $response->assertSessionHasErrors();
     }
 
