@@ -7,6 +7,8 @@ use App\Constants\PlaceToPayStatus;
 use App\Constants\SubscriptionStatus;
 use App\Contracts\PlaceToPayServiceInterface;
 use App\Contracts\SubscriptionServiceInterface;
+use App\Models\Microsite;
+use App\Models\Plan;
 use App\Models\Subscription;
 use DateInterval;
 use Illuminate\Support\Str;
@@ -21,23 +23,23 @@ class SubscriptionService implements SubscriptionServiceInterface
         $this->placeToPayService = $placeToPayService;
     }
 
-    public function createSubscription(array $subscriptionData): array
+    public function createSubscription(Plan $plan, Microsite $microsite, array $data): array
     {
-        $customerData = (new StoreCustomerAction())->execute($subscriptionData);
+        $customerData = (new StoreCustomerAction())->execute($data);
 
         $start_date = now();
-        $end_date = now()->add(DateInterval::createFromDateString("{$subscriptionData['total_duration']} {$subscriptionData['time_unit']}"));
+        $end_date = now()->add(DateInterval::createFromDateString("{$plan->total_duration} {$plan->time_unit->value}"));
 
         /** @var Subscription $subscription */
         $subscription = Subscription::create([
             'customer_id' => $customerData->id,
-            'plan_id' => $subscriptionData['plan_id'],
+            'plan_id' => $plan->id,
             'start_date' => $start_date,
             'end_date' => $end_date,
             'reference' => date('ymdHis') . '-' . strtoupper(Str::random(4)),
-            'description' => $customerData->name . ' ' . $subscriptionData['plan_id'],
-            'currency' => $subscriptionData['currency'],
-            'additional_data' => $subscriptionData['additional_data'],
+            'description' => $customerData->name . ' ' . $plan->id,
+            'currency' => $microsite->payment_currency->value,
+            'additional_data' => $data['additional_data'],
         ]);
 
         $result = $this->placeToPayService->createSubscription($customerData, $subscription);
@@ -93,22 +95,22 @@ class SubscriptionService implements SubscriptionServiceInterface
     {
         $subscriptionStatus = $dataResponse['status'];
 
-        if ($subscriptionStatus['status'] === PlaceToPayStatus::APPROVED->value) {
-            $subscriptionInstrument = $dataResponse['subscription']['instrument'];
-
-            $subscription->update([
-                'status' => SubscriptionStatus::ACTIVE->value,
-                'status_message' => $subscriptionStatus['message'],
-                'token' => encrypt($subscriptionInstrument[0]['value']),
-                'subtoken' => encrypt($subscriptionInstrument[1]['value']),
-            ]);
-
-        } else {
+        if ($subscriptionStatus['status'] !== PlaceToPayStatus::APPROVED->value) {
             $subscription->update([
                 'status' => SubscriptionStatus::INACTIVE->value,
                 'status_message' => $subscriptionStatus['message'],
             ]);
+            return;
         }
+
+        $subscriptionInstrument = $dataResponse['subscription']['instrument'];
+
+        $subscription->update([
+            'status' => SubscriptionStatus::ACTIVE->value,
+            'status_message' => $subscriptionStatus['message'],
+            'token' => encrypt($subscriptionInstrument[0]['value']),
+            'subtoken' => encrypt($subscriptionInstrument[1]['value']),
+        ]);
     }
 
     public function cancelSubscription(Subscription $subscription): array

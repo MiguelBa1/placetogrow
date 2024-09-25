@@ -66,21 +66,15 @@ class SubscriptionPaymentController extends Controller
             }
         }
 
-        $subscriptionData['currency'] = $microsite->payment_currency->value;
-        $subscriptionData['plan_id'] = $plan->id;
-        $subscriptionData['total_duration'] = $plan->total_duration;
-        $subscriptionData['time_unit'] = $plan->time_unit->value;
+        $result = $this->subscriptionService->createSubscription($plan, $microsite, $subscriptionData);
 
-        $result = $this->subscriptionService->createSubscription($subscriptionData);
-
-        if ($result['success']) {
-            return Inertia::location($result['url']);
-        } else {
-            return redirect()->route('subscription-payments.show', $microsite->slug)
-                ->withErrors([
+        if (!$result['success']) {
+            return back()->withErrors([
                     'payment' => $result['message'],
                 ]);
         }
+
+        return Inertia::location($result['url']);
     }
 
     public function return(Subscription $subscription): Response|RedirectResponse
