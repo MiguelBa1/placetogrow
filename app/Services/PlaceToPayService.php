@@ -90,6 +90,17 @@ class PlaceToPayService implements PlaceToPayServiceInterface
         return $this;
     }
 
+    public function instrument(string $token): self
+    {
+        $this->data['instrument'] = [
+            'token' => [
+                'token' => $token,
+            ],
+        ];
+
+        return $this;
+    }
+
     public function createPayment(Customer $customer, Payment $payment): array
     {
         $this->prepare();
@@ -110,6 +121,14 @@ class PlaceToPayService implements PlaceToPayServiceInterface
         Log::info('PlaceToPayService: Creating subscription', array_merge($this->data['subscription'], $this->data['buyer']));
 
         return $this->handleHttpRequest('/api/session');
+    }
+
+    public function cancelSubscription(string $subscriptionToken): array
+    {
+        $this->prepare();
+        $this->instrument($subscriptionToken);
+
+        return $this->handleHttpRequest('/api/instrument/invalidate');
     }
 
     public function checkSession(string $sessionId): array

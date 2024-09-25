@@ -57,6 +57,20 @@ class PlaceToPayServiceMock implements PlaceToPayServiceInterface
         ];
     }
 
+    public function cancelSubscription(string $subscriptionToken): array
+    {
+        $file = file_get_contents(app_path("../tests/Stubs/canceled_subscription.json"));
+        $data = json_decode($file, true);
+
+        return [
+            'success' => $this->statusCode === 200,
+            'data' => $data,
+            'message' => $this->statusCode === 200 ?
+                'Subscription cancelled successfully' :
+                'Failed to cancel subscription',
+        ];
+    }
+
     public function setSessionType(string $type): void
     {
         if (!in_array($type, ['payment', 'subscription'])) {

@@ -33,8 +33,8 @@ class SubscriptionFactory extends Factory
             'request_id' => Str::uuid(),
             'status_message' => $this->faker->sentence(),
             'currency' => $this->faker->randomElement(array_column(CurrencyType::cases(), 'value')),
-            'token' => Str::random(40),
-            'subtoken' => Str::random(40),
+            'token' => encrypt(Str::random(40)),
+            'subtoken' => encrypt(Str::random(40)),
             'additional_data' => $this->faker->randomElements(),
         ];
     }

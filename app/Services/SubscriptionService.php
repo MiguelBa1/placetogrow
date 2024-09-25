@@ -110,4 +110,25 @@ class SubscriptionService implements SubscriptionServiceInterface
             ]);
         }
     }
+
+    public function cancelSubscription(Subscription $subscription): array
+    {
+        $result = $this->placeToPayService->cancelSubscription(decrypt($subscription->token));
+
+        if (!$result['success']) {
+            return [
+                'success' => false,
+                'message' => $result['message'],
+            ];
+        }
+
+        $subscription->update([
+            'status' => SubscriptionStatus::INACTIVE->value,
+        ]);
+
+        return [
+            'success' => true,
+            'message' => $result['data']['status']['message'],
+        ];
+    }
 }

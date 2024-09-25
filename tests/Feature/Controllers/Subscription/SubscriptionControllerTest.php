@@ -13,10 +13,11 @@ use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\URL;
 use Inertia\Testing\AssertableInertia as Assert;
 use Tests\TestCase;
+use Tests\Traits\PlaceToPayMockTrait;
 
 class SubscriptionControllerTest extends TestCase
 {
-    use RefreshDatabase;
+    use RefreshDatabase, PlaceToPayMockTrait;
 
     public function test_displays_the_subscription_index_page()
     {
@@ -97,8 +98,10 @@ class SubscriptionControllerTest extends TestCase
         $response->assertSee(__('message.invalid_link'));
     }
 
-    public function test_cancels_a_subscription_successfully()
+    public function test_cancel_a_subscription_successfully()
     {
+        $this->fakeSubscriptionCancellationSuccess();
+
         $customer = Customer::factory()->create([
             'email' => 'test@example.com',
             'document_number' => '1234567890',

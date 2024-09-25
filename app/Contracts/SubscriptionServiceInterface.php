@@ -10,4 +10,5 @@ interface SubscriptionServiceInterface
 
     public function checkSubscription(Subscription $subscription): array;
 
+    public function cancelSubscription(Subscription $subscription): array;
 }
