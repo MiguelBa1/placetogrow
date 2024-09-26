@@ -16,6 +16,7 @@ return [
 
     'view_any_invoice' => 'Ver cualquier factura',
     'create_invoice' => 'Crear factura',
+    'import_invoice' => 'Importar factura',
 
     'view_any_transaction' => 'Ver cualquier transacción',
     'view_transaction' => 'Ver transacción',

@@ -57,7 +57,7 @@ watch(() => editForm.logo, (newFile) => {
 });
 
 watch(() => editForm.type, (newType) => {
-    if (newType === MicrositeType.BASIC) {
+    if ([MicrositeType.BASIC, MicrositeType.SUBSCRIPTION].includes(newType as MicrositeType)) {
         editForm.payment_expiration = undefined;
     }
 });
@@ -155,7 +155,7 @@ const submit = () => {
             :label="t('microsites.edit.form.paymentExpiration')"
             v-model="editForm.payment_expiration"
             :error="editForm.errors.payment_expiration"
-            :disabled="![MicrositeType.SUBSCRIPTION, MicrositeType.INVOICE].includes(editForm.type as MicrositeType)"
+            :disabled="![MicrositeType.INVOICE].includes(editForm.type as MicrositeType)"
         />
 
         <div class="flex flex-col md:col-span-2 md:grid md:grid-cols-2 gap-4">

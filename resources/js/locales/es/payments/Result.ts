@@ -12,13 +12,24 @@ export const result = {
         date: 'Fecha de pago',
         total: 'Total',
     },
+    subscription: {
+        reference: 'Referencia',
+        created_at: 'Fecha de creación',
+        start_date: 'Fecha de inicio',
+        end_date: 'Fecha de fin',
+    },
     make_another_payment: 'Realizar otro pago',
+    go_to_home: 'Ir a la página principal',
     status: {
         pending: 'PENDIENTE',
         approved: 'APROBADO',
         rejected: 'RECHAZADO',
         unknown: 'DESCONOCIDO',
+
+        active: 'ACTIVA',
+        inactive: 'INACTIVA',
     },
     greeting: '¡Hola!',
     payment_status: 'Tu pago a {micrositeName} se encuentra en estado:',
+    subscription_status: 'Tu suscripción se encuentra en estado:',
 };

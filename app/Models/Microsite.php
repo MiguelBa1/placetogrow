@@ -29,6 +29,7 @@ use Spatie\Sluggable\SlugOptions;
  * @property MicrositeField[] fields
  * @property Invoice[] invoices
  * @property Payment[] payments
+ * @property Subscription[] subscriptions
  */
 class Microsite extends Model implements HasMedia
 {
@@ -87,5 +88,10 @@ class Microsite extends Model implements HasMedia
     public function getRouteKeyName(): string
     {
         return 'slug';
+    }
+
+    public function subscriptions(): HasMany
+    {
+        return $this->hasMany(Subscription::class);
     }
 }

@@ -7,6 +7,9 @@ return [
         'validation_rules' => [
             'invalid' => 'El campo contiene reglas de validación no válidas.',
         ],
+        'subscription' => [
+            'billing_frequency' => 'La frecuencia de facturación debe ser un múltiplo de la duración total.',
+        ],
     ],
     'accepted'             => 'El campo :attribute debe ser aceptado.',
     'accepted_if'          => 'El campo :attribute debe ser aceptado cuando :other sea :value.',
@@ -284,5 +287,8 @@ return [
         'responsible_name'         => 'nombre del responsable',
         'responsible_document_number' => 'número de documento del responsable',
         'responsible_document_type' => 'tipo de documento del responsable',
+        'billing_frequency'        => 'frecuencia de facturación',
+        'total_duration'           => 'duración total',
+        'time_unit'                => 'unidad de tiempo',
     ],
 ];

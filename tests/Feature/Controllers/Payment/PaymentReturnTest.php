@@ -8,7 +8,6 @@ use App\Models\Microsite;
 use App\Models\Payment;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\Storage;
 use Inertia\Testing\AssertableInertia as Assert;
 use Mockery;
 use Tests\TestCase;
@@ -25,15 +24,12 @@ class PaymentReturnTest extends TestCase
     {
         parent::setUp();
 
-        Storage::fake('microsites_logos');
-        Storage::fake('category_icons');
-
         $this->basicMicrosite = $this->createMicrositeWithFields(MicrositeType::BASIC);
     }
 
     public function test_return_after_payment(): void
     {
-        $this->fakeCheckApprovedPayment();
+        $this->fakePaymentCheckApproved();
 
         $paymentReference = 'test_reference';
 
@@ -51,7 +47,7 @@ class PaymentReturnTest extends TestCase
             fn (Assert $page) => $page
                 ->component('Payments/Return')
                 ->has('payment')
-                ->has('customerName')
+                ->has('customer')
                 ->has('micrositeName')
         );
 
@@ -62,7 +58,7 @@ class PaymentReturnTest extends TestCase
 
     public function test_return_after_payment_error(): void
     {
-        $this->fakeCheckFailedPayment();
+        $this->fakePaymentCheckFailed();
 
         $paymentReference = 'test_reference';
         Payment::factory()->create([
@@ -79,7 +75,7 @@ class PaymentReturnTest extends TestCase
 
     public function test_rejected_payment(): void
     {
-        $this->fakeCheckRejectedPayment();
+        $this->fakePaymentCheckRejected();
 
         $paymentReference = 'test_reference';
         $payment = Payment::factory()->create([
@@ -103,7 +99,7 @@ class PaymentReturnTest extends TestCase
 
     public function test_already_approved_payment(): void
     {
-        $this->fakeCheckApprovedPayment();
+        $this->fakePaymentCheckApproved();
 
         $paymentReference = 'test_reference';
         $payment = Payment::factory()->create([
@@ -144,7 +140,7 @@ class PaymentReturnTest extends TestCase
             fn (Assert $page) => $page
                 ->component('Payments/Return')
                 ->has('payment')
-                ->has('customerName')
+                ->has('customer')
                 ->has('micrositeName')
         );
 

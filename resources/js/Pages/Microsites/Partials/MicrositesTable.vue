@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import { PencilSquareIcon, TrashIcon, EyeIcon, ArrowUturnLeftIcon } from '@heroicons/vue/16/solid';
-import { DocumentTextIcon } from '@heroicons/vue/24/outline';
+import { DocumentTextIcon, TagIcon } from '@heroicons/vue/24/outline';
 import { Link, usePage } from '@inertiajs/vue3';
 import { DataTable, Pagination } from '@/Components';
 import {
@@ -84,6 +84,13 @@ const closeRestoreModal = () => {
                             title="Invoices"
                         >
                             <DocumentTextIcon class="w-5 h-5" />
+                        </Link>
+                        <Link
+                            v-if="row.type.value === 'subscription'"
+                            :href="route('microsites.subscriptions.index', { microsite: row.slug })"
+                            title="Subscriptions"
+                        >
+                            <TagIcon class="w-5 h-5" />
                         </Link>
                         <button
                             v-if="permissions.includes('delete_microsite')"

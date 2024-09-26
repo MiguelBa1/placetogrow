@@ -7,6 +7,8 @@ use App\Constants\MicrositeType;
 use App\Models\Category;
 use App\Models\Invoice;
 use App\Models\Microsite;
+use App\Models\Subscription;
+use App\Models\SubscriptionTranslation;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Storage;
 
@@ -25,7 +27,7 @@ class CategoryMicrositeSeeder extends Seeder
 
         $categories = Category::factory()->count(5)->create();
 
-        $microsites = Microsite::factory()->count(30)
+        $microsites = Microsite::factory()->count(20)
             ->recycle($categories)
             ->create();
 
@@ -33,7 +35,25 @@ class CategoryMicrositeSeeder extends Seeder
             $this->attachMicrositeFieldsAction->execute($microsite);
 
             if ($microsite->type->value === MicrositeType::INVOICE->value) {
-                Invoice::factory()->count(5)->create(['microsite_id' => $microsite->id]);
+                Invoice::factory()->count(3)->create(['microsite_id' => $microsite->id]);
+            }
+
+            if ($microsite->type->value === MicrositeType::SUBSCRIPTION->value) {
+                $this->createSubscriptionsWithTranslations($microsite);
+            }
+        }
+    }
+
+    private function createSubscriptionsWithTranslations(Microsite $microsite): void
+    {
+        $subscriptions = Subscription::factory()->count(2)->create(['microsite_id' => $microsite->id]);
+
+        foreach ($subscriptions as $subscription) {
+            foreach (['en', 'es'] as $locale) {
+                SubscriptionTranslation::factory()->create([
+                    'subscription_id' => $subscription->id,
+                    'locale' => $locale,
+                ]);
             }
         }
     }

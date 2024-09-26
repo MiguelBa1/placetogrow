@@ -1,7 +1,9 @@
 export const esIndex = {
     title: "Facturas de {name}",
     header: "Lista de facturas",
+    noInvoices: "No hay facturas disponibles",
     create: "Crear factura",
+    import: "Importar facturas",
     table: {
         reference: "Referencia",
         name: "Nombre",
@@ -19,5 +21,17 @@ export const esIndex = {
         documentNumber: "Número de documento",
         phone: "Teléfono",
         amount: "Monto",
+        error: "Hubo un error al intentar crear la factura. Por favor, inténtelo de nuevo.",
+        success: "La factura ha sido creada exitosamente.",
+    },
+    importModal: {
+        description: 'Adjunte un archivo CSV que contenga las facturas que desea importar. Puede descargar un archivo de muestra para ver el formato requerido.',
+        downloadSample: 'Descargar archivo de muestra',
+        chooseFile: 'Elegir archivo',
+        noFileSelected: 'No se ha seleccionado ningún archivo',
+        noFileError: 'Por favor, seleccione un archivo CSV antes de continuar.',
+        import: 'Importar',
+        success: 'La importación ha comenzado. Recibirá un correo electrónico una vez que esté completa.',
+        error: 'Hubo un error al intentar importar las facturas. Por favor, inténtelo de nuevo.',
     }
 }

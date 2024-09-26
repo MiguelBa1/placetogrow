@@ -22,6 +22,7 @@ return new class extends Migration {
             $table->string('phone', 20);
             $table->decimal('amount', 10);
             $table->date('expiration_date');
+            $table->unique(['microsite_id', 'reference']);
             $table->timestamps();
         });
     }

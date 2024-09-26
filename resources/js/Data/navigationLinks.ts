@@ -1,4 +1,5 @@
-const authenticatedLinks = [
+const authenticatedNavigationLinks = [
+    { name: 'home', route: 'home', label: 'home' },
     { name: 'dashboard', route: 'dashboard', label: 'dashboard', requiredPermissions: ['view_dashboard'] },
     { name: 'microsites', route: 'microsites.index', label: 'microsites', requiredPermissions: ['view_any_microsite'] },
     { name: 'transactions', route: 'transactions.index', label: 'transactions', requiredPermissions: ['view_any_transaction'] },
@@ -6,19 +7,36 @@ const authenticatedLinks = [
     { name: 'roles', route: 'roles-permissions.index', label: 'roles', requiredPermissions: ['manage_roles'] },
 ];
 
-export const getNavigationLinks = (t: (key: string) => string, requiredPermissions: string[] = []) => {
-    return authenticatedLinks.filter(link => {
-        if (!link.requiredPermissions) {
-            return true;
-        }
-        return link.requiredPermissions.every(permission => requiredPermissions.includes(permission));
-    }).map(link => ({
-        name: link.name,
-        route: link.route,
-        label: t(`layouts.authenticatedLayout.${link.label}`),
-    }));
-};
+const guestNavigationLinks = [
+    { name: 'home', route: 'home', label: 'home' },
+    { name: 'invoices', route: 'invoices.index', label: 'invoices' },
+    { name: 'subscriptions', route: 'subscriptions.index', label: 'subscriptions' },
+]
 
-export const getGuestLinks = (t: (key: string) => string) => [
+export const getNavigationLinks = (t: (key: string) => string, requiredPermissions: string[] = [], isAuthenticated: boolean = false) => {
+    if (!isAuthenticated) {
+        return guestNavigationLinks.map(link => ({
+            name: link.name,
+            route: link.route,
+            label: t(`layouts.guestLayout.${link.label}`),
+        }));
+    }
+
+    return authenticatedNavigationLinks
+        .filter(link => {
+            // If it doesn't require permissions, show the link
+            if (!link.requiredPermissions) {
+                return true;
+            }
+            // If it has required permissions, check if the user has them
+            return link.requiredPermissions.every(permission => requiredPermissions.includes(permission));
+        })
+        .map(link => ({
+            name: link.name,
+            route: link.route,
+            label: t(`layouts.authenticatedLayout.${link.label}`),
+        }));};
+
+export const getGuestDropdownLinks = (t: (key: string) => string) => [
     { name: 'login', route: 'login', label: t('layouts.guestLayout.login') },
 ];
