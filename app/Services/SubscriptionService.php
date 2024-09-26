@@ -41,6 +41,9 @@ class SubscriptionService implements SubscriptionServiceInterface
             'description' => $customerData->name . ' ' . $plan->id,
             'currency' => $microsite->payment_currency->value,
             'additional_data' => $data['additional_data'],
+            'initial_price' => $plan->price,
+            'initial_duration' => $plan->total_duration,
+            'initial_time_unit' => $plan->time_unit->value,
         ]);
 
         $result = $this->placeToPayService->createSubscription($customerData, $subscription);

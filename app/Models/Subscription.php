@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Constants\TimeUnit;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\Pivot;
@@ -21,6 +22,9 @@ use Illuminate\Database\Eloquent\Relations\Pivot;
  * @property string $token
  * @property string $subtoken
  * @property array $additional_data
+ * @property float $initial_price
+ * @property int $initial_duration
+ * @property TimeUnit $initial_time_unit
  * @property Plan $plan
  * @property Customer $customer
  * @property string $created_at
@@ -32,7 +36,7 @@ class Subscription extends Pivot
 
     public $incrementing = true;
 
-    protected $table = 'subscription';
+    protected $table = 'subscriptions';
 
     protected $fillable = [
         'customer_id',
@@ -48,10 +52,14 @@ class Subscription extends Pivot
         'token',
         'subtoken',
         'additional_data',
+        'initial_price',
+        'initial_duration',
+        'initial_time_unit',
     ];
 
     protected $casts = [
         'additional_data' => 'array',
+        'initial_time_unit' => TimeUnit::class,
     ];
 
     public function plan(): BelongsTo

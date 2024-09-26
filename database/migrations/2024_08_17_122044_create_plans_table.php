@@ -11,9 +11,9 @@ return new class extends Migration {
         Schema::create('plans', function (Blueprint $table) {
             $table->id();
             $table->foreignId('microsite_id')->constrained('microsites')->onDelete('cascade');
-            $table->integer('price');
+            $table->decimal('price', 10);
             $table->integer('total_duration');
-            $table->integer('billing_frequency')->default(1);
+            $table->integer('billing_frequency');
             $table->enum('time_unit', array_column(TimeUnit::cases(), 'value'))->default(TimeUnit::MONTHS->value);
             $table->timestamps();
             $table->softDeletes();
