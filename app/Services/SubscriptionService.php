@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Actions\Customer\StoreCustomerAction;
+use App\Actions\Subscription\CreateSubscriptionAction;
 use App\Constants\PlaceToPayStatus;
 use App\Constants\SubscriptionStatus;
 use App\Contracts\PlaceToPayServiceInterface;
@@ -10,13 +11,10 @@ use App\Contracts\SubscriptionServiceInterface;
 use App\Models\Microsite;
 use App\Models\Plan;
 use App\Models\Subscription;
-use DateInterval;
 use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Str;
 
 class SubscriptionService implements SubscriptionServiceInterface
 {
-
     private PlaceToPayServiceInterface $placeToPayService;
 
     public function __construct(PlaceToPayServiceInterface $placeToPayService)
@@ -28,20 +26,7 @@ class SubscriptionService implements SubscriptionServiceInterface
     {
         $customerData = (new StoreCustomerAction())->execute($data);
 
-        $start_date = now();
-        $end_date = now()->add(DateInterval::createFromDateString("{$plan->total_duration} {$plan->time_unit->value}"));
-
-        /** @var Subscription $subscription */
-        $subscription = Subscription::create([
-            'customer_id' => $customerData->id,
-            'plan_id' => $plan->id,
-            'start_date' => $start_date,
-            'end_date' => $end_date,
-            'reference' => date('ymdHis') . '-' . strtoupper(Str::random(4)),
-            'description' => $customerData->name . ' ' . $plan->id,
-            'currency' => $microsite->payment_currency->value,
-            'additional_data' => $data['additional_data'],
-        ]);
+        $subscription = (new CreateSubscriptionAction())->execute($plan, $microsite, $customerData, $data['additional_data']);
 
         $result = $this->placeToPayService->createSubscription($customerData, $subscription);
 

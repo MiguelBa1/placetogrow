@@ -122,7 +122,7 @@ class SubscriptionControllerTest extends TestCase
         $response = $this->post(route('subscriptions.cancel', $customerSubscription->id), $requestData);
 
         $response->assertRedirect();
-        $this->assertDatabaseHas('subscription', [
+        $this->assertDatabaseHas('subscriptions', [
             'id' => $customerSubscription->id,
             'status' => SubscriptionStatus::INACTIVE,
         ]);
