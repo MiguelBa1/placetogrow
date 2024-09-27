@@ -30,10 +30,10 @@ class CheckPaymentsCommand extends Command
 
         foreach ($payments as $payment) {
             $this->info('Checking payment ' . $payment->request_id);
-            $result = $this->paymentService->checkPayment($payment);
+            $isSuccessful = $this->paymentService->checkPayment($payment);
 
-            if ($result['success']) {
-                Cache::forget('payment_status_' . $payment->id);
+            if ($isSuccessful) {
+                Cache::forget('payment_checked_' . $payment->id);
             }
         }
     }

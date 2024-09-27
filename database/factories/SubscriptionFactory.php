@@ -4,6 +4,7 @@ namespace Database\Factories;
 
 use App\Constants\CurrencyType;
 use App\Constants\SubscriptionStatus;
+use App\Constants\TimeUnit;
 use App\Models\Customer;
 use App\Models\Plan;
 use App\Models\Subscription;
@@ -22,6 +23,13 @@ class SubscriptionFactory extends Factory
      */
     public function definition(): array
     {
+        $durations = [3, 6, 12];
+        $billingFrequencies = [1, 2, 3, 6];
+
+        $totalDuration = $this->faker->randomElement($durations);
+
+        $validBillingFrequencies = array_filter($billingFrequencies, fn ($frequency) => $totalDuration % $frequency === 0);
+
         return [
             'customer_id' => Customer::factory(),
             'plan_id' => Plan::factory(),
@@ -33,9 +41,12 @@ class SubscriptionFactory extends Factory
             'request_id' => Str::uuid(),
             'status_message' => $this->faker->sentence(),
             'currency' => $this->faker->randomElement(array_column(CurrencyType::cases(), 'value')),
-            'token' => Str::random(40),
-            'subtoken' => Str::random(40),
+            'token' => encrypt(Str::random(40)),
+            'subtoken' => encrypt(Str::random(40)),
             'additional_data' => $this->faker->randomElements(),
+            'price' => $this->faker->randomFloat(2, 0, 1000),
+            'billing_frequency' => $this->faker->randomElement($validBillingFrequencies),
+            'time_unit' => $this->faker->randomElement(array_column(TimeUnit::cases(), 'value')),
         ];
     }
 }

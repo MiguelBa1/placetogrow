@@ -22,7 +22,11 @@ class PlaceToPayServiceTest extends TestCase
     public function test_can_create_a_payment(): void
     {
         Http::fake([
-            config('payments.placetopay.url') => Http::response(['status' => PlaceToPayStatus::OK->value]),
+            config('payments.placetopay.url') => Http::response([
+                'status' => PlaceToPayStatus::OK->value,
+                'requestId' => '12345',
+                'processUrl' => 'https://example.com/payment'
+            ]),
         ]);
 
         $customer = Customer::factory()->create([
@@ -45,10 +49,11 @@ class PlaceToPayServiceTest extends TestCase
 
         $response = $service->createPayment($customer, $payment);
 
-        $this->assertEquals(200, $response->status());
-
-        $this->assertArrayHasKey('status', $response->json());
-        $this->assertEquals(PlaceToPayStatus::OK->value, $response->json()['status']);
+        $this->assertTrue($response['success']);
+        $this->assertArrayHasKey('data', $response);
+        $this->assertArrayHasKey('requestId', $response['data']);
+        $this->assertArrayHasKey('processUrl', $response['data']);
+        $this->assertEquals(PlaceToPayStatus::OK->value, $response['data']['status']);
     }
 
     public function test_can_check_a_payment(): void
@@ -59,18 +64,21 @@ class PlaceToPayServiceTest extends TestCase
 
         $service = new PlaceToPayService();
 
-        $response = $service->checkPayment('test_session_id');
+        $response = $service->checkSession('test_session_id');
 
-        $this->assertEquals(200, $response->status());
-
-        $this->assertArrayHasKey('status', $response->json());
-        $this->assertEquals(PaymentStatus::APPROVED->value, $response->json()['status']);
+        $this->assertTrue($response['success']);
+        $this->assertArrayHasKey('data', $response);
+        $this->assertEquals(PaymentStatus::APPROVED->value, $response['data']['status']);
     }
 
     public function test_can_create_a_subscription(): void
     {
         Http::fake([
-            config('payments.placetopay.url') => Http::response(['status' => PlaceToPayStatus::OK->value]),
+            config('payments.placetopay.url') => Http::response([
+                'status' => PlaceToPayStatus::OK->value,
+                'requestId' => '12345',
+                'processUrl' => 'https://example.com/subscription'
+            ]),
         ]);
 
         $customer = Customer::factory()->create([
@@ -91,25 +99,27 @@ class PlaceToPayServiceTest extends TestCase
 
         $response = $service->createSubscription($customer, $subscription);
 
-        $this->assertEquals(200, $response->status());
-
-        $this->assertArrayHasKey('status', $response->json());
-        $this->assertEquals(PlaceToPayStatus::OK->value, $response->json()['status']);
+        $this->assertTrue($response['success']);
+        $this->assertArrayHasKey('data', $response);
+        $this->assertArrayHasKey('requestId', $response['data']);
+        $this->assertArrayHasKey('processUrl', $response['data']);
+        $this->assertEquals(PlaceToPayStatus::OK->value, $response['data']['status']);
     }
 
     public function test_can_check_a_subscription(): void
     {
         Http::fake([
-            config('payments.placetopay.url') => Http::response(['status' => PaymentStatus::APPROVED->value]),
+            config('payments.placetopay.url') => Http::response([
+                'status' => PaymentStatus::APPROVED->value
+            ]),
         ]);
 
         $service = new PlaceToPayService();
 
-        $response = $service->checkSubscription('test_session_id');
+        $response = $service->checkSession('test_session_id');
 
-        $this->assertEquals(200, $response->status());
-
-        $this->assertArrayHasKey('status', $response->json());
-        $this->assertEquals(PaymentStatus::APPROVED->value, $response->json()['status']);
+        $this->assertTrue($response['success']);
+        $this->assertArrayHasKey('data', $response);
+        $this->assertEquals(PaymentStatus::APPROVED->value, $response['data']['status']);
     }
 }

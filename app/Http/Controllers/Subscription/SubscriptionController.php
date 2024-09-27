@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Subscription;
 
 use App\Constants\SubscriptionStatus;
+use App\Contracts\SubscriptionServiceInterface;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Subscription\CancelSubscriptionRequest;
 use App\Http\Requests\Subscription\SendSubscriptionLinkRequest;
@@ -10,6 +11,7 @@ use App\Http\Resources\Subscription\SubscriptionResource;
 use App\Mail\ActiveSubscriptionsLinkMail;
 use App\Models\Customer;
 use App\Models\Subscription;
+use App\Services\SubscriptionService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
@@ -19,6 +21,13 @@ use Inertia\Response;
 
 class SubscriptionController extends Controller
 {
+    private SubscriptionServiceInterface $subscriptionService;
+
+    public function __construct(SubscriptionService $subscriptionService)
+    {
+        $this->subscriptionService = $subscriptionService;
+    }
+
     public function index(): Response
     {
         return Inertia::render('Subscriptions/Index');
@@ -79,10 +88,14 @@ class SubscriptionController extends Controller
             ->where('customer_id', $customer->id)
             ->firstOrFail();
 
-        $subscription->update([
-            'status' => SubscriptionStatus::INACTIVE,
-        ]);
+        $isCancelled = $this->subscriptionService->cancelSubscription($subscription);
 
-        return redirect()->back();
+        if (!$isCancelled) {
+            return back()->withErrors([
+                'cancel' => __('subscription_payment.cancel_failed'),
+            ]);
+        }
+
+        return back();
     }
 }

@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\SubscriptionPayment;
 
-use App\Constants\SubscriptionStatus;
 use App\Contracts\SubscriptionServiceInterface;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\SubscriptionPayment\CreateSubscriptionPaymentRequest;
@@ -13,7 +12,6 @@ use App\Models\Plan;
 use App\Models\Subscription;
 use App\Services\SubscriptionService;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -66,21 +64,15 @@ class SubscriptionPaymentController extends Controller
             }
         }
 
-        $subscriptionData['currency'] = $microsite->payment_currency->value;
-        $subscriptionData['plan_id'] = $plan->id;
-        $subscriptionData['total_duration'] = $plan->total_duration;
-        $subscriptionData['time_unit'] = $plan->time_unit->value;
+        $result = $this->subscriptionService->createSubscription($plan, $microsite, $subscriptionData);
 
-        $result = $this->subscriptionService->createSubscription($subscriptionData);
-
-        if ($result['success']) {
-            return Inertia::location($result['url']);
-        } else {
-            return redirect()->route('subscription-payments.show', $microsite->slug)
-                ->withErrors([
-                    'payment' => $result['message'],
+        if (!$result['success']) {
+            return back()->withErrors([
+                    'payment' => __('subscription_payment.create_failed'),
                 ]);
         }
+
+        return Inertia::location($result['url']);
     }
 
     public function return(Subscription $subscription): Response|RedirectResponse
@@ -90,25 +82,12 @@ class SubscriptionPaymentController extends Controller
             'request_id' => $subscription->request_id,
         ]);
 
-        $cacheKey = 'subscription_status_' . $subscription->id;
-        $cachedStatus = Cache::get($cacheKey);
+        $isSuccessful = $this->subscriptionService->checkSubscription($subscription);
 
-        if ($subscription->status === SubscriptionStatus::PENDING->value) {
-            if (!$cachedStatus) {
-                $result = $this->subscriptionService->checkSubscription($subscription);
-
-                if (!$result['success']) {
-                    return Inertia::render('Payments/Return', [
-                        'error' => $result['message'],
-                    ]);
-                }
-
-                $subscription = $result['subscription'];
-
-                Cache::put($cacheKey, $subscription->status, now()->addMinutes(10));
-            } else {
-                $subscription->status = $cachedStatus; // Use the cached status
-            }
+        if (!$isSuccessful) {
+            return Inertia::render('Payments/Return', [
+                'error' => __('subscription_payment.check_failed'),
+            ]);
         }
 
         return Inertia::render('Payments/Return', [

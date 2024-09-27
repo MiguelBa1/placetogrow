@@ -80,7 +80,7 @@ class SubscriptionPaymentTest extends TestCase
             'email' => 'test@mail.com',
         ]);
 
-        $this->assertDatabaseHas('subscription', [
+        $this->assertDatabaseHas('subscriptions', [
             'plan_id' => $this->plan->id,
             'status' => SubscriptionStatus::PENDING->value,
         ]);
@@ -102,7 +102,7 @@ class SubscriptionPaymentTest extends TestCase
             'email' => 'test@mail.com',
         ]);
 
-        $response->assertRedirect(route('subscription-payments.show', $this->subscriptionMicrosite));
+        $response->assertRedirect(url()->previous());
         $response->assertSessionHasErrors();
     }
 

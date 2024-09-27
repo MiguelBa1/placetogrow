@@ -18,6 +18,7 @@ class CheckPaymentsCommandTest extends TestCase
     public function test_can_check_payments()
     {
         $this->fakePaymentCheckApproved();
+        Cache::spy();
 
         $customer = Customer::factory()->create();
         $payment = Payment::factory()->create([
@@ -28,9 +29,9 @@ class CheckPaymentsCommandTest extends TestCase
             'created_at' => now()->subMinutes(config('payments.check_interval_minutes'))->subSecond(),
         ]);
 
-        Cache::shouldReceive('forget')->once()->with('payment_status_' . $payment->id);
-
         Artisan::call('app:check-payments');
+
+        Cache::shouldHaveReceived('forget')->once()->with('payment_checked_' . $payment->id);
 
         $payment->refresh();
 
@@ -43,6 +44,7 @@ class CheckPaymentsCommandTest extends TestCase
     public function test_only_check_pending_payments_after_interval()
     {
         $this->fakePaymentCheckApproved();
+        Cache::spy();
 
         $customer = Customer::factory()->create();
         $payment = Payment::factory()->create([
@@ -63,9 +65,9 @@ class CheckPaymentsCommandTest extends TestCase
             'payment_date' => null,
         ]);
 
-        Cache::shouldReceive('forget')->once()->with('payment_status_' . $payment->id);
-
         Artisan::call('app:check-payments');
+
+        Cache::shouldHaveReceived('forget')->once()->with('payment_checked_' . $payment->id);
 
         $payment->refresh();
         $payment2->refresh();

@@ -16,7 +16,7 @@ export const esShow = {
         button: 'Cancelar',
         close: 'Cerrar',
         success: 'La suscripción ha sido cancelada',
-        error: 'No se ha podido cancelar la suscripción',
+        error: 'Ha ocurrido un error al cancelar la suscripción',
     },
     noSubscriptions: 'No hay suscripciones activas',
 }

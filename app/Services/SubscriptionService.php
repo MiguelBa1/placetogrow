@@ -3,16 +3,18 @@
 namespace App\Services;
 
 use App\Actions\Customer\StoreCustomerAction;
+use App\Actions\Subscription\CreateSubscriptionAction;
 use App\Constants\PlaceToPayStatus;
 use App\Constants\SubscriptionStatus;
 use App\Contracts\PlaceToPayServiceInterface;
 use App\Contracts\SubscriptionServiceInterface;
+use App\Models\Microsite;
+use App\Models\Plan;
 use App\Models\Subscription;
-use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Cache;
 
 class SubscriptionService implements SubscriptionServiceInterface
 {
-
     private PlaceToPayServiceInterface $placeToPayService;
 
     public function __construct(PlaceToPayServiceInterface $placeToPayService)
@@ -20,94 +22,95 @@ class SubscriptionService implements SubscriptionServiceInterface
         $this->placeToPayService = $placeToPayService;
     }
 
-    public function createSubscription(array $subscriptionData): array
+    public function createSubscription(Plan $plan, Microsite $microsite, array $data): array
     {
-        $customerData = (new StoreCustomerAction())->execute($subscriptionData);
+        $customerData = (new StoreCustomerAction())->execute($data);
 
-        $start_date = now();
-        $end_date = now()->add($subscriptionData['total_duration'], $subscriptionData['time_unit']);
-
-        /** @var Subscription $subscription */
-        $subscription = Subscription::create([
-            'customer_id' => $customerData->id,
-            'plan_id' => $subscriptionData['plan_id'],
-            'start_date' => $start_date,
-            'end_date' => $end_date,
-            'reference' => date('ymdHis') . '-' . strtoupper(Str::random(4)),
-            'description' => $customerData->name . ' ' . $subscriptionData['plan_id'],
-            'currency' => $subscriptionData['currency'],
-            'additional_data' => $subscriptionData['additional_data'],
-        ]);
+        $subscription = (new CreateSubscriptionAction())->execute($plan, $microsite, $customerData, $data['additional_data']);
 
         $result = $this->placeToPayService->createSubscription($customerData, $subscription);
 
-        $dataResponse = $result->json();
-        if (!$result->ok()) {
+        if (!$result['success']) {
             $subscription->update([
-                'request_id' => $dataResponse['requestId'],
+                'request_id' => $result['data']['requestId'],
                 'status' => SubscriptionStatus::INACTIVE->value,
-                'status_message' => $dataResponse['status']['message'],
+                'status_message' => $result['message'],
             ]);
 
             return [
                 'success' => false,
-                'message' => $dataResponse['status']['message'],
             ];
         }
 
+        $resultData = $result['data'];
+
         $subscription->update([
-            'request_id' => $dataResponse['requestId'],
-            'status_message' => $dataResponse['status']['message'],
+            'request_id' => $resultData['requestId'],
+            'status_message' => $resultData['status']['message'],
         ]);
 
         return [
-            'success' => $result->ok(),
-            'url' => $result['processUrl'] ?? null,
-            'message' => $dataResponse['status']['message'] ?? null,
+            'success' => true,
+            'url' => $resultData['processUrl'],
         ];
     }
 
-    public function checkSubscription(Subscription $subscription): array
+    public function checkSubscription(Subscription $subscription): bool
     {
-        $result = $this->placeToPayService->checkSubscription($subscription->request_id);
-        $dataResponse = $result->json();
+        $cacheKey = 'subscription_checked_' . $subscription->id;
+        $isRecentlyChecked = Cache::get($cacheKey);
 
-        if ($result->ok()) {
-            $this->updateSubscription($subscription, $dataResponse);
-
-            return [
-                'success' => true,
-                'message' => $dataResponse['status']['message'],
-                'subscription' => $subscription,
-            ];
-        } else {
-            return [
-                'success' => false,
-                'message' => $dataResponse['status']['message'],
-            ];
+        if ($isRecentlyChecked || $subscription->status !== SubscriptionStatus::PENDING->value) {
+            return true;
         }
 
+        $result = $this->placeToPayService->checkSession($subscription->request_id);
+
+        if (!$result['success']) {
+            return false;
+        }
+
+        $this->updateSubscription($subscription, $result['data']);
+
+        Cache::put($cacheKey, true, now()->addMinutes(10));
+
+        return true;
     }
 
     private function updateSubscription(Subscription $subscription, array $dataResponse): void
     {
         $subscriptionStatus = $dataResponse['status'];
 
-        if ($subscriptionStatus['status'] === PlaceToPayStatus::APPROVED->value) {
-            $subscriptionInstrument = $dataResponse['subscription']['instrument'];
-
-            $subscription->update([
-                'status' => SubscriptionStatus::ACTIVE->value,
-                'status_message' => $subscriptionStatus['message'],
-                'token' => $subscriptionInstrument[0]['value'],
-                'subtoken' => $subscriptionInstrument[1]['value'],
-            ]);
-
-        } else {
+        if ($subscriptionStatus['status'] !== PlaceToPayStatus::APPROVED->value) {
             $subscription->update([
                 'status' => SubscriptionStatus::INACTIVE->value,
                 'status_message' => $subscriptionStatus['message'],
             ]);
+            return;
         }
+
+        $subscriptionInstrument = $dataResponse['subscription']['instrument'];
+
+        $subscription->update([
+            'status' => SubscriptionStatus::ACTIVE->value,
+            'status_message' => $subscriptionStatus['message'],
+            'token' => encrypt($subscriptionInstrument[0]['value']),
+            'subtoken' => encrypt($subscriptionInstrument[1]['value']),
+        ]);
+    }
+
+    public function cancelSubscription(Subscription $subscription): bool
+    {
+        $result = $this->placeToPayService->cancelSubscription(decrypt($subscription->token));
+
+        if (!$result['success']) {
+            return false;
+        }
+
+        $subscription->update([
+            'status' => SubscriptionStatus::INACTIVE->value,
+        ]);
+
+        return true;
     }
 }
