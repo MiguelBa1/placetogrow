@@ -3,6 +3,7 @@
 namespace App\Services\Payment;
 
 use App\Actions\Customer\StoreCustomerAction;
+use App\Actions\Payment\CreatePaymentAction;
 use App\Constants\InvoiceStatus;
 use App\Constants\MicrositeType;
 use App\Constants\PaymentStatus;
@@ -11,11 +12,9 @@ use App\Contracts\PlaceToPayServiceInterface;
 use App\Models\Microsite;
 use App\Models\Payment;
 use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Str;
 
 class PaymentService implements PaymentServiceInterface
 {
-
     private PlaceToPayServiceInterface $placeToPayService;
 
     public function __construct(PlaceToPayServiceInterface $placeToPayService)
@@ -27,16 +26,7 @@ class PaymentService implements PaymentServiceInterface
     {
         $customerData = (new StoreCustomerAction())->execute($paymentData);
 
-        /** @var Payment $payment */
-        $payment = $customerData->payments()->create([
-            'microsite_id' => $microsite->id,
-            'invoice_id' => $paymentData['invoice_id'] ?? null,
-            'description' => $paymentData['payment_description'],
-            'reference' => date('ymdHis') . '-' . strtoupper(Str::random(4)),
-            'currency' => $microsite->payment_currency->value,
-            'amount' => $paymentData['amount'],
-            'additional_data' => $paymentData['additional_data'],
-        ]);
+        $payment = (new CreatePaymentAction())->execute($customerData, $microsite, $paymentData);
 
         $result = $this->placeToPayService->createPayment($customerData, $payment);
 
