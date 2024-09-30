@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Constants\TimeUnit;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\Pivot;
@@ -11,8 +12,9 @@ use Illuminate\Database\Eloquent\Relations\Pivot;
  * @property int $id
  * @property int $customer_id
  * @property int $plan_id
- * @property string $start_date
- * @property string $end_date
+ * @property Carbon $start_date
+ * @property Carbon $end_date
+ * @property Carbon $next_payment_date
  * @property string $status
  * @property string $reference
  * @property string $description
@@ -24,6 +26,7 @@ use Illuminate\Database\Eloquent\Relations\Pivot;
  * @property array $additional_data
  * @property float $price
  * @property TimeUnit $time_unit
+ * @property int $billing_frequency
  * @property Plan $plan
  * @property Customer $customer
  * @property string $created_at
@@ -42,6 +45,7 @@ class Subscription extends Pivot
         'plan_id',
         'start_date',
         'end_date',
+        'next_payment_date',
         'status',
         'reference',
         'description',
@@ -59,6 +63,9 @@ class Subscription extends Pivot
     protected $casts = [
         'additional_data' => 'array',
         'time_unit' => TimeUnit::class,
+        'start_date' => 'date',
+        'end_date' => 'date',
+        'next_payment_date' => 'date',
     ];
 
     public function plan(): BelongsTo

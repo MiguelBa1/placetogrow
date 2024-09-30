@@ -6,6 +6,7 @@ use App\Actions\Payment\CreatePaymentAction;
 use App\Actions\Payment\UpdatePaymentFromP2PResponse;
 use App\Models\Subscription;
 use App\Services\PlaceToPayService;
+use DateInterval;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -30,7 +31,18 @@ class CollectSubscriptionPaymentJob implements ShouldQueue
         UpdatePaymentFromP2PResponse $updatePaymentFromP2PResponse
     ): void {
         /** @var Subscription $subscription */
-        $subscription = Subscription::select('id', 'plan_id', 'customer_id', 'price', 'token', 'reference', 'additional_data')
+        $subscription = Subscription::select(
+            'id',
+            'plan_id',
+            'customer_id',
+            'price',
+            'token',
+            'reference',
+            'additional_data',
+            'next_payment_date',
+            'billing_frequency',
+            'time_unit'
+        )
             ->where('id', $this->subscriptionId)
             ->with([
                 'customer:id,name,last_name,email,document_type,document_number,phone',
@@ -61,6 +73,16 @@ class CollectSubscriptionPaymentJob implements ShouldQueue
         }
 
         $updatePaymentFromP2PResponse->execute($payment, $result);
+
+        $subscription->update([
+            'next_payment_date' => $subscription
+                ->next_payment_date
+                ->add(
+                    DateInterval::createFromDateString(
+                        "{$subscription->billing_frequency} {$subscription->time_unit->value}"
+                    )
+                ),
+        ]);
 
         Log::info("Payment successfully collected for subscription: {$subscription->reference}", [
             'subscription_id' => $subscription->id,
