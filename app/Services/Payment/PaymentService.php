@@ -4,6 +4,7 @@ namespace App\Services\Payment;
 
 use App\Actions\Customer\StoreCustomerAction;
 use App\Actions\Payment\CreatePaymentAction;
+use App\Actions\Payment\UpdatePaymentFromP2PResponse;
 use App\Constants\InvoiceStatus;
 use App\Constants\MicrositeType;
 use App\Constants\PaymentStatus;
@@ -24,11 +25,11 @@ class PaymentService implements PaymentServiceInterface
 
     public function createPayment(Microsite $microsite, array $paymentData): array
     {
-        $customerData = (new StoreCustomerAction())->execute($paymentData);
+        $customer = (new StoreCustomerAction())->execute($paymentData);
 
-        $payment = (new CreatePaymentAction())->execute($customerData, $microsite, $paymentData);
+        $payment = (new CreatePaymentAction())->execute($customer, $microsite, $paymentData);
 
-        $result = $this->placeToPayService->createPayment($customerData, $payment);
+        $result = $this->placeToPayService->createPayment($customer, $payment);
 
         if (!$result['success']) {
             $payment->update([
@@ -69,35 +70,16 @@ class PaymentService implements PaymentServiceInterface
             return false;
         }
 
-        $this->updatePayment($payment, $result['data']);
+        $this->updatePayment($payment, $result);
 
         Cache::put($cacheKey, true, now()->addMinutes(10));
 
         return true;
     }
 
-    public function updatePayment(Payment $payment, array $response): void
+    public function updatePayment(Payment $payment, array $data): void
     {
-        $status = $response['status'];
-
-        if ($status['status'] !== PaymentStatus::APPROVED->value) {
-            $payment->update([
-                'status_message' => $status['message'],
-                'status' => $status['status'],
-            ]);
-            return;
-        }
-
-        $paymentResponse = $response['payment'][0];
-        $paymentStatus = $paymentResponse['status'];
-
-        $payment->update([
-            'payment_method_name' => $paymentResponse['paymentMethodName'],
-            'authorization' => $paymentResponse['authorization'],
-            'payment_date' => $paymentStatus['date'],
-            'status_message' => $paymentStatus['message'],
-            'status' => $paymentStatus['status'],
-        ]);
+        (new UpdatePaymentFromP2PResponse())->execute($payment, $data);
 
         if ($payment->microsite->type === MicrositeType::INVOICE && $payment->invoice) {
             $payment->invoice->update([

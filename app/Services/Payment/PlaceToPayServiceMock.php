@@ -104,4 +104,10 @@ class PlaceToPayServiceMock implements PlaceToPayServiceInterface
     {
         $this->statusCode = $statusCode;
     }
+
+    public function collectSubscriptionPayment(Customer $customer, Subscription $subscription, Payment $payment): array
+    {
+        // TODO: Implement collectSubscriptionPayment() method.
+        return [];
+    }
 }

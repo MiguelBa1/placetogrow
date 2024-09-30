@@ -1,6 +1,7 @@
 <?php
 
 use App\Console\Commands\CheckPaymentsCommand;
+use App\Console\Commands\CollectSubscriptionPaymentsCommand;
 use App\Console\Commands\CreateAdminUserCommand;
 use App\Console\Commands\UpdateInvoiceStatusCommand;
 use Illuminate\Support\Facades\Artisan;
@@ -25,3 +26,9 @@ Artisan::command('create:admin {name} {email} {password}', function ($name, $ema
         'password' => $password,
     ]);
 })->describe('Create a new admin user');
+
+Schedule::command(CollectSubscriptionPaymentsCommand::class)->daily();
+
+Artisan::command('subscriptions:collect-payments', function () {
+    $this->call(CollectSubscriptionPaymentsCommand::class);
+})->describe('Collect payments for active subscriptions');

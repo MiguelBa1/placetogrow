@@ -33,6 +33,7 @@ class Payment extends Model
         'customer_id',
         'microsite_id',
         'invoice_id',
+        'plan_id',
         'reference',
         'description',
         'request_id',

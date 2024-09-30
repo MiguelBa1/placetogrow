@@ -101,7 +101,7 @@ class SubscriptionService implements SubscriptionServiceInterface
 
     public function cancelSubscription(Subscription $subscription): bool
     {
-        $result = $this->placeToPayService->cancelSubscription(decrypt($subscription->token));
+        $result = $this->placeToPayService->cancelSubscription($subscription->token);
 
         if (!$result['success']) {
             return false;

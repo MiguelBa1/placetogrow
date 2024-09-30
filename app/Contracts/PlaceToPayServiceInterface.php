@@ -15,4 +15,6 @@ interface PlaceToPayServiceInterface
     public function cancelSubscription(string $subscriptionToken): array;
 
     public function checkSession(string $sessionId): array;
+
+    public function collectSubscriptionPayment(Customer $customer, Subscription $subscription, Payment $payment): array;
 }
