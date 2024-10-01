@@ -8,6 +8,7 @@ use App\Constants\PlaceToPayStatus;
 use App\Constants\SubscriptionStatus;
 use App\Contracts\PlaceToPayServiceInterface;
 use App\Contracts\SubscriptionServiceInterface;
+use App\Jobs\CollectSubscriptionPaymentJob;
 use App\Models\Microsite;
 use App\Models\Plan;
 use App\Models\Subscription;
@@ -97,6 +98,8 @@ class SubscriptionService implements SubscriptionServiceInterface
             'token' => encrypt($subscriptionInstrument[0]['value']),
             'subtoken' => encrypt($subscriptionInstrument[1]['value']),
         ]);
+
+        CollectSubscriptionPaymentJob::dispatch($subscription->id);
     }
 
     public function cancelSubscription(Subscription $subscription): bool
