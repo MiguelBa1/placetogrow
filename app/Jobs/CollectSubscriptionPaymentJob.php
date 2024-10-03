@@ -14,6 +14,7 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Log;
+use Throwable;
 
 class CollectSubscriptionPaymentJob implements ShouldQueue
 {
@@ -89,5 +90,21 @@ class CollectSubscriptionPaymentJob implements ShouldQueue
         Log::info("Payment successfully collected for subscription: {$subscription->reference}", [
             'subscription_id' => $subscription->id,
         ]);
+    }
+
+    public function failed(?Throwable $exception): void
+    {
+        Log::error("Failed after max retries for subscription: {$this->subscriptionId}", [
+            'error' => $exception->getMessage(),
+        ]);
+
+        $subscription = Subscription::find($this->subscriptionId);
+
+        if ($subscription) {
+            $subscription->update([
+                'status' => SubscriptionStatus::INACTIVE->value,
+                'status_message' => 'Payment failed after maximum retries',
+            ]);
+        }
     }
 }
