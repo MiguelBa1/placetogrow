@@ -22,9 +22,35 @@ class CollectSubscriptionPaymentJob implements ShouldQueue
 
     protected int $subscriptionId;
 
+    protected ?int $maxRetries;
+    protected ?string $retryBackoff;
+
     public function __construct(int $subscriptionId)
     {
         $this->subscriptionId = $subscriptionId;
+    }
+
+    public function tries(): int
+    {
+        $this->loadMicrositeSettings();
+        return $this->maxRetries ?? 3;
+    }
+
+    protected function loadMicrositeSettings(): void
+    {
+        /** @var Subscription $subscription */
+        $subscription = Subscription::select('id', 'plan_id')
+            ->with([
+                'plan:id,microsite_id',
+                'plan.microsite:id,settings',
+            ])
+            ->find($this->subscriptionId);
+
+        $microsite = $subscription->plan->microsite;
+        $settings = $microsite->settings;
+
+        $this->maxRetries = $settings['retry']['max_retries'] ?? 3;
+        $this->retryBackoff = $settings['retry']['retry_backoff'] ?? '1 hour';
     }
 
     public function handle(
@@ -71,6 +97,11 @@ class CollectSubscriptionPaymentJob implements ShouldQueue
                 'subscription_id' => $subscription->id,
                 'error' => $result['message'] ?? 'Unknown error',
             ]);
+
+            $this->loadMicrositeSettings();
+            $backoffInSeconds = $this->getBackoffInSeconds();
+
+            $this->release($backoffInSeconds);
             return;
         }
 
@@ -90,6 +121,15 @@ class CollectSubscriptionPaymentJob implements ShouldQueue
         Log::info("Payment successfully collected for subscription: {$subscription->reference}", [
             'subscription_id' => $subscription->id,
         ]);
+    }
+
+    protected function getBackoffInSeconds(): int
+    {
+        $this->loadMicrositeSettings();
+
+        $backoffTimestamp = strtotime($this->retryBackoff, 0);
+
+        return $backoffTimestamp !== false ? $backoffTimestamp : 3600;
     }
 
     public function failed(?Throwable $exception): void
