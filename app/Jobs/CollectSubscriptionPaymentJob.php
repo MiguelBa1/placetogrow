@@ -4,6 +4,7 @@ namespace App\Jobs;
 
 use App\Actions\Payment\CreatePaymentAction;
 use App\Actions\Payment\UpdatePaymentFromP2PResponse;
+use App\Constants\SubscriptionStatus;
 use App\Models\Subscription;
 use App\Services\PlaceToPayService;
 use DateInterval;
@@ -75,6 +76,7 @@ class CollectSubscriptionPaymentJob implements ShouldQueue
         $updatePaymentFromP2PResponse->execute($payment, $result);
 
         $subscription->update([
+            'status' => SubscriptionStatus::ACTIVE->value,
             'next_payment_date' => $subscription
                 ->next_payment_date
                 ->add(

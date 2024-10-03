@@ -93,7 +93,6 @@ class SubscriptionService implements SubscriptionServiceInterface
         $subscriptionInstrument = $dataResponse['subscription']['instrument'];
 
         $subscription->update([
-            'status' => SubscriptionStatus::ACTIVE->value,
             'status_message' => $subscriptionStatus['message'],
             'token' => encrypt($subscriptionInstrument[0]['value']),
             'subtoken' => encrypt($subscriptionInstrument[1]['value']),
