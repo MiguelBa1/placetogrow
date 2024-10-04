@@ -22,7 +22,7 @@ class PlaceToPayServiceTest extends TestCase
     public function test_can_create_a_payment(): void
     {
         Http::fake([
-            config('payments.placetopay.url') => Http::response([
+            config('placetopay.url') => Http::response([
                 'status' => PlaceToPayStatus::OK->value,
                 'requestId' => '12345',
                 'processUrl' => 'https://example.com/payment'
@@ -59,7 +59,7 @@ class PlaceToPayServiceTest extends TestCase
     public function test_can_check_a_payment(): void
     {
         Http::fake([
-            config('payments.placetopay.url') => Http::response(['status' => PaymentStatus::APPROVED->value]),
+            config('placetopay.url') => Http::response(['status' => PaymentStatus::APPROVED->value]),
         ]);
 
         $service = new PlaceToPayService();
@@ -74,7 +74,7 @@ class PlaceToPayServiceTest extends TestCase
     public function test_can_create_a_subscription(): void
     {
         Http::fake([
-            config('payments.placetopay.url') => Http::response([
+            config('placetopay.url') => Http::response([
                 'status' => PlaceToPayStatus::OK->value,
                 'requestId' => '12345',
                 'processUrl' => 'https://example.com/subscription'
@@ -109,7 +109,7 @@ class PlaceToPayServiceTest extends TestCase
     public function test_can_check_a_subscription(): void
     {
         Http::fake([
-            config('payments.placetopay.url') => Http::response([
+            config('placetopay.url') => Http::response([
                 'status' => PaymentStatus::APPROVED->value
             ]),
         ]);

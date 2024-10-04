@@ -28,7 +28,7 @@ class UpdateInvoiceStatusCommand extends Command
      *
      * @return int
      */
-    public function handle()
+    public function handle(): int
     {
         $now = Carbon::now();
 

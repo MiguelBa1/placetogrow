@@ -18,7 +18,7 @@ class PlaceToPayService implements PlaceToPayServiceInterface
 
     public function __construct()
     {
-        $this->config = config('payments.placetopay');
+        $this->config = config('placetopay');
 
         $this->data = [
             'expiration' => $this->config['expiration'],
