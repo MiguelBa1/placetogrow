@@ -5,8 +5,8 @@ namespace App\Jobs;
 use App\Actions\Payment\CreatePaymentAction;
 use App\Actions\Payment\UpdatePaymentFromP2PResponse;
 use App\Constants\SubscriptionStatus;
+use App\Contracts\PlaceToPayServiceInterface;
 use App\Models\Subscription;
-use App\Services\PlaceToPayService;
 use DateInterval;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -54,7 +54,7 @@ class CollectSubscriptionPaymentJob implements ShouldQueue
     }
 
     public function handle(
-        PlaceToPayService $placeToPayService,
+        PlaceToPayServiceInterface $placeToPayService,
         CreatePaymentAction $createPaymentAction,
         UpdatePaymentFromP2PResponse $updatePaymentFromP2PResponse
     ): void {

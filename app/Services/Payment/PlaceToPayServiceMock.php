@@ -13,6 +13,7 @@ class PlaceToPayServiceMock implements PlaceToPayServiceInterface
     private string $checkPaymentFile = 'approved_payment.json';
     private string $createSubscriptionFile = 'created_subscription.json';
     private string $checkSubscriptionFile = 'approved_subscription.json';
+    private string $collectSubscriptionPaymentFile = 'collected_subscription_payment.json';
     private string $sessionType = 'payment';
 
     private int $statusCode = 200;
@@ -71,6 +72,19 @@ class PlaceToPayServiceMock implements PlaceToPayServiceInterface
         ];
     }
 
+    public function collectSubscriptionPayment(Customer $customer, Subscription $subscription, Payment $payment): array
+    {
+        $data = json_decode(file_get_contents(app_path("../tests/Stubs/$this->collectSubscriptionPaymentFile")), true);
+
+        return [
+            'success' => $this->statusCode === 200,
+            'data' => $data,
+            'message' => $this->statusCode === 200 ?
+                'Subscription payment collected successfully' :
+                'Failed to collect subscription payment',
+        ];
+    }
+
     public function setSessionType(string $type): void
     {
         if (!in_array($type, ['payment', 'subscription'])) {
@@ -100,14 +114,13 @@ class PlaceToPayServiceMock implements PlaceToPayServiceInterface
         $this->checkSubscriptionFile = $file;
     }
 
+    public function setCollectSubscriptionPaymentInformation(string $file): void
+    {
+        $this->collectSubscriptionPaymentFile = $file;
+    }
+
     public function setStatusCode(int $statusCode): void
     {
         $this->statusCode = $statusCode;
-    }
-
-    public function collectSubscriptionPayment(Customer $customer, Subscription $subscription, Payment $payment): array
-    {
-        // TODO: Implement collectSubscriptionPayment() method.
-        return [];
     }
 }
