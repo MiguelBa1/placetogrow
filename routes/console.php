@@ -1,6 +1,7 @@
 <?php
 
 use App\Console\Commands\CheckPaymentsCommand;
+use App\Console\Commands\CheckSubscriptionsCommand;
 use App\Console\Commands\CollectSubscriptionPaymentsCommand;
 use App\Console\Commands\CreateAdminUserCommand;
 use App\Console\Commands\UpdateInvoiceStatusCommand;
@@ -12,6 +13,12 @@ Schedule::command(CheckPaymentsCommand::class)->everyTenMinutes();
 Artisan::command('check:payments', function () {
     $this->call(CheckPaymentsCommand::class);
 })->describe('Check payments status');
+
+Schedule::command(CheckSubscriptionsCommand::class)->everyTenMinutes();
+
+Artisan::command('check:subscriptions', function () {
+    $this->call(CheckSubscriptionsCommand::class);
+})->describe('Check subscriptions status');
 
 Schedule::command(UpdateInvoiceStatusCommand::class)->daily();
 
