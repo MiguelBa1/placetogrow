@@ -147,4 +147,9 @@ class CollectSubscriptionPaymentJob implements ShouldQueue
             ]);
         }
     }
+
+    public function getSubscriptionId(): int
+    {
+        return $this->subscriptionId;
+    }
 }
