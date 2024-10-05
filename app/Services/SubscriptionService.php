@@ -82,23 +82,32 @@ class SubscriptionService implements SubscriptionServiceInterface
     {
         $subscriptionStatus = $dataResponse['status'];
 
-        if ($subscriptionStatus['status'] !== PlaceToPayStatus::APPROVED->value) {
-            $subscription->update([
-                'status' => SubscriptionStatus::INACTIVE->value,
-                'status_message' => $subscriptionStatus['message'],
-            ]);
-            return;
-        }
-
-        $subscriptionInstrument = $dataResponse['subscription']['instrument'];
+        $mappedStatus = $this->mapPlaceToPayStatusToSubscriptionStatus(PlaceToPayStatus::from($subscriptionStatus['status']));
 
         $subscription->update([
+            'status' => $mappedStatus,
             'status_message' => $subscriptionStatus['message'],
-            'token' => encrypt($subscriptionInstrument[0]['value']),
-            'subtoken' => encrypt($subscriptionInstrument[1]['value']),
         ]);
 
-        CollectSubscriptionPaymentJob::dispatch($subscription->id);
+        if ($mappedStatus === SubscriptionStatus::ACTIVE->value) {
+            $subscriptionInstrument = $dataResponse['subscription']['instrument'];
+
+            $subscription->update([
+                'token' => encrypt($subscriptionInstrument[0]['value']),
+                'subtoken' => encrypt($subscriptionInstrument[1]['value']),
+            ]);
+
+            CollectSubscriptionPaymentJob::dispatch($subscription->id);
+        }
+    }
+
+    private function mapPlaceToPayStatusToSubscriptionStatus(PlaceToPayStatus $status): string
+    {
+        return match ($status) {
+            PlaceToPayStatus::APPROVED, PlaceToPayStatus::APPROVED_PARTIAL => SubscriptionStatus::ACTIVE->value,
+            PlaceToPayStatus::PENDING => SubscriptionStatus::PENDING->value,
+            default => SubscriptionStatus::INACTIVE->value,
+        };
     }
 
     public function cancelSubscription(Subscription $subscription): bool

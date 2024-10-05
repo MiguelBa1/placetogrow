@@ -3,7 +3,9 @@
 namespace App\Actions\Payment;
 
 use App\Constants\PaymentStatus;
+use App\Constants\PlaceToPayStatus;
 use App\Models\Payment;
+use ValueError;
 
 class UpdatePaymentFromP2PResponse
 {
@@ -12,10 +14,16 @@ class UpdatePaymentFromP2PResponse
         $data = $result['data'];
         $status = $data['status'];
 
-        if ($status['status'] !== PaymentStatus::APPROVED->value) {
+        try {
+            $mappedStatus = $this->mapPlaceToPayStatusToPaymentStatus(PlaceToPayStatus::from($status['status']));
+        } catch (ValueError) {
+            $mappedStatus = PaymentStatus::UNKNOWN->value;
+        }
+
+        if ($mappedStatus !== PaymentStatus::APPROVED->value) {
             $payment->update([
                 'status_message' => $status['message'],
-                'status' => $status['status'],
+                'status' => $mappedStatus,
             ]);
             return;
         }
@@ -29,7 +37,17 @@ class UpdatePaymentFromP2PResponse
             'authorization' => $transaction['authorization'],
             'payment_date' => $transactionStatus['date'],
             'status_message' => $transactionStatus['message'],
-            'status' => $transactionStatus['status'],
+            'status' => $this->mapPlaceToPayStatusToPaymentStatus(PlaceToPayStatus::from($transactionStatus['status'])),
         ]);
+    }
+
+    private function mapPlaceToPayStatusToPaymentStatus(PlaceToPayStatus $placeToPayStatus): string
+    {
+        return match ($placeToPayStatus) {
+            PlaceToPayStatus::APPROVED => PaymentStatus::APPROVED->value,
+            PlaceToPayStatus::PENDING => PaymentStatus::PENDING->value,
+            PlaceToPayStatus::REJECTED => PaymentStatus::REJECTED->value,
+            default => PaymentStatus::UNKNOWN->value,
+        };
     }
 }
