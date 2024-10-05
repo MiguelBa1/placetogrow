@@ -2,9 +2,11 @@
 
 namespace App\Http\Resources\MicrositeField;
 
+use App\Models\MicrositeField;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
+/* @mixin MicrositeField */
 class MicrositeFieldListResource extends JsonResource
 {
     /**
@@ -15,10 +17,14 @@ class MicrositeFieldListResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
+        $locale = app()->getLocale();
+
+        $translation = $this->translations->firstWhere('locale', $locale);
+
         return [
             'id' => $this->id,
             'name' => $this->name,
-            'label' => $this->label,
+            'label' => $translation->label ?? '',
             'type' => $this->type,
             'modifiable' => (bool) $this->modifiable,
             'validation_rules' => $this->validation_rules,
