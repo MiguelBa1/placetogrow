@@ -16,15 +16,17 @@ class CheckSubscriptionStatusJob implements ShouldQueue
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     protected Subscription $subscription;
+    protected SubscriptionServiceInterface $subscriptionService;
 
     public function __construct(Subscription $subscription)
     {
         $this->subscription = $subscription;
+        $this->subscriptionService = app(SubscriptionServiceInterface::class);
     }
 
-    public function handle(SubscriptionServiceInterface $subscriptionService): void
+    public function handle(): void
     {
-        $isSuccessful = $subscriptionService->checkSubscription($this->subscription);
+        $isSuccessful = $this->subscriptionService->checkSubscription($this->subscription);
 
         if ($isSuccessful) {
             Cache::forget('subscription_checked_' . $this->subscription->id);
