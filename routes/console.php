@@ -1,6 +1,8 @@
 <?php
 
 use App\Console\Commands\CheckPaymentsCommand;
+use App\Console\Commands\CheckSubscriptionsCommand;
+use App\Console\Commands\CollectSubscriptionPaymentsCommand;
 use App\Console\Commands\CreateAdminUserCommand;
 use App\Console\Commands\UpdateInvoiceStatusCommand;
 use Illuminate\Support\Facades\Artisan;
@@ -11,6 +13,12 @@ Schedule::command(CheckPaymentsCommand::class)->everyTenMinutes();
 Artisan::command('check:payments', function () {
     $this->call(CheckPaymentsCommand::class);
 })->describe('Check payments status');
+
+Schedule::command(CheckSubscriptionsCommand::class)->everyTenMinutes();
+
+Artisan::command('check:subscriptions', function () {
+    $this->call(CheckSubscriptionsCommand::class);
+})->describe('Check subscriptions status');
 
 Schedule::command(UpdateInvoiceStatusCommand::class)->daily();
 
@@ -25,3 +33,9 @@ Artisan::command('create:admin {name} {email} {password}', function ($name, $ema
         'password' => $password,
     ]);
 })->describe('Create a new admin user');
+
+Schedule::command(CollectSubscriptionPaymentsCommand::class)->daily();
+
+Artisan::command('subscriptions:collect-payments', function () {
+    $this->call(CollectSubscriptionPaymentsCommand::class);
+})->describe('Collect payments for active subscriptions');

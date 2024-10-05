@@ -25,6 +25,7 @@ use Spatie\Sluggable\SlugOptions;
  * @property string responsible_name
  * @property string responsible_document_number
  * @property string responsible_document_type
+ * @property array settings
  * @property Category category
  * @property MicrositeField[] fields
  * @property Invoice[] invoices
@@ -44,11 +45,13 @@ class Microsite extends Model implements HasMedia
         'responsible_name',
         'responsible_document_number',
         'responsible_document_type',
+        'settings',
     ];
 
     protected $casts = [
         'payment_currency' => CurrencyType::class,
         'type' => MicrositeType::class,
+        'settings' => 'array',
     ];
 
     public function category(): BelongsTo

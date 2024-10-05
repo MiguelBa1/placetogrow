@@ -72,6 +72,16 @@ trait PlaceToPayMockTrait
         $this->createPlaceToPayMock('cancelled_subscription.json', 'cancelSubscription');
     }
 
+    public function fakeCollectSubscriptionPaymentSuccess(): void
+    {
+        $this->createPlaceToPayMock('collected_subscription_payment.json', 'collectSubscriptionPayment');
+    }
+
+    public function fakeCollectSubscriptionPaymentFailed(): void
+    {
+        $this->createPlaceToPayMock('failed_subscription_payment.json', 'collectSubscriptionPayment', 400);
+    }
+
     private function createPlaceToPayMock(string $file, string $method, int $statusCode = 200, string $sessionType = null): void
     {
         $this->app->bind(PlaceToPayServiceInterface::class, function () use ($file, $statusCode, $method, $sessionType) {
@@ -82,6 +92,7 @@ trait PlaceToPayMockTrait
                 'checkPayment' => $mock->setCheckPaymentInformation($file),
                 'createSubscription' => $mock->setCreateSubscriptionInformation($file),
                 'checkSubscription' => $mock->setCheckSubscriptionInformation($file),
+                'collectSubscriptionPayment' => $mock->setCollectSubscriptionPaymentInformation($file),
                 default => null,
             };
 

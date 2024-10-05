@@ -8,6 +8,7 @@ use App\Constants\PlaceToPayStatus;
 use App\Constants\SubscriptionStatus;
 use App\Contracts\PlaceToPayServiceInterface;
 use App\Contracts\SubscriptionServiceInterface;
+use App\Jobs\CollectSubscriptionPaymentJob;
 use App\Models\Microsite;
 use App\Models\Plan;
 use App\Models\Subscription;
@@ -81,27 +82,37 @@ class SubscriptionService implements SubscriptionServiceInterface
     {
         $subscriptionStatus = $dataResponse['status'];
 
-        if ($subscriptionStatus['status'] !== PlaceToPayStatus::APPROVED->value) {
-            $subscription->update([
-                'status' => SubscriptionStatus::INACTIVE->value,
-                'status_message' => $subscriptionStatus['message'],
-            ]);
-            return;
-        }
-
-        $subscriptionInstrument = $dataResponse['subscription']['instrument'];
+        $mappedStatus = $this->mapPlaceToPayStatusToSubscriptionStatus(PlaceToPayStatus::from($subscriptionStatus['status']));
 
         $subscription->update([
-            'status' => SubscriptionStatus::ACTIVE->value,
+            'status' => $mappedStatus,
             'status_message' => $subscriptionStatus['message'],
-            'token' => encrypt($subscriptionInstrument[0]['value']),
-            'subtoken' => encrypt($subscriptionInstrument[1]['value']),
         ]);
+
+        if ($mappedStatus === SubscriptionStatus::ACTIVE->value) {
+            $subscriptionInstrument = $dataResponse['subscription']['instrument'];
+
+            $subscription->update([
+                'token' => encrypt($subscriptionInstrument[0]['value']),
+                'subtoken' => encrypt($subscriptionInstrument[1]['value']),
+            ]);
+
+            CollectSubscriptionPaymentJob::dispatch($subscription->id);
+        }
+    }
+
+    private function mapPlaceToPayStatusToSubscriptionStatus(PlaceToPayStatus $status): string
+    {
+        return match ($status) {
+            PlaceToPayStatus::APPROVED, PlaceToPayStatus::APPROVED_PARTIAL => SubscriptionStatus::ACTIVE->value,
+            PlaceToPayStatus::PENDING => SubscriptionStatus::PENDING->value,
+            default => SubscriptionStatus::INACTIVE->value,
+        };
     }
 
     public function cancelSubscription(Subscription $subscription): bool
     {
-        $result = $this->placeToPayService->cancelSubscription(decrypt($subscription->token));
+        $result = $this->placeToPayService->cancelSubscription($subscription->token);
 
         if (!$result['success']) {
             return false;

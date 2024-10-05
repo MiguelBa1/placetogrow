@@ -16,6 +16,7 @@ return new class extends Migration {
             $table->foreignId('plan_id')->constrained('plans')->onDelete('cascade');
             $table->date('start_date');
             $table->date('end_date');
+            $table->date('next_payment_date');
             $table->enum('status', array_column(SubscriptionStatus::cases(), 'value'))->default(SubscriptionStatus::PENDING->value);
             $table->string('reference', 50)->unique();
             $table->string('description', 100);

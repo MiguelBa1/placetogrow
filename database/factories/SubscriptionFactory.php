@@ -35,6 +35,7 @@ class SubscriptionFactory extends Factory
             'plan_id' => Plan::factory(),
             'start_date' => $this->faker->date(),
             'end_date' => $this->faker->date(),
+            'next_payment_date' => $this->faker->date(),
             'status' => SubscriptionStatus::PENDING->value,
             'reference' => Str::uuid(),
             'description' => $this->faker->sentence(),

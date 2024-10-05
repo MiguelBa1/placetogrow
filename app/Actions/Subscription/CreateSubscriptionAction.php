@@ -16,11 +16,14 @@ class CreateSubscriptionAction
         $start_date = now();
         $end_date = now()->add(DateInterval::createFromDateString("{$plan->total_duration} {$plan->time_unit->value}"));
 
+        $next_payment_date = now()->add(DateInterval::createFromDateString("{$plan->billing_frequency} {$plan->time_unit->value}"));
+
         return Subscription::create([
             'customer_id' => $customer->id,
             'plan_id' => $plan->id,
             'start_date' => $start_date,
             'end_date' => $end_date,
+            'next_payment_date' => $next_payment_date,
             'reference' => date('ymdHis') . '-' . strtoupper(Str::random(4)),
             'description' => $customer->name . ' ' . $plan->id,
             'currency' => $microsite->payment_currency->value,

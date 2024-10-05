@@ -18,29 +18,46 @@ class MicrositeFactory extends Factory
 {
     protected $model = Microsite::class;
 
-    /**
-     * Define the model's default state.
-     *
-     * @return array<string, mixed>
-     */
     public function definition(): array
     {
         $type = $this->faker->randomElement(MicrositeType::cases());
         $typeName = ucfirst($type->value);
         $name = "$typeName " . $this->faker->unique()->randomNumber(5);
-        $paymentExpiration = $type->defaultExpirationDays() ?? $this->faker->numberBetween(1, 365);
+        $paymentExpiration = $type === MicrositeType::BASIC ? null : $this->faker->numberBetween(1, 365);
+
+        $settings = $this->generateSettingsForType($type);
 
         return [
             'name' => $name,
             'slug' => Str::slug($name),
             'category_id' => Category::factory(),
             'payment_currency' => $this->faker->randomElement(array_column(CurrencyType::cases(), 'value')),
-            'payment_expiration' => $type === MicrositeType::BASIC ? null : $paymentExpiration,
+            'payment_expiration' => $paymentExpiration,
             'type' => $type->value,
             'responsible_name' => $this->faker->name,
             'responsible_document_number' => $this->faker->unique()->numerify('##########'),
             'responsible_document_type' => $this->faker->randomElement(array_column(DocumentType::cases(), 'value')),
+            'settings' => $settings,
         ];
+    }
+
+    private function generateSettingsForType(MicrositeType $type): array
+    {
+        return match ($type) {
+            MicrositeType::INVOICE => [
+                'late_fee' => [
+                    'type' => $this->faker->randomElement(['fixed', 'percentage']),
+                    'value' => $this->faker->randomFloat(2, 1, 100),
+                ],
+            ],
+            MicrositeType::SUBSCRIPTION => [
+                'retry' => [
+                    'max_retries' => $this->faker->numberBetween(1, 5),
+                    'retry_backoff' => $this->faker->randomElement(['1 hour', '12 hours', '24 hours']),
+                ],
+            ],
+            default => [],
+        };
     }
 
     public function configure(): Factory|MicrositeFactory

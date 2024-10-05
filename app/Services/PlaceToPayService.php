@@ -18,7 +18,7 @@ class PlaceToPayService implements PlaceToPayServiceInterface
 
     public function __construct()
     {
-        $this->config = config('payments.placetopay');
+        $this->config = config('placetopay');
 
         $this->data = [
             'expiration' => $this->config['expiration'],
@@ -62,6 +62,20 @@ class PlaceToPayService implements PlaceToPayServiceInterface
         return $this;
     }
 
+    public function payer(Customer $data): self
+    {
+        $this->data['payer'] = [
+            'name' => $data['name'],
+            'surname' => $data['last_name'],
+            'email' => $data['email'],
+            'documentType' => $data['document_type'],
+            'document' => $data['document_number'],
+            'mobile' => $data['phone'],
+        ];
+
+        return $this;
+    }
+
     public function payment(Payment $data): self
     {
         $this->data['payment'] = [
@@ -94,7 +108,7 @@ class PlaceToPayService implements PlaceToPayServiceInterface
     {
         $this->data['instrument'] = [
             'token' => [
-                'token' => $token,
+                'token' => decrypt($token),
             ],
         ];
 
@@ -121,6 +135,18 @@ class PlaceToPayService implements PlaceToPayServiceInterface
         Log::info('PlaceToPayService: Creating subscription', array_merge($this->data['subscription'], $this->data['buyer']));
 
         return $this->handleHttpRequest('/api/session');
+    }
+
+    public function collectSubscriptionPayment(Customer $customer, Subscription $subscription, Payment $payment): array
+    {
+        $this->prepare();
+        $this->payer($customer);
+        $this->instrument($subscription->token);
+        $this->payment($payment);
+
+        Log::info('PlaceToPayService: Collecting subscription payment', array_merge($this->data['payment'], $this->data['instrument']));
+
+        return $this->handleHttpRequest('/api/collect');
     }
 
     public function cancelSubscription(string $subscriptionToken): array
