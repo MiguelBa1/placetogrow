@@ -4,6 +4,7 @@ namespace Database\Factories;
 
 use App\Constants\CurrencyType;
 use App\Constants\DocumentType;
+use App\Constants\LateFeeType;
 use App\Constants\MicrositeType;
 use App\Models\Category;
 use App\Models\Microsite;
@@ -46,14 +47,14 @@ class MicrositeFactory extends Factory
         return match ($type) {
             MicrositeType::INVOICE => [
                 'late_fee' => [
-                    'type' => $this->faker->randomElement(['fixed', 'percentage']),
+                    'type' => $this->faker->randomElement(LateFeeType::cases())->value,
                     'value' => $this->faker->randomFloat(2, 1, 100),
                 ],
             ],
             MicrositeType::SUBSCRIPTION => [
                 'retry' => [
                     'max_retries' => $this->faker->numberBetween(1, 5),
-                    'retry_backoff' => $this->faker->randomElement(['1 hour', '12 hours', '24 hours']),
+                    'retry_backoff' => $this->faker->numberBetween(1, 48),
                 ],
             ],
             default => [],
