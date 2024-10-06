@@ -14,7 +14,6 @@ use App\Http\Requests\Microsite\UpdateMicrositeRequest;
 use App\Http\Resources\MicrositeField\MicrositeFieldListResource;
 use App\Models\Microsite;
 use App\Services\MicrositeService;
-use Exception;
 use Illuminate\Auth\Access\AuthorizationException;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -22,19 +21,26 @@ use Symfony\Component\HttpFoundation\Response as HttpFoundationResponse;
 
 class MicrositeController extends Controller
 {
+    private MicrositeService $micrositeService;
+
+    public function __construct(MicrositeService $micrositeService)
+    {
+        $this->micrositeService = $micrositeService;
+    }
+
     /**
      * @throws AuthorizationException
      */
-    public function index(FilterMicrositesRequest $request, MicrositeService $micrositeService): Response
+    public function index(FilterMicrositesRequest $request): Response
     {
         $this->authorize(PolicyName::VIEW_ANY->value, Microsite::class);
 
         $searchFilter = $request->input('search');
         $categoryFilter = $request->input('category');
 
-        $microsites = $micrositeService->getAllMicrosites($searchFilter, $categoryFilter);
+        $microsites = $this->micrositeService->getAllMicrosites($searchFilter, $categoryFilter);
 
-        $categories = $micrositeService->getFormData()['categories'];
+        $categories = $this->micrositeService->getFormData()['categories'];
 
         return Inertia::render('Microsites/Index', [
             'microsites' => fn () => $microsites,
@@ -53,7 +59,7 @@ class MicrositeController extends Controller
     {
         $this->authorize(PolicyName::VIEW->value, $microsite);
 
-        $micrositeData = (new micrositeService)->getMicrositeData($microsite);
+        $micrositeData = $this->micrositeService->getMicrositeData($microsite);
         $fields = MicrositeFieldListResource::collection($microsite->fields()->orderBy('created_at', 'desc')->get());
 
         return Inertia::render('Microsites/Show', [
@@ -69,7 +75,7 @@ class MicrositeController extends Controller
     {
         $this->authorize(PolicyName::CREATE->value, Microsite::class);
 
-        $formData = (new micrositeService)->getFormData();
+        $formData = $this->micrositeService->getFormData();
 
         return Inertia::render('Microsites/Create', $formData);
     }
@@ -93,8 +99,8 @@ class MicrositeController extends Controller
     {
         $this->authorize(PolicyName::UPDATE->value, $microsite);
 
-        $formData = (new micrositeService)->getFormData();
-        $micrositeData = (new micrositeService)->getEditData($microsite);
+        $formData = $this->micrositeService->getFormData();
+        $micrositeData = $this->micrositeService->getEditData($microsite);
 
         return Inertia::render('Microsites/Edit', array_merge($formData, [
             'microsite' => $micrositeData,
@@ -108,13 +114,13 @@ class MicrositeController extends Controller
     {
         $this->authorize(PolicyName::UPDATE->value, $microsite);
 
-        try {
-            $updateMicrositeAction->execute($request, $microsite);
-        } catch (Exception $e) {
-            return back()->withErrors(['logo' => $e->getMessage()]);
+        $result = $updateMicrositeAction->execute($request, $microsite);
+
+        if (!$result['success']) {
+            return back()->withErrors($result['message']);
         }
 
-        return redirect()->route('microsites.edit', $microsite);
+        return back();
     }
 
     /**
