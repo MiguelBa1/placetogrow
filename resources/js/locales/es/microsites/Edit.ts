@@ -1,6 +1,8 @@
 export const esEdit = {
     title: "Editar Micrositio",
     header: "Editar Micrositio",
+    generalInformation: "Información General",
+    advancedSettings: "Configuración Avanzada",
     form: {
         name: "Nombre",
         category: "Categoría",
@@ -15,6 +17,13 @@ export const esEdit = {
         cancel: "Cancelar",
         success: "Micrositio editado con éxito",
         error: "Error al editar el micrositio",
+    },
+    settings: {
+        maxRetries: "Numero de reintentos",
+        retryBackoff: "Tiempo de espera entre reintentos (horas)",
+        lateFeeType: "Tipo de recargo por pago atrasado",
+        lateFeeValue: "Valor del recargo por pago atrasado",
+        saved: "Configuración avanzada guardada con éxito",
     },
     back: "Volver",
 }

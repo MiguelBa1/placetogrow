@@ -61,7 +61,7 @@ class CollectSubscriptionPaymentJobTest extends TestCase
             'settings' => [
                 'retry' => [
                     'max_retries' => 3,
-                    'retry_backoff' => '1 hour',
+                    'retry_backoff' => 1,
                 ],
             ],
         ]);

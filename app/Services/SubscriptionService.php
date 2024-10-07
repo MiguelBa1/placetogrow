@@ -119,7 +119,7 @@ class SubscriptionService implements SubscriptionServiceInterface
         }
 
         $subscription->update([
-            'status' => SubscriptionStatus::INACTIVE->value,
+            'status' => SubscriptionStatus::CANCELED->value,
         ]);
 
         return true;

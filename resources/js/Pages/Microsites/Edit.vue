@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { Head } from "@inertiajs/vue3";
-import { Button } from "@/Components";
+import { Button, Accordion } from "@/Components";
 import { MainLayout } from '@/Layouts';
-import { Category, EditForm, MicrositeEditData } from './index';
+import { Category, EditForm, AdvancedSettingsForm, MicrositeEditData, MicrositeType } from './index';
 import { useI18n } from "vue-i18n";
 
 const { t } = useI18n();
@@ -13,6 +13,7 @@ const { microsite, categories, documentTypes, micrositeTypes, currencyTypes } = 
     documentTypes: { label: string; value: string }[];
     micrositeTypes: { label: string; value: string }[];
     currencyTypes: { label: string; value: string }[];
+    lateFeeTypes: { label: string; value: string }[];
 }>();
 
 const goBack = () => {
@@ -42,12 +43,29 @@ const goBack = () => {
             </div>
         </template>
 
-        <EditForm
-            :microsite="microsite"
-            :categories="categories"
-            :documentTypes="documentTypes"
-            :currencyTypes="currencyTypes"
-            :micrositeTypes="micrositeTypes"
-        />
+        <div class="space-y-6">
+            <Accordion
+                default-open
+                :title="t('microsites.edit.generalInformation')"
+            >
+                <EditForm
+                    :microsite="microsite"
+                    :categories="categories"
+                    :documentTypes="documentTypes"
+                    :currencyTypes="currencyTypes"
+                    :micrositeTypes="micrositeTypes"
+                />
+            </Accordion>
+            <Accordion
+                v-if="[MicrositeType.INVOICE, MicrositeType.SUBSCRIPTION].includes(microsite.type)"
+                default-open
+                :title="t('microsites.edit.advancedSettings')"
+            >
+                <AdvancedSettingsForm
+                    :microsite="microsite"
+                    :lateFeeTypes="lateFeeTypes"
+                />
+            </Accordion>
+        </div>
     </MainLayout>
 </template>

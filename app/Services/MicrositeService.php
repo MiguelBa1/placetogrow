@@ -71,6 +71,7 @@ class MicrositeService
             'responsible_name',
             'responsible_document_number',
             'responsible_document_type',
+            'settings',
         ]);
         $micrositeData['logo'] = $microsite->getFirstMediaUrl('logos');
 

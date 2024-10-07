@@ -124,7 +124,7 @@ class SubscriptionControllerTest extends TestCase
         $response->assertRedirect();
         $this->assertDatabaseHas('subscriptions', [
             'id' => $customerSubscription->id,
-            'status' => SubscriptionStatus::INACTIVE,
+            'status' => SubscriptionStatus::CANCELED,
         ]);
     }
 }
