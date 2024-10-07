@@ -4,7 +4,6 @@ namespace Database\Factories;
 
 use App\Constants\CurrencyType;
 use App\Constants\DocumentType;
-use App\Constants\LateFeeType;
 use App\Constants\MicrositeType;
 use App\Models\Category;
 use App\Models\Microsite;
@@ -24,9 +23,10 @@ class MicrositeFactory extends Factory
         $type = $this->faker->randomElement(MicrositeType::cases());
         $typeName = ucfirst($type->value);
         $name = "$typeName " . $this->faker->unique()->randomNumber(5);
-        $paymentExpiration = $type === MicrositeType::BASIC ? null : $this->faker->numberBetween(1, 365);
 
-        $settings = $this->generateSettingsForType($type);
+        $paymentExpiration = $type->defaultExpirationDays();
+
+        $settings = $type->defaultSettings();
 
         return [
             'name' => $name,
@@ -40,25 +40,6 @@ class MicrositeFactory extends Factory
             'responsible_document_type' => $this->faker->randomElement(array_column(DocumentType::cases(), 'value')),
             'settings' => $settings,
         ];
-    }
-
-    private function generateSettingsForType(MicrositeType $type): array
-    {
-        return match ($type) {
-            MicrositeType::INVOICE => [
-                'late_fee' => [
-                    'type' => $this->faker->randomElement(LateFeeType::cases())->value,
-                    'value' => $this->faker->randomFloat(2, 1, 100),
-                ],
-            ],
-            MicrositeType::SUBSCRIPTION => [
-                'retry' => [
-                    'max_retries' => $this->faker->numberBetween(1, 5),
-                    'retry_backoff' => $this->faker->numberBetween(1, 48),
-                ],
-            ],
-            default => [],
-        };
     }
 
     public function configure(): Factory|MicrositeFactory
