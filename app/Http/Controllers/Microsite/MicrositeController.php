@@ -6,11 +6,14 @@ use App\Actions\Microsite\DestroyMicrositeAction;
 use App\Actions\Microsite\RestoreMicrositeAction;
 use App\Actions\Microsite\StoreMicrositeAction;
 use App\Actions\Microsite\UpdateMicrositeAction;
+use App\Actions\Microsite\UpdateMicrositeSettingsAction;
+use App\Constants\LateFeeType;
 use App\Constants\PolicyName;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Microsite\CreateMicrositeRequest;
 use App\Http\Requests\Microsite\FilterMicrositesRequest;
 use App\Http\Requests\Microsite\UpdateMicrositeRequest;
+use App\Http\Requests\Microsite\UpdateMicrositeSettingsRequest;
 use App\Http\Resources\MicrositeField\MicrositeFieldListResource;
 use App\Models\Microsite;
 use App\Services\MicrositeService;
@@ -104,6 +107,7 @@ class MicrositeController extends Controller
 
         return Inertia::render('Microsites/Edit', array_merge($formData, [
             'microsite' => $micrositeData,
+            'lateFeeTypes' => LateFeeType::toSelectArray(),
         ]));
     }
 
@@ -115,6 +119,26 @@ class MicrositeController extends Controller
         $this->authorize(PolicyName::UPDATE->value, $microsite);
 
         $result = $updateMicrositeAction->execute($request, $microsite);
+
+        if (!$result['success']) {
+            return back()->withErrors([
+                'message' => $result['message']
+            ]);
+        }
+
+        return back();
+    }
+
+    /**
+     * @throws AuthorizationException
+     */
+    public function updateSettings(UpdateMicrositeSettingsRequest $request, Microsite $microsite, UpdateMicrositeSettingsAction $updateMicrositeSettingsAction): HttpFoundationResponse
+    {
+        $this->authorize(PolicyName::UPDATE->value, $microsite);
+
+        $settings = $request->validated('settings');
+
+        $result = $updateMicrositeSettingsAction->execute($settings, $microsite);
 
         if (!$result['success']) {
             return back()->withErrors($result['message']);

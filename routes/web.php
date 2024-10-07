@@ -54,6 +54,7 @@ Route::prefix('microsites')->name('microsites.')->group(function () {
             Route::get('/', [MicrositeController::class, 'show'])->name('show');
             Route::get('/edit', [MicrositeController::class, 'edit'])->name('edit');
             Route::post('/', [MicrositeController::class, 'update'])->name('update');
+            Route::post('/settings', [MicrositeController::class, 'updateSettings'])->name('update-settings');
             Route::delete('/', [MicrositeController::class, 'destroy'])->name('destroy');
             Route::put('/restore', [MicrositeController::class, 'restore'])->name('restore');
 
