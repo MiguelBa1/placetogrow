@@ -1,6 +1,8 @@
 export const enEdit = {
     title: "Edit Microsite",
     header: "Edit Microsite",
+    generalInformation: "General Information",
+    advancedSettings: "Advanced Settings",
     form: {
         name: "Name",
         category: "Category",
@@ -15,6 +17,13 @@ export const enEdit = {
         cancel: "Cancel",
         success: "Microsite edited successfully",
         error: "Error editing the microsite"
+    },
+    settings: {
+        maxRetries: "Number of retries",
+        retryBackoff: "Time between retries (hours)",
+        lateFeeType: "Type of late payment fee",
+        lateFeeValue: "Value of late payment fee",
+        saved: "Advanced settings saved successfully"
     },
     back: "Back",
 }

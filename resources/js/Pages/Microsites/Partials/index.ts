@@ -7,3 +7,4 @@ export { default as FieldsTable } from './FieldsTable.vue';
 export { default as CreateFieldModal } from './CreateFieldModal.vue'
 export { default as EditFieldModal } from './EditFieldModal.vue'
 export { default as MicrositeDetails } from './MicrositeDetails.vue'
+export { default as AdvancedSettingsForm } from './AdvancedSettingsForm.vue'

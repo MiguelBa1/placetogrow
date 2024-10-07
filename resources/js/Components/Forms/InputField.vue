@@ -56,6 +56,8 @@ const updateValue = (event: Event) => {
             @input="updateValue"
             :class="inputClasses"
             :required="required"
+            :min="min"
+            :max="max"
         />
         <p v-if="error" class="mt-1 text-sm text-red-600">{{ error }}</p>
     </div>
