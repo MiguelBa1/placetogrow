@@ -54,7 +54,7 @@ const saveSettings = async () => {
         settings,
     };
 
-    router.post(route('microsites.update-settings', microsite), payload, {
+    router.post(route('microsites.update.settings', microsite), payload, {
         preserveScroll: true,
         onSuccess: () => {
             toast.success(t('microsites.edit.settings.saved'));

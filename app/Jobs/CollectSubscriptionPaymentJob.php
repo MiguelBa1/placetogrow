@@ -127,9 +127,7 @@ class CollectSubscriptionPaymentJob implements ShouldQueue
     {
         $this->loadMicrositeSettings();
 
-        $backoffTimestamp = strtotime($this->retryBackoff, 0);
-
-        return $backoffTimestamp !== false ? $backoffTimestamp : 3600;
+        return $this->retryBackoff * 3600;
     }
 
     public function failed(?Throwable $exception): void
