@@ -5,6 +5,7 @@ use App\Console\Commands\CheckSubscriptionsCommand;
 use App\Console\Commands\CollectSubscriptionPaymentsCommand;
 use App\Console\Commands\CreateAdminUserCommand;
 use App\Console\Commands\UpdateInvoiceStatusCommand;
+use App\Jobs\NotifyInvoiceDueSoonJob;
 use App\Jobs\NotifyUpcomingSubscriptionChargeJob;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Schedule;
@@ -42,3 +43,4 @@ Artisan::command('subscriptions:collect-payments', function () {
 })->describe('Collect payments for active subscriptions');
 
 Schedule::job(new NotifyUpcomingSubscriptionChargeJob())->daily();
+Schedule::job(new NotifyInvoiceDueSoonJob())->daily();

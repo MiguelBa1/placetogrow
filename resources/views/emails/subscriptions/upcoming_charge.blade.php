@@ -9,6 +9,9 @@
     'date' => $subscription->next_payment_date->toFormattedDateString(),
 ]) }}
 
+@component('mail::button', ['url' => route('home')])
+    {{ __('subscription.upcoming_charge_mail.button') }}
+
 **{{ __('subscription.upcoming_charge_mail.microsite') }}:** {{ $subscription->plan->microsite->name }}
 
 {{ __('subscription.upcoming_charge_mail.thank_you') }},
