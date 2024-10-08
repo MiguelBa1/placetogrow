@@ -9,10 +9,12 @@ use App\Constants\SubscriptionStatus;
 use App\Contracts\PlaceToPayServiceInterface;
 use App\Contracts\SubscriptionServiceInterface;
 use App\Jobs\CollectSubscriptionPaymentJob;
+use App\Mail\SubscriptionCreatedMail;
 use App\Models\Microsite;
 use App\Models\Plan;
 use App\Models\Subscription;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Mail;
 
 class SubscriptionService implements SubscriptionServiceInterface
 {
@@ -98,6 +100,9 @@ class SubscriptionService implements SubscriptionServiceInterface
             ]);
 
             CollectSubscriptionPaymentJob::dispatch($subscription->id);
+
+            Mail::to($subscription->customer->email)
+                ->queue(new SubscriptionCreatedMail($subscription));
         }
     }
 

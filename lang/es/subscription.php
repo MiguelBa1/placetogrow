@@ -43,4 +43,12 @@ return [
         'button' => 'Gestionar tu Suscripción',
         'thank_you' => 'Gracias por tu continuo apoyo',
     ],
+
+    'subscription_created_mail' => [
+        'subject' => 'Confirmación de Suscripción',
+        'greeting' => 'Hola :name,',
+        'message' => 'Gracias por suscribirte al plan :plan en el micrositio :microsite. Esperamos que disfrutes de nuestros servicios.',
+        'farewell' => 'Saludos cordiales,',
+        'team' => 'El equipo de :microsite',
+    ],
 ];
