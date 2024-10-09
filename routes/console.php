@@ -46,4 +46,3 @@ Artisan::command('subscriptions:collect-payments', function () {
 Schedule::job(new NotifyUpcomingSubscriptionChargeJob())->daily();
 Schedule::job(new NotifyInvoiceDueSoonJob())->daily();
 Schedule::job(new NotifySubscriptionExpirationJob())->daily();
-
