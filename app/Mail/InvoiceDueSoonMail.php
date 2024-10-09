@@ -34,9 +34,4 @@ class InvoiceDueSoonMail extends Mailable implements ShouldQueue
             markdown: 'emails.invoices.due_soon',
         );
     }
-
-    public function attachments(): array
-    {
-        return [];
-    }
 }
