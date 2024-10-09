@@ -51,4 +51,12 @@ return [
         'farewell' => 'Best regards,',
         'team' => 'The :microsite team',
     ],
+
+    'expiration_reminder' => [
+        'subject' => 'Subscription Expiration Reminder',
+        'greeting' => 'Hello :name,',
+        'body' => 'Your subscription to the :plan plan on the :microsite microsite will expire on :end_date.',
+        'renew_cta' => 'You can renew it on our page before it expires to continue enjoying our services.',
+        'button_text' => 'Renew subscription',
+    ],
 ];
