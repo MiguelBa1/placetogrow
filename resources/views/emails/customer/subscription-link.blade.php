@@ -1,16 +1,16 @@
 @component('mail::message')
-# {{ __('subscription.mail.greeting') }}
+# {{ __('subscription.access_link_mail.greeting') }}
 
-{{ __('subscription.mail.message') }}
+{{ __('subscription.access_link_mail.message') }}
 
-@component('mail::button', ['url' => $url])
-    {{ __('subscription.mail.button_text') }}
+@component('access_link_mail::button', ['url' => $url])
+    {{ __('subscription.access_link_mail.button_text') }}
 @endcomponent
 
-{{ __('subscription.mail.alt_message') }}
+{{ __('subscription.access_link_mail.alt_message') }}
 
 [{{ $url }}]({{ $url }})
 
-{{ __('subscription.mail.thanks') }}<br>
+{{ __('subscription.access_link_mail.thanks') }}<br>
 {{ config('app.name') }}
 @endcomponent

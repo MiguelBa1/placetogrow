@@ -44,6 +44,7 @@ class Invoice extends Model
 
     protected $casts = [
         'status' => InvoiceStatus::class,
+        'expiration_date' => 'date',
     ];
 
     public function payment(): HasOne

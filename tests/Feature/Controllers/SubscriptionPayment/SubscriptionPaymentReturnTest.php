@@ -4,10 +4,12 @@ namespace Tests\Feature\Controllers\SubscriptionPayment;
 
 use App\Constants\MicrositeType;
 use App\Constants\SubscriptionStatus;
+use App\Mail\SubscriptionCreatedMail;
 use App\Models\Microsite;
 use App\Models\Subscription;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Mail;
 use Mockery;
 use Tests\TestCase;
 use Tests\Traits\CreatesMicrosites;
@@ -28,6 +30,8 @@ class SubscriptionPaymentReturnTest extends TestCase
 
     public function test_return_after_subscription_payment(): void
     {
+        Mail::fake();
+
         $this->fakeSubscriptionCheckApproved();
         Cache::spy();
 
@@ -47,6 +51,11 @@ class SubscriptionPaymentReturnTest extends TestCase
                 ->has('subscription')
                 ->has('customer')
         );
+
+        Mail::assertQueued(SubscriptionCreatedMail::class, function ($mail) use ($subscription) {
+            return $mail->hasTo($subscription->customer->email) &&
+                $mail->subscription->is($subscription);
+        });
 
         Cache::shouldHaveReceived('put')
             ->once()

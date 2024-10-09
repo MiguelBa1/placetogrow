@@ -5,6 +5,7 @@ namespace Database\Factories;
 use App\Constants\TimeUnit;
 use App\Models\Microsite;
 use App\Models\Plan;
+use App\Models\PlanTranslation;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -30,5 +31,17 @@ class PlanFactory extends Factory
             'billing_frequency' => $this->faker->randomElement($validBillingFrequencies),
             'time_unit' => $this->faker->randomElement(TimeUnit::toArray()),
         ];
+    }
+
+    public function configure(): self
+    {
+        return $this->afterCreating(function (Plan $plan) {
+            foreach (['en', 'es'] as $locale) {
+                PlanTranslation::factory()->create([
+                    'plan_id' => $plan->id,
+                    'locale' => $locale,
+                ]);
+            }
+        });
     }
 }

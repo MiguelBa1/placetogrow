@@ -2,6 +2,7 @@
 
 namespace App\Mail;
 
+use App\Models\Subscription;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
@@ -9,28 +10,29 @@ use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
 
-class ImportInvoicesResultMail extends Mailable implements ShouldQueue
+class SubscriptionCreatedMail extends Mailable implements ShouldQueue
 {
     use Queueable, SerializesModels;
 
-    public array $failures;
+    public Subscription $subscription;
 
-    public function __construct(array $failures = [])
+    public function __construct(Subscription $subscription)
     {
-        $this->failures = $failures;
+        $this->subscription = $subscription;
     }
 
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: __('invoices.import.mail.subject'),
+            subject: __('subscription.subscription_created_mail.subject'),
         );
     }
 
     public function content(): Content
     {
         return new Content(
-            markdown: 'emails.invoices.import_result',
+            markdown: 'emails.subscriptions.created',
         );
     }
+
 }
