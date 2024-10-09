@@ -31,7 +31,7 @@ class CheckSubscriptionsCommandTest extends TestCase
 
         $subscription = Subscription::factory()->create([
             'status' => SubscriptionStatus::PENDING->value,
-            'created_at' => now()->subMinutes(config('subscriptions.check_interval_minutes'))->subSecond(),
+            'created_at' => now()->subMinutes(config('subscription.check_interval_minutes'))->subSecond(),
         ]);
 
         $this->artisan('check:subscriptions');

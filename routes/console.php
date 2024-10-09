@@ -43,6 +43,6 @@ Artisan::command('subscriptions:collect-payments', function () {
     $this->call(CollectSubscriptionPaymentsCommand::class);
 })->describe('Collect payments for active subscriptions');
 
-Schedule::job(new NotifyUpcomingSubscriptionChargeJob())->daily();
-Schedule::job(new NotifyInvoiceDueSoonJob())->daily();
-Schedule::job(new NotifySubscriptionExpirationJob())->daily();
+Schedule::job((new NotifyUpcomingSubscriptionChargeJob())->onQueue('low'))->daily();
+Schedule::job((new NotifySubscriptionExpirationJob())->onQueue('low'))->daily();
+Schedule::job((new NotifyInvoiceDueSoonJob())->onQueue('low'))->daily();
