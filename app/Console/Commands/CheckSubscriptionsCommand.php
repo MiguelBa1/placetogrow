@@ -17,7 +17,7 @@ class CheckSubscriptionsCommand extends Command
     {
         $subscriptions = Subscription::query()
             ->where('status', SubscriptionStatus::PENDING->value)
-            ->where('created_at', '<', now()->subMinutes(config('subscriptions.check_interval_minutes')))
+            ->where('created_at', '<', now()->subMinutes(config('subscription.check_interval_minutes')))
             ->get();
 
         if ($subscriptions->isEmpty()) {
@@ -27,7 +27,7 @@ class CheckSubscriptionsCommand extends Command
 
         foreach ($subscriptions as $subscription) {
             $this->info("Dispatching job to check subscription {$subscription->reference}");
-            CheckSubscriptionStatusJob::dispatch($subscription);
+            CheckSubscriptionStatusJob::dispatch($subscription)->onQueue('high');
         }
     }
 }

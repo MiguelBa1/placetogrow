@@ -50,7 +50,7 @@ class CollectSubscriptionPaymentJob implements ShouldQueue
         $settings = $microsite->settings;
 
         $this->maxRetries = $settings['retry']['max_retries'] ?? 3;
-        $this->retryBackoff = $settings['retry']['retry_backoff'] ?? '1 hour';
+        $this->retryBackoff = $settings['retry']['retry_backoff'] ?? 1;
     }
 
     public function handle(

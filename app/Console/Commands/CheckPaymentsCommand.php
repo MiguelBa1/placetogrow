@@ -27,7 +27,7 @@ class CheckPaymentsCommand extends Command
 
         foreach ($payments as $payment) {
             $this->info('Dispatching job to check payment ' . $payment->request_id);
-            CheckPaymentStatusJob::dispatch($payment);
+            CheckPaymentStatusJob::dispatch($payment)->onQueue('high');
         }
     }
 }

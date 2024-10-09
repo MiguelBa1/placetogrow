@@ -51,4 +51,14 @@ return [
         'farewell' => 'Saludos cordiales,',
         'team' => 'El equipo de :microsite',
     ],
+
+    'expiration_reminder' => [
+        'subject' => 'Recordatorio de Vencimiento de Suscripción',
+        'greeting' => 'Hola :name,',
+        'body' => 'Tu suscripción al plan :plan en el micrositio :microsite vencerá el :end_date.',
+        'renew_cta' => 'Puedes renovarla en nuestra página antes de que expire para seguir disfrutando de nuestros servicios.',
+        'button_text' => 'Renovar suscripción',
+        'thank_you' => 'Gracias por tu preferencia,',
+        'signature' => 'El equipo de :microsite',
+    ],
 ];

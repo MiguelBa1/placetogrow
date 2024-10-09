@@ -26,7 +26,7 @@ class CollectSubscriptionPaymentsCommand extends Command
         }
 
         foreach ($subscriptions as $subscription) {
-            CollectSubscriptionPaymentJob::dispatch($subscription->id);
+            CollectSubscriptionPaymentJob::dispatch($subscription->id)->onQueue('high');
 
             $this->info("Dispatched payment collection for subscription: {$subscription->reference}");
         }
