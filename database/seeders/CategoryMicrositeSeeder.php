@@ -7,6 +7,7 @@ use App\Constants\MicrositeType;
 use App\Models\Category;
 use App\Models\Invoice;
 use App\Models\Microsite;
+use App\Models\Payment;
 use App\Models\Plan;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Storage;
@@ -20,13 +21,13 @@ class CategoryMicrositeSeeder extends Seeder
         $this->attachMicrositeFieldsAction = $attachMicrositeFieldsAction;
     }
 
-    public function run(): void
+    public function run(int $count): void
     {
         $this->cleanDirectories();
 
-        $categories = Category::factory()->count(5)->create();
+        $categories = Category::factory(5)->create();
 
-        $microsites = Microsite::factory()->count(20)
+        $microsites = Microsite::factory($count)
             ->recycle($categories)
             ->create();
 
@@ -35,11 +36,43 @@ class CategoryMicrositeSeeder extends Seeder
             $this->attachMicrositeFieldsAction->execute($microsite);
 
             if ($microsite->type->value === MicrositeType::INVOICE->value) {
-                Invoice::factory()->count(3)->create(['microsite_id' => $microsite->id]);
+                Invoice::factory(3)
+                    ->pending()
+                    ->recycle($microsite)
+                    ->create();
+
+                Payment::factory(2)
+                    ->withInvoice()
+                    ->recycle($microsite)
+                    ->create();
+
+                $expiredInvoices = Invoice::factory(2)
+                    ->expired()
+                    ->recycle($microsite)
+                    ->create();
+
+                Payment::factory(1)
+                    ->recycle($microsite)
+                    ->recycle($expiredInvoices)
+                    ->withInvoice()
+                    ->create();
             }
 
             if ($microsite->type->value === MicrositeType::SUBSCRIPTION->value) {
-                Plan::factory()->count(2)->create(['microsite_id' => $microsite->id]);
+                $plans = Plan::factory(2)
+                    ->recycle($microsite)
+                    ->create();
+
+                Payment::factory(3)
+                    ->recycle($plans)
+                    ->recycle($microsite)
+                    ->withPlan()
+                    ->create();
+            }
+            if ($microsite->type->value === MicrositeType::BASIC->value) {
+                Payment::factory(3)
+                    ->recycle($microsite)
+                    ->create();
             }
         }
     }

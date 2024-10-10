@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Constants\InvoiceStatus;
+use Database\Factories\InvoiceFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -23,6 +24,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
  * @property Payment payment
  * @property int microsite_id
  * @property int id
+ * @method static InvoiceFactory factory($count = null, $state = [])
  */
 class Invoice extends Model
 {
