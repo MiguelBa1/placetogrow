@@ -1,10 +1,17 @@
 <script setup lang="ts">
 import { MainLayout } from '@/Layouts';
-import { Head, usePage } from '@inertiajs/vue3';
+import { Head } from '@inertiajs/vue3';
+import {
+    ChartData,
+    ApprovedTransactionsByMicrositeTypeChart,
+    InvoiceDistributionChart,
+    SubscriptionDistributionChart,
+    TopMicrositesChart,
+    PaymentsOverTimeChart,
+} from '@/Pages/Dashboard';
 
-const props = usePage().props;
+const props = defineProps<ChartData>();
 
-console.log(props);
 </script>
 
 <template>
@@ -19,8 +26,22 @@ console.log(props);
             </h2>
         </template>
 
-        <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-            <div class="p-6 text-gray-900">You're logged in!</div>
+        <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div class="md:col-span-2 bg-white shadow rounded p-4">
+                <PaymentsOverTimeChart :data="props.paymentsOverTime" />
+            </div>
+            <div class="bg-white shadow rounded p-4">
+                <InvoiceDistributionChart :data="props.invoiceDistribution" />
+            </div>
+            <div class="bg-white shadow rounded p-4">
+                <TopMicrositesChart :data="props.topMicrositesByTransactions" />
+            </div>
+            <div class="bg-white shadow rounded p-4">
+                <SubscriptionDistributionChart :data="props.subscriptionDistribution" />
+            </div>
+            <div class="bg-white shadow rounded p-4">
+                <ApprovedTransactionsByMicrositeTypeChart :data="props.approvedTransactionsByMicrositeType" />
+            </div>
         </div>
     </MainLayout>
 </template>
