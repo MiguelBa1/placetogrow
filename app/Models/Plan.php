@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Constants\TimeUnit;
+use Database\Factories\PlanFactory;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -25,6 +26,7 @@ use Illuminate\Support\Carbon;
  *
  * @property Microsite $microsite
  * @property Collection|PlanTranslation[] $translations
+ * @method static PlanFactory factory($count = null, $state = [])
  */
 class Plan extends Model
 {

@@ -1,11 +1,12 @@
 CREATE PROCEDURE get_payments_over_time()
 BEGIN
     SELECT
-        DATE_FORMAT(payment_date, '%Y-%m') AS month,
+        DATE(payment_date) AS day,
         currency,
         SUM(amount) AS total_amount
     FROM payments
     WHERE status = 'APPROVED'
-    GROUP BY DATE_FORMAT(payment_date, '%Y-%m'), currency
-    ORDER BY DATE_FORMAT(payment_date, '%Y-%m');
+      AND payment_date >= DATE_SUB(CURDATE(), INTERVAL 1 MONTH)
+    GROUP BY DATE(payment_date), currency
+    ORDER BY DATE(payment_date);
 END;

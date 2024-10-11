@@ -9,10 +9,10 @@ use App\Models\Invoice;
 use App\Models\Microsite;
 use App\Models\Payment;
 use App\Models\Plan;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
-use Ramsey\Collection\Collection;
 
 /**
  * @extends Factory<Payment>
@@ -29,7 +29,7 @@ class PaymentFactory extends Factory
             'microsite_id' => Microsite::factory(),
             'invoice_id' => null,
             'plan_id' => null,
-            'reference' => $this->faker->unique()->word,
+            'reference' => Str::uuid()->toString(),
             'request_id' => Str::random(),
             'payment_method_name' => $this->faker->word,
             'description' => $this->faker->sentence,

@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Constants\TimeUnit;
 use Carbon\Carbon;
+use Database\Factories\SubscriptionFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\Pivot;
@@ -31,6 +32,7 @@ use Illuminate\Database\Eloquent\Relations\Pivot;
  * @property Customer $customer
  * @property string $created_at
  * @property string $updated_at
+ * @method static SubscriptionFactory factory($count = null, $state = [])
  */
 class Subscription extends Pivot
 {

@@ -61,14 +61,12 @@ const options = {
     scales: {
         x: {
             title: {
-                display: true,
-                text: 'Day',
+                display: false,
             },
         },
         y: {
             title: {
-                display: true,
-                text: 'Amount',
+                display: false,
             },
             beginAtZero: true,
         },

@@ -8,11 +8,14 @@ use App\Constants\TimeUnit;
 use App\Models\Customer;
 use App\Models\Plan;
 use App\Models\Subscription;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
 
 /**
  * @extends Factory<Subscription>
+ * @method Subscription|Collection<Subscription> create($attributes = [], ?Model $parent = null)
  */
 class SubscriptionFactory extends Factory
 {
@@ -36,7 +39,7 @@ class SubscriptionFactory extends Factory
             'start_date' => $this->faker->date(),
             'end_date' => $this->faker->date(),
             'next_payment_date' => $this->faker->date(),
-            'status' => SubscriptionStatus::PENDING->value,
+            'status' => $this->faker->randomElement(array_column(SubscriptionStatus::cases(), 'value')),
             'reference' => Str::uuid(),
             'description' => $this->faker->sentence(),
             'request_id' => Str::uuid(),

@@ -9,6 +9,7 @@ use App\Models\Invoice;
 use App\Models\Microsite;
 use App\Models\Payment;
 use App\Models\Plan;
+use App\Models\Subscription;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Storage;
 
@@ -41,7 +42,8 @@ class CategoryMicrositeSeeder extends Seeder
                     ->recycle($microsite)
                     ->create();
 
-                Payment::factory(2)
+                $randomPendingPayments = random_int(1, 5);
+                Payment::factory($randomPendingPayments)
                     ->withInvoice()
                     ->recycle($microsite)
                     ->create();
@@ -51,7 +53,8 @@ class CategoryMicrositeSeeder extends Seeder
                     ->recycle($microsite)
                     ->create();
 
-                Payment::factory(1)
+                $randomExpiredPayments = random_int(1, 3);
+                Payment::factory($randomExpiredPayments)
                     ->recycle($microsite)
                     ->recycle($expiredInvoices)
                     ->withInvoice()
@@ -63,14 +66,21 @@ class CategoryMicrositeSeeder extends Seeder
                     ->recycle($microsite)
                     ->create();
 
-                Payment::factory(3)
+                $randomPlanPayments = random_int(1, 5);
+                Payment::factory($randomPlanPayments)
                     ->recycle($plans)
                     ->recycle($microsite)
                     ->withPlan()
                     ->create();
+
+                Subscription::factory(2)
+                    ->recycle($plans)
+                    ->create();
             }
+
             if ($microsite->type->value === MicrositeType::BASIC->value) {
-                Payment::factory(3)
+                $randomBasicPayments = random_int(1, 4);
+                Payment::factory($randomBasicPayments)
                     ->recycle($microsite)
                     ->create();
             }
