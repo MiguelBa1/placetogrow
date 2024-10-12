@@ -42,7 +42,7 @@ class CategoryMicrositeSeeder extends Seeder
                     ->recycle($microsite)
                     ->create();
 
-                $randomPendingPayments = random_int(1, 5);
+                $randomPendingPayments = random_int(1, 3);
                 Payment::factory($randomPendingPayments)
                     ->withInvoice()
                     ->recycle($microsite)
@@ -53,7 +53,7 @@ class CategoryMicrositeSeeder extends Seeder
                     ->recycle($microsite)
                     ->create();
 
-                $randomExpiredPayments = random_int(1, 3);
+                $randomExpiredPayments = random_int(1, 2);
                 Payment::factory($randomExpiredPayments)
                     ->recycle($microsite)
                     ->recycle($expiredInvoices)
@@ -79,7 +79,7 @@ class CategoryMicrositeSeeder extends Seeder
             }
 
             if ($microsite->type->value === MicrositeType::BASIC->value) {
-                $randomBasicPayments = random_int(1, 4);
+                $randomBasicPayments = random_int(1, 5);
                 Payment::factory($randomBasicPayments)
                     ->recycle($microsite)
                     ->create();
