@@ -1,9 +1,12 @@
 <script setup lang="ts">
 import { defineProps } from 'vue';
 import { Bar } from 'vue-chartjs';
+import { useI18n } from 'vue-i18n';
 import { Chart as ChartJS, Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale } from 'chart.js';
 
 ChartJS.register(Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale);
+
+const { t } = useI18n();
 
 const props = defineProps<{
     data: {
@@ -30,12 +33,11 @@ const options = {
     maintainAspectRatio: false,
     plugins: {
         legend: {
-            position: 'top',
             display: false,
         },
         title: {
             display: true,
-            text: 'Approved Transactions by Microsite Type',
+            text: t('dashboard.index.approved_transactions'),
             font: {
                 family: 'Poppins',
                 size: 16,
@@ -52,7 +54,5 @@ const options = {
 </script>
 
 <template>
-    <div class="min-h-[300px]">
-        <Bar :data="chartData" :options="options" />
-    </div>
+    <Bar :data="chartData" :options="options" height="300" />
 </template>

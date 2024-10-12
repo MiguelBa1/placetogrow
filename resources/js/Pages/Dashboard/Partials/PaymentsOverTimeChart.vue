@@ -1,10 +1,13 @@
 <script setup lang="ts">
 import { defineProps } from 'vue';
 import { Line } from 'vue-chartjs';
+import { useI18n } from 'vue-i18n';
 import { Chart as ChartJS, Title, Tooltip, Legend, LineElement, CategoryScale, LinearScale, PointElement } from 'chart.js';
-import dayjs from 'dayjs';  // Importar Day.js
+import dayjs from 'dayjs';
 
 ChartJS.register(Title, Tooltip, Legend, LineElement, CategoryScale, LinearScale, PointElement);
+
+const { t } = useI18n();
 
 const props = defineProps<{
     data: {
@@ -44,14 +47,10 @@ const options = {
     plugins: {
         legend: {
             position: 'top',
-            font: {
-                family: 'Poppins',
-                size: 14,
-            },
         },
         title: {
             display: true,
-            text: 'Payments Over Time (Last Month)',
+            text: t('dashboard.index.payments_over_time'),
             font: {
                 family: 'Poppins',
                 size: 18,
@@ -75,7 +74,5 @@ const options = {
 </script>
 
 <template>
-    <div class="min-h-[400px]">
-        <Line :data="chartData" :options="options" />
-    </div>
+    <Line :data="chartData" :options="options" height="400" />
 </template>

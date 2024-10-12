@@ -1,6 +1,7 @@
 import { enCommon } from './common';
 import enAuth from './auth';
 import enCustomerInvoices from './customerInvoices';
+import enDashboard from './dashboard';
 import esSubscriptions from './subscriptions';
 import enProfile from './profile';
 import enRolePermission from './rolePermissions'
@@ -18,6 +19,7 @@ export default {
     common: enCommon,
     auth: enAuth,
     customerInvoices: enCustomerInvoices,
+    dashboard: enDashboard,
     subscriptions: esSubscriptions,
     profile: enProfile,
     rolePermissions: enRolePermission,

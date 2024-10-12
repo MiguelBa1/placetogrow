@@ -1,9 +1,12 @@
 <script setup lang="ts">
 import { defineProps } from 'vue';
 import { Doughnut } from 'vue-chartjs';
+import { useI18n } from 'vue-i18n';
 import { Chart as ChartJS, Title, Tooltip, Legend, ArcElement } from 'chart.js';
 
 ChartJS.register(Title, Tooltip, Legend, ArcElement);
+
+const { t } = useI18n();
 
 const props = defineProps<{
     data: {
@@ -25,13 +28,14 @@ const chartData = {
 
 const options = {
     responsive: true,
+    maintainAspectRatio: false,
     plugins: {
         legend: {
             position: 'top',
         },
         title: {
             display: true,
-            text: 'Invoice Distribution',
+            text: t('dashboard.index.invoice_distribution'),
             font: {
                 family: 'Poppins',
                 size: 18,
@@ -42,6 +46,5 @@ const options = {
 </script>
 
 <template>
-    <Doughnut :data="chartData" :options="options" />
+    <Doughnut :data="chartData" :options="options" height="300" />
 </template>
-

@@ -1,6 +1,7 @@
 import { esCommon } from './common';
 import esAuth from './auth';
 import esCustomerInvoices from './customerInvoices';
+import esDashboard from './dashboard';
 import esSubscriptions from './subscriptions';
 import esProfile from './profile';
 import esRolePermission from './rolePermissions'
@@ -18,6 +19,7 @@ export default {
     common: esCommon,
     auth: esAuth,
     customerInvoices: esCustomerInvoices,
+    dashboard: esDashboard,
     subscriptions: esSubscriptions,
     profile: esProfile,
     rolePermissions: esRolePermission,

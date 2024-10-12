@@ -1,10 +1,12 @@
 <script setup lang="ts">
 import { defineProps } from 'vue';
 import { Bar } from 'vue-chartjs';
+import { useI18n } from 'vue-i18n';
 import { Chart as ChartJS, Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale } from 'chart.js';
 
 ChartJS.register(Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale);
 
+const { t } = useI18n();
 const props = defineProps<{
     data: {
         microsite_name: string;
@@ -34,7 +36,7 @@ const options = {
         },
         title: {
             display: true,
-            text: 'Top 5 Microsites by Transactions',
+            text: t('dashboard.index.top_microsites'),
             font: {
                 family: 'Poppins',
                 size: 16,
@@ -51,7 +53,5 @@ const options = {
 </script>
 
 <template>
-    <div class="min-h-[300px]">
-        <Bar :data="chartData" :options="options" />
-    </div>
+    <Bar :data="chartData" :options="options" height="300" />
 </template>
