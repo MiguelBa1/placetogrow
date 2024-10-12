@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Dashboard;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\Dashboard\DashboardDataResource;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
@@ -10,7 +11,6 @@ use Inertia\Response;
 
 class DashboardController extends Controller
 {
-
     public function index(): Response
     {
         $data = [
@@ -31,7 +31,6 @@ class DashboardController extends Controller
             }),
         ];
 
-        return Inertia::render('Dashboard/Index', $data);
+        return Inertia::render('Dashboard/Index', (new DashboardDataResource((object) $data))->toArray(request()));
     }
-
 }
