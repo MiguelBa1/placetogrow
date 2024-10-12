@@ -2,7 +2,17 @@
 import { defineProps } from 'vue';
 import { Line } from 'vue-chartjs';
 import { useI18n } from 'vue-i18n';
-import { Chart as ChartJS, Title, Tooltip, Legend, LineElement, CategoryScale, LinearScale, PointElement } from 'chart.js';
+import {
+    Chart as ChartJS,
+    Title,
+    Tooltip,
+    Legend,
+    LineElement,
+    CategoryScale,
+    LinearScale,
+    PointElement,
+    ChartOptions,
+} from 'chart.js';
 import dayjs from 'dayjs';
 
 ChartJS.register(Title, Tooltip, Legend, LineElement, CategoryScale, LinearScale, PointElement);
@@ -41,7 +51,7 @@ const chartData = {
     ],
 };
 
-const options = {
+const options: ChartOptions<'line'> = {
     responsive: true,
     maintainAspectRatio: false,
     plugins: {

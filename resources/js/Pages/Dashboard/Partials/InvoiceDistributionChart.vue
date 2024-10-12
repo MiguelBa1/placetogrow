@@ -2,7 +2,7 @@
 import { defineProps } from 'vue';
 import { Doughnut } from 'vue-chartjs';
 import { useI18n } from 'vue-i18n';
-import { Chart as ChartJS, Title, Tooltip, Legend, ArcElement } from 'chart.js';
+import { Chart as ChartJS, Title, Tooltip, Legend, ArcElement, ChartOptions } from 'chart.js';
 
 ChartJS.register(Title, Tooltip, Legend, ArcElement);
 
@@ -26,7 +26,7 @@ const chartData = {
     ],
 };
 
-const options = {
+const options: ChartOptions<'doughnut'> = {
     responsive: true,
     maintainAspectRatio: false,
     plugins: {
