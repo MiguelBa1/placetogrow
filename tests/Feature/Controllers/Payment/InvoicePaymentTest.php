@@ -39,7 +39,7 @@ class InvoicePaymentTest extends TestCase
 
     public function test_customer_can_view_payment_page(): void
     {
-        $response = $this->get(route('payments.show', $this->invoiceMicrosite));
+        $response = $this->get(route('invoice-payments.show', $this->invoiceMicrosite));
 
         $response->assertOk();
         $response->assertInertia(
@@ -54,7 +54,7 @@ class InvoicePaymentTest extends TestCase
     {
         $this->fakePaymentCreationSuccess();
 
-        $response = $this->post(route('payments.store', $this->invoiceMicrosite), [
+        $response = $this->post(route('invoice-payments.store', $this->invoiceMicrosite), [
             'reference' => 'test_reference',
             'document_number' => '123456789',
         ]);
@@ -77,7 +77,7 @@ class InvoicePaymentTest extends TestCase
 
     public function test_store_payment_with_invalid_invoice(): void
     {
-        $response = $this->post(route('payments.store', $this->invoiceMicrosite), [
+        $response = $this->post(route('invoice-payments.store', $this->invoiceMicrosite), [
             'reference' => 'test_reference',
             'document_number' => '12345', // Invalid document number
         ]);

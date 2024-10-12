@@ -3,12 +3,12 @@
 namespace App\Http\Controllers\Payment;
 
 use App\Contracts\PaymentServiceInterface;
-use App\Factories\PaymentDataProviderFactory;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Payment\CreatePaymentRequest;
 use App\Http\Resources\MicrositeField\MicrositeFieldDetailResource;
 use App\Models\Microsite;
 use App\Models\Payment;
+use App\Services\Payment\BasicPaymentDataProvider;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Log;
@@ -47,9 +47,9 @@ class PaymentController extends Controller
 
     public function store(CreatePaymentRequest $request, Microsite $microsite): RedirectResponse|Response
     {
-        $paymentDataProvider = (new PaymentDataProviderFactory())->create($microsite->type);
+        $basicPaymentDataProvider = new BasicPaymentDataProvider();
 
-        $paymentData = $paymentDataProvider->getPaymentData($request->validated(), Collection::make($microsite->fields));
+        $paymentData = $basicPaymentDataProvider->getPaymentData($request->validated(), Collection::make($microsite->fields));
 
         $result = $this->paymentService->createPayment($microsite, $paymentData);
 
