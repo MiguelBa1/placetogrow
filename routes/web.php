@@ -5,6 +5,7 @@ use App\Http\Controllers\CustomerInvoice\CustomerInvoiceController;
 use App\Http\Controllers\Dashboard\DashboardController;
 use App\Http\Controllers\Home\HomeController;
 use App\Http\Controllers\Invoice\InvoiceController;
+use App\Http\Controllers\InvoicePayment\InvoicePaymentController;
 use App\Http\Controllers\Microsite\MicrositeController;
 use App\Http\Controllers\MicrositeField\MicrositeFieldController;
 use App\Http\Controllers\Payment\PaymentController;
@@ -108,6 +109,14 @@ Route::prefix('subscription-payments')->name('subscription-payments.')->group(fu
         Route::post('{plan}/payment', [SubscriptionPaymentController::class, 'store'])->name('store');
     });
     Route::get('/return/{subscription:reference}', [SubscriptionPaymentController::class, 'return'])->name('return');
+});
+
+Route::prefix('invoice-payments')->name('invoice-payments.')->group(function () {
+    Route::prefix('{microsite}')->group(function () {
+        Route::get('/', [InvoicePaymentController::class, 'show'])->name('show');
+        Route::post('/payment', [InvoicePaymentController::class, 'store'])->name('store');
+    });
+    Route::get('/return/{payment}', [InvoicePaymentController::class, 'return'])->name('return');
 });
 
 Route::prefix('invoices')->name('invoices.')->group(function () {

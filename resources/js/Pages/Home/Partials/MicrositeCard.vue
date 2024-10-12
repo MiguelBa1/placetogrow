@@ -12,11 +12,18 @@ const handleImageError = (event: Event) => {
 };
 
 const getMicrositeRoute = () => {
-    if (['invoice', 'basic'].includes(microsite.type)) {
+    if (microsite.type === 'basic') {
         return route('payments.show', {
             microsite: microsite.slug
         });
     }
+
+    if (microsite.type === 'invoice') {
+        return route('invoice-payments.show', {
+            microsite: microsite.slug
+        });
+    }
+
 
     if (microsite.type === 'subscription') {
         return route('subscription-payments.show', {
