@@ -36,6 +36,7 @@ class PaymentReturnTest extends TestCase
         $payment = Payment::factory()->create([
             'reference' => $paymentReference,
             'request_id' => 'test_request_id',
+            'status' => PaymentStatus::PENDING->value,
         ]);
 
         Cache::spy();
@@ -65,6 +66,7 @@ class PaymentReturnTest extends TestCase
             'reference' => $paymentReference,
             'request_id' => 'test_request_id',
             'microsite_id' => $this->basicMicrosite->id,
+            'status' => PaymentStatus::PENDING->value,
         ]);
 
         $response = $this->get(route('payments.return', $paymentReference));
@@ -81,6 +83,7 @@ class PaymentReturnTest extends TestCase
         $payment = Payment::factory()->create([
             'reference' => $paymentReference,
             'request_id' => 'test_request_id',
+            'status' => PaymentStatus::PENDING->value,
         ]);
 
         Cache::spy();

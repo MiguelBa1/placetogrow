@@ -40,6 +40,7 @@ class SubscriptionPaymentReturnTest extends TestCase
         $subscription = Subscription::factory()->create([
             'reference' => $subscriptionPaymentReference,
             'request_id' => 'test_request_id',
+            'status' => SubscriptionStatus::PENDING->value,
         ]);
 
         $response = $this->get(route('subscription-payments.return', $subscriptionPaymentReference));
@@ -70,6 +71,7 @@ class SubscriptionPaymentReturnTest extends TestCase
         Subscription::factory()->create([
             'reference' => $subscriptionPaymentReference,
             'request_id' => 'test_request_id',
+            'status' => SubscriptionStatus::PENDING->value,
         ]);
 
         $response = $this->get(route('subscription-payments.return', $subscriptionPaymentReference));
@@ -91,6 +93,7 @@ class SubscriptionPaymentReturnTest extends TestCase
         $subscription = Subscription::factory()->create([
             'reference' => $subscriptionPaymentReference,
             'request_id' => 'test_request_id',
+            'status' => SubscriptionStatus::PENDING->value,
         ]);
 
         $response = $this->get(route('subscription-payments.return', $subscriptionPaymentReference));
