@@ -80,7 +80,7 @@ class PaymentService implements PaymentServiceInterface
 
         $payment->refresh();
 
-        if ($payment->microsite->type === MicrositeType::INVOICE) {
+        if ($payment->microsite->type->value === MicrositeType::INVOICE->value) {
             $this->updateInvoiceStatus($payment);
         }
 

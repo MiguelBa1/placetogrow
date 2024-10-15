@@ -3,6 +3,7 @@
 namespace Tests\Feature\Controllers\InvoicePayment;
 
 use App\Constants\DocumentType;
+use App\Constants\InvoiceStatus;
 use App\Constants\MicrositeType;
 use App\Constants\PaymentStatus;
 use App\Models\Invoice;
@@ -101,5 +102,42 @@ class InvoicePaymentTest extends TestCase
 
         $response->assertFound();
         $response->assertSessionHasErrors('payment');
+    }
+
+    public function test_get_pending_invoices(): void
+    {
+        Invoice::factory()->create([
+            'microsite_id' => $this->invoiceMicrosite->id,
+            'reference' => 'another_reference',
+            'status' => InvoiceStatus::PAID->value,
+            'document_type' => DocumentType::CC->value,
+            'document_number' => '123456789',
+            'name' => 'test_name',
+            'last_name' => 'test_last_name',
+            'amount' => 1500,
+            'expiration_date' => now()->addDays(),
+        ]);
+
+        $response = $this->get(route('invoice-payments.pending-invoices', [
+            'microsite' => $this->invoiceMicrosite->slug,
+            'document_number' => '123456789',
+            'reference' => 'test_reference',
+        ]));
+
+        $response->assertOk();
+
+        $response->assertJsonCount(1, 'data');
+
+        $response->assertJsonFragment([
+            'reference' => 'test_reference',
+            'name' => 'test_name test_last_name',
+            'amount' => '$1,000.00',
+            'late_fee' => '$0.00',
+            'total_amount' => '$1,000.00',
+        ]);
+
+        $response->assertJsonMissing([
+            'reference' => 'another_reference',
+        ]);
     }
 }
