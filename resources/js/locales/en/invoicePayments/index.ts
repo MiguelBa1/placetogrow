@@ -1,5 +1,5 @@
-import { esShow } from './Show';
+import { enShow } from './Show';
 
 export default {
-    show: esShow,
+    show: enShow,
 }

@@ -5,10 +5,11 @@ import { InputField, Listbox, Button, DataTable } from "@/Components";
 import { Field, MicrositeInformation, usePendingInvoicesMutation, getPendingInvoicesTableColumns } from '../index';
 import { useI18n } from 'vue-i18n';
 import { useToast } from "vue-toastification";
+import { ExclamationCircleIcon } from '@heroicons/vue/24/outline';
 
 const toast = useToast();
-
 const { t } = useI18n();
+
 const formData = ref<Record<string, string | number>>({
     reference: '',
     document_number: ''
@@ -43,7 +44,6 @@ const {
 } = usePendingInvoicesMutation();
 
 const pendingInvoicesColumns = getPendingInvoicesTableColumns(t);
-
 const pendingInvoices = ref([]);
 
 const handleSearch = async () => {
@@ -65,7 +65,6 @@ const handleSearch = async () => {
     });
     isSubmitting.value = false;
 };
-
 </script>
 
 <template>
@@ -103,20 +102,29 @@ const handleSearch = async () => {
             <div v-if="isFetchingPendingInvoices" class="text-center">
                 {{ t('common.loading') }}
             </div>
-            <DataTable
+            <div
                 v-else-if="pendingInvoices.length > 0"
-                :columns="pendingInvoicesColumns"
-                :rows="pendingInvoices"
+                class="space-y-4"
             >
-                <template #cell-status="{ row }">
-                    {{ row.status.label }}
-                </template>
-                <template #cell-actions="{ row }">
-                    <Button>
-                        {{ t('invoicePayments.show.form.pay') }}
-                    </Button>
-                </template>
-            </DataTable>
+                <DataTable
+                    :columns="pendingInvoicesColumns"
+                    :rows="pendingInvoices"
+                >
+                    <template #cell-actions="{ row }">
+                        <Button>
+                            {{ t('invoicePayments.show.form.pay') }}
+                        </Button>
+                    </template>
+                </DataTable>
+
+                <p class="flex gap-2 text-sm text-gray-500">
+                    <ExclamationCircleIcon
+                        class="h-5 w-5 text-yellow-500"
+                        title="Recargo por mora si no se paga antes de la fecha de vencimiento"
+                    />
+                    {{ t('invoicePayments.show.form.lateFeeWarning') }}
+                </p>
+            </div>
         </div>
     </div>
 </template>
