@@ -29,13 +29,23 @@ class InvoicePaymentReturnTest extends TestCase
         $this->invoiceMicrosite = $this->createMicrositeWithFields(MicrositeType::INVOICE);
     }
 
-    public function test_return_after_payment(): void
+    public function test_return_after_approved_payment(): void
     {
         $this->fakePaymentCheckApproved();
 
+        $this->withoutExceptionHandling();
+
         $paymentReference = 'test_reference';
 
+        $pendingInvoice = Invoice::factory()->create([
+            'reference' => $paymentReference,
+            'status' => PaymentStatus::PENDING->value,
+            'microsite_id' => $this->invoiceMicrosite->id,
+        ]);
+
         $payment = Payment::factory()->create([
+            'microsite_id' => $this->invoiceMicrosite->id,
+            'invoice_id' => $pendingInvoice->id,
             'reference' => $paymentReference,
             'request_id' => 'test_request_id',
             'status' => PaymentStatus::PENDING->value,
@@ -54,6 +64,10 @@ class InvoicePaymentReturnTest extends TestCase
                 ->has('customer')
                 ->has('micrositeName')
         );
+
+        $pendingInvoice->refresh();
+
+        $this->assertEquals(InvoiceStatus::PAID->value, $pendingInvoice->status->value);
 
         Cache::shouldHaveReceived('put')
             ->once()
@@ -105,34 +119,5 @@ class InvoicePaymentReturnTest extends TestCase
         $pendingInvoice->refresh();
 
         $this->assertEquals(InvoiceStatus::PENDING->value, $pendingInvoice->status->value);
-    }
-
-    public function test_invoice_status_is_updated_when_payment_is_approved(): void
-    {
-        $this->fakePaymentCheckApproved();
-
-        $paymentReference = 'test_reference';
-
-        $pendingInvoice = Invoice::factory()->create([
-            'reference' => $paymentReference,
-            'status' => PaymentStatus::PENDING->value,
-            'microsite_id' => $this->invoiceMicrosite->id,
-        ]);
-
-        Payment::factory()->create([
-            'microsite_id' => $this->invoiceMicrosite->id,
-            'invoice_id' => $pendingInvoice->id,
-            'reference' => $paymentReference,
-            'request_id' => 'test_request_id',
-            'status' => PaymentStatus::PENDING->value,
-        ]);
-
-        $response = $this->get(route('invoice-payments.return', $paymentReference));
-
-        $response->assertOk();
-
-        $pendingInvoice->refresh();
-
-        $this->assertEquals(InvoiceStatus::PAID->value, $pendingInvoice->status->value);
     }
 }

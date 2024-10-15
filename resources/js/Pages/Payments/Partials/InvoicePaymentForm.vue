@@ -1,9 +1,10 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import { InputField, Listbox, Button, DataTable } from "@/Components";
-import { Field, MicrositeInformation, usePendingInvoicesMutation, PendingInvoicesTable } from '../index';
+import { PendingInvoice, Field, MicrositeInformation, usePendingInvoicesMutation, PendingInvoicesTable } from '../index';
 import { useI18n } from 'vue-i18n';
 import { useToast } from "vue-toastification";
+import { AxiosError } from 'axios';
 
 const toast = useToast();
 const { t } = useI18n();
@@ -42,7 +43,7 @@ const {
     isSuccess: isFetchedPendingInvoices
 } = usePendingInvoicesMutation();
 
-const pendingInvoices = ref([]);
+const pendingInvoices = ref<PendingInvoice[]>([]);
 
 const handleSearch = async () => {
     isSubmitting.value = true;
@@ -53,8 +54,8 @@ const handleSearch = async () => {
         micrositeSlug: microsite.slug
     }, {
         onError: (error) => {
-            toast.error(error?.payment ?? t('common.form.error'));
-            formErrors.value = error.response.data.errors ?? {};
+            toast.error(t('common.form.error'));
+            formErrors.value = error.response?.data?.errors ?? {};
             isSubmitting.value = false;
         },
         onSuccess: ({ data }) => {
@@ -83,7 +84,7 @@ const handleSearch = async () => {
                         :label="field.label"
                         v-model="formData[field.name]"
                         :options="field.options"
-                        :error="formErrors[field.name] ? formErrors[field.name][0] : null"
+                        :error="formErrors[field.name] ? formErrors[field.name][0] : undefined"
                     />
                 </div>
             </div>
