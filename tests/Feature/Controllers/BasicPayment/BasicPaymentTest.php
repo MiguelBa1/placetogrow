@@ -27,7 +27,7 @@ class BasicPaymentTest extends TestCase
 
     public function test_customer_can_view_payment_page(): void
     {
-        $response = $this->get(route('payments.show', $this->basicMicrosite));
+        $response = $this->get(route('basic-payments.show', $this->basicMicrosite));
 
         $response->assertOk();
         $response->assertInertia(
@@ -42,7 +42,7 @@ class BasicPaymentTest extends TestCase
     {
         $this->fakePaymentCreationSuccess();
 
-        $response = $this->post(route('payments.store', $this->basicMicrosite), [
+        $response = $this->post(route('basic-payments.store', $this->basicMicrosite), [
             'name' => 'John',
             'last_name' => 'Doe',
             'email' => 'john@example.com',
@@ -73,7 +73,7 @@ class BasicPaymentTest extends TestCase
     {
         $this->fakePaymentCreationFailed();
 
-        $response = $this->post(route('payments.store', $this->basicMicrosite), [
+        $response = $this->post(route('basic-payments.store', $this->basicMicrosite), [
             'name' => 'John',
             'last_name' => 'Doe',
             'email' => 'john@example.com',

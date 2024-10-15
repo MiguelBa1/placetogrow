@@ -13,7 +13,7 @@ const handleImageError = (event: Event) => {
 
 const getMicrositeRoute = () => {
     if (microsite.type === 'basic') {
-        return route('payments.show', {
+        return route('basic-payments.show', {
             microsite: microsite.slug
         });
     }

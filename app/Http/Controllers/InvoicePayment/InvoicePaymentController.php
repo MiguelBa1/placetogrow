@@ -71,7 +71,7 @@ class InvoicePaymentController extends Controller
         $isSuccessful = $this->paymentService->checkPayment($payment);
 
         if (!$isSuccessful) {
-            return redirect()->route('payments.show', $payment->microsite->slug)
+            return redirect()->route('invoice-payments.show', $payment->microsite->slug)
                 ->withErrors([
                     'payment' => __('payment.check_failed'),
                 ]);

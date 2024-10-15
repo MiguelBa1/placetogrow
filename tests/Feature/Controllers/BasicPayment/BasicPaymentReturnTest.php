@@ -41,7 +41,7 @@ class BasicPaymentReturnTest extends TestCase
 
         Cache::spy();
 
-        $response = $this->get(route('payments.return', $paymentReference));
+        $response = $this->get(route('basic-payments.return', $paymentReference));
 
         $response->assertOk();
         $response->assertInertia(
@@ -69,9 +69,9 @@ class BasicPaymentReturnTest extends TestCase
             'status' => PaymentStatus::PENDING->value,
         ]);
 
-        $response = $this->get(route('payments.return', $paymentReference));
+        $response = $this->get(route('basic-payments.return', $paymentReference));
 
-        $response->assertRedirect(route('payments.show', $this->basicMicrosite));
+        $response->assertRedirect(route('basic-payments.show', $this->basicMicrosite));
         $response->assertSessionHasErrors();
     }
 
@@ -88,7 +88,7 @@ class BasicPaymentReturnTest extends TestCase
 
         Cache::spy();
 
-        $this->get(route('payments.return', $paymentReference));
+        $this->get(route('basic-payments.return', $paymentReference));
 
         $this->assertDatabaseHas('payments', [
             'id' => $payment->id,
@@ -111,7 +111,7 @@ class BasicPaymentReturnTest extends TestCase
             'status' => PaymentStatus::APPROVED->value,
         ]);
 
-        $this->get(route('payments.return', $paymentReference));
+        $this->get(route('basic-payments.return', $paymentReference));
 
         $this->assertDatabaseHas('payments', [
             'id' => $payment->id,
@@ -136,7 +136,7 @@ class BasicPaymentReturnTest extends TestCase
             ->with('payment_checked_' . $payment->id)
             ->andReturn($cachedStatus);
 
-        $response = $this->get(route('payments.return', $paymentReference));
+        $response = $this->get(route('basic-payments.return', $paymentReference));
 
         $response->assertOk();
         $response->assertInertia(

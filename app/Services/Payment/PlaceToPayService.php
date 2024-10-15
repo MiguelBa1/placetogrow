@@ -87,7 +87,7 @@ class PlaceToPayService implements PlaceToPayServiceInterface
             ],
         ];
 
-        $this->data['returnUrl'] = route('payments.return', $data['reference']);
+        $this->data['returnUrl'] = route('basic-payments.return', $data['reference']);
 
         return $this;
     }
