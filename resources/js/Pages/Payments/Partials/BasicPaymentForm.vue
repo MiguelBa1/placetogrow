@@ -41,17 +41,7 @@ const getComponent = (type: string) => {
 const handleSubmit = () => {
     isSubmitting.value = true;
 
-    let routeName = '';
-
-    if (microsite.type === 'basic') {
-        routeName = 'payments.store';
-    }
-
-    if (microsite.type === 'invoice') {
-        routeName = 'invoice-payments.store';
-    }
-
-    router.post(route(routeName, {
+    router.post(route('payments.store', {
         microsite: microsite.slug
     }), formData.value, {
         preserveScroll: true,

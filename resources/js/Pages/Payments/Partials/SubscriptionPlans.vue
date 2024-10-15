@@ -2,9 +2,9 @@
 import MarkdownIt from 'markdown-it';
 import { ref } from 'vue';
 import { Button } from "@/Components";
-import { SubscriptionList, SubscriptionItem, MicrositeInformation, Field, SubscriptionFormModal } from '@/Pages/Payments';
+import { SubscriptionList, MicrositeInformation, Field, SubscriptionFormModal } from '@/Pages/Payments';
 import { useI18n } from 'vue-i18n';
-import { formatCurrency} from '@/Utils';
+import { formatCurrency } from '@/Utils';
 
 const { t } = useI18n();
 const markdown = new MarkdownIt();

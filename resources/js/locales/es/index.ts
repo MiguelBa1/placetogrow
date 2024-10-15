@@ -9,6 +9,7 @@ import esMicrosites from './microsites';
 import esPayment from './payments';
 import esUsers from './users';
 import esHome from './home';
+import esInvoicePayments from './invoicePayments';
 import esInvoices from './invoices';
 import esPlans from './plans';
 import esTransactions from './transactions';
@@ -27,6 +28,7 @@ export default {
     payments: esPayment,
     users: esUsers,
     home: esHome,
+    invoicePayments: esInvoicePayments,
     invoices: esInvoices,
     plans: esPlans,
     transactions: esTransactions,

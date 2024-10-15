@@ -3,7 +3,7 @@ import { Head } from '@inertiajs/vue3';
 import { MainLayout } from '@/Layouts';
 import { useI18n } from 'vue-i18n';
 import { Button } from "@/Components";
-import { DynamicForm, Field, MicrositeInformation, SubscriptionList, SubscriptionPlans } from "@/Pages/Payments";
+import { BasicPaymentForm, InvoicePaymentForm, Field, MicrositeInformation, SubscriptionList, SubscriptionPlans } from "@/Pages/Payments";
 
 const { t } = useI18n();
 
@@ -52,13 +52,18 @@ const goBack = () => {
             </div>
         </template>
 
-        <DynamicForm
-            v-if="['basic', 'invoice'].includes(microsite.type)"
+        <BasicPaymentForm
+            v-if="microsite.type === 'basic'"
+            :fields="fields.data"
+            :microsite="microsite"
+        />
+        <InvoicePaymentForm
+            v-if="microsite.type === 'invoice'"
             :fields="fields.data"
             :microsite="microsite"
         />
         <SubscriptionPlans
-            v-if="microsite.type === 'subscription' && subscriptions"
+            v-if="microsite.type === 'subscription'"
             :subscriptions="subscriptions"
             :microsite="microsite"
             :fields="fields.data"
