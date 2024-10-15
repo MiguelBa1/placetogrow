@@ -6,7 +6,7 @@ use App\Contracts\PaymentServiceInterface;
 use App\Contracts\PlaceToPayServiceInterface;
 use App\Contracts\SubscriptionServiceInterface;
 use App\Services\Payment\PaymentService;
-use App\Services\PlaceToPayService;
+use App\Services\Payment\PlaceToPayService;
 use App\Services\SubscriptionService;
 use Illuminate\Support\ServiceProvider;
 use Inertia\Inertia;

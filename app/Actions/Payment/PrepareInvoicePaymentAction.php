@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Actions\InvoicePayment;
+namespace App\Actions\Payment;
 
 use App\Constants\InvoiceStatus;
 use App\Models\Invoice;

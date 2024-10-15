@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\InvoicePayment;
 
-use App\Actions\InvoicePayment\PrepareInvoicePaymentAction;
+use App\Actions\Payment\PrepareInvoicePaymentAction;
 use App\Constants\InvoiceStatus;
 use App\Contracts\PaymentServiceInterface;
 use App\Http\Controllers\Controller;

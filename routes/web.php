@@ -1,6 +1,7 @@
 <?php
 
 use App\Constants\Permission;
+use App\Http\Controllers\BasicPayment\BasicPaymentController;
 use App\Http\Controllers\CustomerInvoice\CustomerInvoiceController;
 use App\Http\Controllers\Dashboard\DashboardController;
 use App\Http\Controllers\Home\HomeController;
@@ -8,7 +9,6 @@ use App\Http\Controllers\Invoice\InvoiceController;
 use App\Http\Controllers\InvoicePayment\InvoicePaymentController;
 use App\Http\Controllers\Microsite\MicrositeController;
 use App\Http\Controllers\MicrositeField\MicrositeFieldController;
-use App\Http\Controllers\Payment\PaymentController;
 use App\Http\Controllers\Plan\PlanController;
 use App\Http\Controllers\Profile\ProfileController;
 use App\Http\Controllers\RolePermission\RolePermissionController;
@@ -95,12 +95,12 @@ Route::prefix('users')->name('users.')->middleware(['auth'])->group(function () 
     });
 });
 
-Route::prefix('payments')->name('payments.')->group(function () {
+Route::prefix('basic-payments')->name('basic-payments.')->group(function () {
     Route::prefix('{microsite}')->group(function () {
-        Route::get('/', [PaymentController::class, 'show'])->name('show');
-        Route::post('/payment', [PaymentController::class, 'store'])->name('store');
+        Route::get('/', [BasicPaymentController::class, 'show'])->name('show');
+        Route::post('/payment', [BasicPaymentController::class, 'store'])->name('store');
     });
-    Route::get('/return/{payment}', [PaymentController::class, 'return'])->name('return');
+    Route::get('/return/{payment}', [BasicPaymentController::class, 'return'])->name('return');
 });
 
 Route::prefix('subscription-payments')->name('subscription-payments.')->group(function () {

@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Feature\Controllers\Payment;
+namespace Tests\Feature\Controllers\BasicPayment;
 
 use App\Constants\MicrositeType;
 use App\Constants\PaymentStatus;
@@ -14,7 +14,7 @@ use Tests\TestCase;
 use Tests\Traits\CreatesMicrosites;
 use Tests\Traits\PlaceToPayMockTrait;
 
-class PaymentReturnTest extends TestCase
+class BasicPaymentReturnTest extends TestCase
 {
     use RefreshDatabase, CreatesMicrosites, PlaceToPayMockTrait;
 

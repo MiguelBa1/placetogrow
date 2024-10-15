@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Feature\Controllers\Payment;
+namespace Tests\Feature\Controllers\BasicPayment;
 
 use App\Constants\DocumentType;
 use App\Constants\MicrositeType;

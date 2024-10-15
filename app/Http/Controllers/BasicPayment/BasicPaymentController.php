@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Payment;
+namespace App\Http\Controllers\BasicPayment;
 
 use App\Contracts\PaymentServiceInterface;
 use App\Http\Controllers\Controller;
@@ -14,7 +14,7 @@ use Illuminate\Http\RedirectResponse;
 use Inertia\Inertia;
 use Symfony\Component\HttpFoundation\Response;
 
-class PaymentController extends Controller
+class BasicPaymentController extends Controller
 {
     private PaymentServiceInterface $paymentService;
 
