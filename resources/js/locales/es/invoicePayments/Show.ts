@@ -4,7 +4,8 @@ export const esShow = {
         pay: 'Pagar',
         title: 'Consulta tu factura',
         instructions: 'Ingresa la información a continuación para consultar tu factura.',
-        lateFeeWarning: "Si la factura no se paga antes de la fecha de vencimiento, se aplicará un recargo por mora."
+        lateFeeWarning: "Si la factura no se paga antes de la fecha de vencimiento, se aplicará un recargo por mora.",
+        noResults: 'No se encontraron resultados.',
     },
     pendingInvoices: {
         table: {
