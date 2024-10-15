@@ -115,6 +115,7 @@ Route::prefix('invoice-payments')->name('invoice-payments.')->group(function () 
     Route::prefix('{microsite}')->group(function () {
         Route::get('/', [InvoicePaymentController::class, 'show'])->name('show');
         Route::post('/payment', [InvoicePaymentController::class, 'store'])->name('store');
+        Route::get('/pending-invoices', [InvoicePaymentController::class, 'getPendingInvoices'])->name('pending-invoices');
     });
     Route::get('/return/{payment}', [InvoicePaymentController::class, 'return'])->name('return');
 });

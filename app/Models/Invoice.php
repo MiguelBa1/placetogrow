@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Constants\InvoiceStatus;
+use Carbon\Carbon;
 use Database\Factories\InvoiceFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -18,7 +19,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
  * @property string email
  * @property string phone
  * @property float amount
- * @property string expiration_date
+ * @property Carbon expiration_date
  * @property InvoiceStatus status
  * @property Microsite microsite
  * @property Payment payment

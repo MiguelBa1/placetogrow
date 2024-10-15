@@ -2,15 +2,19 @@
 
 namespace App\Http\Controllers\InvoicePayment;
 
+use App\Constants\InvoiceStatus;
 use App\Contracts\PaymentServiceInterface;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Payment\CreatePaymentRequest;
+use App\Http\Resources\InvoicePayment\PendingInvoiceListResource;
 use App\Http\Resources\MicrositeField\MicrositeFieldDetailResource;
+use App\Models\Invoice;
 use App\Models\Microsite;
 use App\Models\Payment;
 use App\Services\Payment\InvoicePaymentDataProvider;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\ValidationException;
 use Inertia\Inertia;
@@ -87,6 +91,28 @@ class InvoicePaymentController extends Controller
             'customer' => $payment->customer->only(['name', 'last_name']),
             'micrositeName' => $payment->microsite->name,
         ]);
-
     }
+
+    public function getPendingInvoices(CreatePaymentRequest $request, Microsite $microsite): JsonResource
+    {
+        $validated = $request->validated();
+
+        $invoices = Invoice::select(
+            'id',
+            'reference',
+            'name',
+            'last_name',
+            'amount',
+            'expiration_date',
+            'status',
+            'microsite_id'
+        )->where('document_number', $validated['document_number'])
+            ->where('reference', $validated['reference'])
+            ->where('microsite_id', $microsite->id)
+            ->where('status', InvoiceStatus::PENDING)
+            ->get();
+
+        return PendingInvoiceListResource::collection($invoices);
+    }
+
 }
