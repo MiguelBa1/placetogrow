@@ -29,6 +29,7 @@ class InvoicePaymentTest extends TestCase
         $this->invoice = Invoice::factory()->create([
             'microsite_id' => $this->invoiceMicrosite->id,
             'reference' => 'test_reference',
+            'status' => PaymentStatus::PENDING->value,
             'document_type' => DocumentType::CC->value,
             'document_number' => '123456789',
             'name' => 'test_name',

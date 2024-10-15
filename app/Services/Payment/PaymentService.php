@@ -76,18 +76,22 @@ class PaymentService implements PaymentServiceInterface
             return false;
         }
 
-        $this->updatePayment($payment, $result);
+        (new UpdatePaymentFromP2PResponse())->execute($payment, $result);
+
+        $payment->refresh();
+
+        if ($payment->microsite->type === MicrositeType::INVOICE) {
+            $this->updateInvoiceStatus($payment);
+        }
 
         Cache::put($cacheKey, true, now()->addMinutes(10));
 
         return true;
     }
 
-    public function updatePayment(Payment $payment, array $data): void
+    public function updateInvoiceStatus(Payment $payment): void
     {
-        (new UpdatePaymentFromP2PResponse())->execute($payment, $data);
-
-        if ($payment->microsite->type === MicrositeType::INVOICE && $payment->invoice) {
+        if ($payment->status->value === PaymentStatus::APPROVED->value) {
             $payment->invoice->update([
                 'status' => InvoiceStatus::PAID->value,
             ]);
