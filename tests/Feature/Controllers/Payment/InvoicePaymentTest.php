@@ -5,6 +5,7 @@ namespace Tests\Feature\Controllers\Payment;
 use App\Constants\DocumentType;
 use App\Constants\MicrositeType;
 use App\Constants\PaymentStatus;
+use App\Models\Invoice;
 use App\Models\Microsite;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Inertia\Testing\AssertableInertia as Assert;
@@ -17,6 +18,7 @@ class InvoicePaymentTest extends TestCase
     use RefreshDatabase, CreatesMicrosites, PlaceToPayMockTrait;
 
     private Microsite $invoiceMicrosite;
+    private Invoice $invoice;
 
     public function setUp(): void
     {
@@ -24,7 +26,8 @@ class InvoicePaymentTest extends TestCase
 
         $this->invoiceMicrosite = $this->createMicrositeWithFields(MicrositeType::INVOICE);
 
-        $this->invoiceMicrosite->invoices()->create([
+        $this->invoice = Invoice::factory()->create([
+            'microsite_id' => $this->invoiceMicrosite->id,
             'reference' => 'test_reference',
             'document_type' => DocumentType::CC->value,
             'document_number' => '123456789',
@@ -33,7 +36,7 @@ class InvoicePaymentTest extends TestCase
             'email' => 'test@mail.com',
             'phone' => '123456789',
             'amount' => 1000,
-            'expiration_date' => now()->addDays(1),
+            'expiration_date' => now()->addDays(),
         ]);
     }
 
@@ -44,9 +47,9 @@ class InvoicePaymentTest extends TestCase
         $response->assertOk();
         $response->assertInertia(
             fn (Assert $page) => $page
-            ->component('Payments/Show')
-            ->has('microsite')
-            ->has('fields')
+                ->component('Payments/Show')
+                ->has('microsite')
+                ->has('fields')
         );
     }
 
@@ -54,12 +57,16 @@ class InvoicePaymentTest extends TestCase
     {
         $this->fakePaymentCreationSuccess();
 
-        $response = $this->post(route('invoice-payments.store', $this->invoiceMicrosite), [
+        $response = $this->post(route('invoice-payments.store', [
+            'microsite' => $this->invoiceMicrosite,
+            'invoice' => $this->invoice,
+        ]), [
             'reference' => 'test_reference',
             'document_number' => '123456789',
         ]);
 
         $response->assertRedirect('/success');
+
         $this->assertDatabaseHas('customers', [
             'name' => 'test_name',
             'last_name' => 'test_last_name',
@@ -77,9 +84,18 @@ class InvoicePaymentTest extends TestCase
 
     public function test_store_payment_with_invalid_invoice(): void
     {
-        $response = $this->post(route('invoice-payments.store', $this->invoiceMicrosite), [
+        $invalidInvoice = Invoice::factory()->create([
+            'reference' => 'invalid_reference',
+            'document_number' => 'invalid_doc_number',
+            'microsite_id' => $this->invoiceMicrosite->id,
+        ]);
+
+        $response = $this->post(route('invoice-payments.store', [
+            'microsite' => $this->invoiceMicrosite,
+            'invoice' => $invalidInvoice,
+        ]), [
             'reference' => 'test_reference',
-            'document_number' => '12345', // Invalid document number
+            'document_number' => '123456789',
         ]);
 
         $response->assertFound();

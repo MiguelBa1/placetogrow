@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\InvoicePayment;
 
+use App\Actions\InvoicePayment\PrepareInvoicePaymentAction;
 use App\Constants\InvoiceStatus;
 use App\Contracts\PaymentServiceInterface;
 use App\Http\Controllers\Controller;
@@ -11,8 +12,6 @@ use App\Http\Resources\MicrositeField\MicrositeFieldDetailResource;
 use App\Models\Invoice;
 use App\Models\Microsite;
 use App\Models\Payment;
-use App\Services\Payment\InvoicePaymentDataProvider;
-use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Validation\ValidationException;
@@ -52,11 +51,9 @@ class InvoicePaymentController extends Controller
     /**
      * @throws ValidationException
      */
-    public function store(CreatePaymentRequest $request, Microsite $microsite): RedirectResponse|\Symfony\Component\HttpFoundation\Response
+    public function store(CreatePaymentRequest $request, Microsite $microsite, Invoice $invoice): \Symfony\Component\HttpFoundation\Response
     {
-        $invoicePaymentDataProvider = new InvoicePaymentDataProvider();
-
-        $paymentData = $invoicePaymentDataProvider->getPaymentData($request->validated(), Collection::make($microsite->fields));
+        $paymentData = (new PrepareInvoicePaymentAction())->execute($microsite, $invoice, $request->validated());
 
         $result = $this->paymentService->createPayment($microsite, $paymentData);
 

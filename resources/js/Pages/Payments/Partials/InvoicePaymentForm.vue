@@ -65,6 +65,29 @@ const handleSearch = async () => {
     });
     isSubmitting.value = false;
 };
+
+const handlePay = (invoiceId: number) => {
+    isSubmitting.value = true;
+
+    router.post(route('invoice-payments.store', {
+        microsite: microsite.slug,
+        invoice: invoiceId
+    }), formData.value, {
+        preserveScroll: true,
+        onSuccess: () => {
+            toast.success(t('common.form.success'));
+            formErrors.value = {};
+        },
+        onError: (error) => {
+            toast.error(error?.payment ?? t('common.form.error'));
+            formErrors.value = error ?? {};
+        },
+        onFinish: () => {
+            isSubmitting.value = false;
+        }
+    });
+
+}
 </script>
 
 <template>
@@ -111,7 +134,10 @@ const handleSearch = async () => {
                     :rows="pendingInvoices"
                 >
                     <template #cell-actions="{ row }">
-                        <Button>
+                        <Button
+                            @click="handlePay(row.id)"
+                            :disabled="isSubmitting"
+                        >
                             {{ t('invoicePayments.show.form.pay') }}
                         </Button>
                     </template>
