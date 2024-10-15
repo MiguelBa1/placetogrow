@@ -25,6 +25,8 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
  * @property Payment payment
  * @property int microsite_id
  * @property int id
+ * @property float late_fee
+ * @property float total_amount
  * @method static InvoiceFactory factory($count = null, $state = [])
  */
 class Invoice extends Model
@@ -43,6 +45,8 @@ class Invoice extends Model
         'phone',
         'amount',
         'expiration_date',
+        'late_fee',
+        'total_amount',
     ];
 
     protected $casts = [
