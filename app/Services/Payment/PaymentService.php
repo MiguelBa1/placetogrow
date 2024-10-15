@@ -13,6 +13,7 @@ use App\Contracts\PlaceToPayServiceInterface;
 use App\Models\Microsite;
 use App\Models\Payment;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Log;
 
 class PaymentService implements PaymentServiceInterface
 {
@@ -57,6 +58,11 @@ class PaymentService implements PaymentServiceInterface
     }
     public function checkPayment(Payment $payment): bool
     {
+        Log::withContext([
+            'payment_id' => $payment->id,
+            'request_id' => $payment->request_id,
+        ]);
+
         $cacheKey = 'payment_checked_' . $payment->id;
         $isRecentlyChecked = Cache::get($cacheKey);
 

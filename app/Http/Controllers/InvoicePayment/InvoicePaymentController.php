@@ -15,7 +15,6 @@ use App\Services\Payment\InvoicePaymentDataProvider;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Resources\Json\JsonResource;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\ValidationException;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -72,11 +71,6 @@ class InvoicePaymentController extends Controller
 
     public function return(Payment $payment): Response|RedirectResponse
     {
-        Log::withContext([
-            'payment_id' => $payment->id,
-            'request_id' => $payment->request_id,
-        ]);
-
         $isSuccessful = $this->paymentService->checkPayment($payment);
 
         if (!$isSuccessful) {

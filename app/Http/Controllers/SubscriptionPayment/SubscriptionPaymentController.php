@@ -12,7 +12,6 @@ use App\Models\Plan;
 use App\Models\Subscription;
 use App\Services\SubscriptionService;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Support\Facades\Log;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -77,11 +76,6 @@ class SubscriptionPaymentController extends Controller
 
     public function return(Subscription $subscription): Response|RedirectResponse
     {
-        Log::withContext([
-            'customer_subscription_id' => $subscription->id,
-            'request_id' => $subscription->request_id,
-        ]);
-
         $isSuccessful = $this->subscriptionService->checkSubscription($subscription);
 
         if (!$isSuccessful) {

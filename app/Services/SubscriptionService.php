@@ -14,6 +14,7 @@ use App\Models\Microsite;
 use App\Models\Plan;
 use App\Models\Subscription;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 
 class SubscriptionService implements SubscriptionServiceInterface
@@ -60,6 +61,11 @@ class SubscriptionService implements SubscriptionServiceInterface
 
     public function checkSubscription(Subscription $subscription): bool
     {
+        Log::withContext([
+            'subscription_id' => $subscription->id,
+            'request_id' => $subscription->request_id,
+        ]);
+
         $cacheKey = 'subscription_checked_' . $subscription->id;
         $isRecentlyChecked = Cache::get($cacheKey);
 

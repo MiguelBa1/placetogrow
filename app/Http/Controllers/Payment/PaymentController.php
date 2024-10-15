@@ -11,7 +11,6 @@ use App\Models\Payment;
 use App\Services\Payment\BasicPaymentDataProvider;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Support\Facades\Log;
 use Inertia\Inertia;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -64,11 +63,6 @@ class PaymentController extends Controller
 
     public function return(Payment $payment): \Inertia\Response|RedirectResponse
     {
-        Log::withContext([
-            'payment_id' => $payment->id,
-            'request_id' => $payment->request_id,
-        ]);
-
         $isSuccessful = $this->paymentService->checkPayment($payment);
 
         if (!$isSuccessful) {
