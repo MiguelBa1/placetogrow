@@ -16,7 +16,7 @@ class CalculateLateFeesJob implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    protected Microsite $microsite;
+    public Microsite $microsite;
 
     public function __construct(Microsite $microsite)
     {
