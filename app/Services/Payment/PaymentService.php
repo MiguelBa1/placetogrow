@@ -13,6 +13,7 @@ use App\Contracts\PlaceToPayServiceInterface;
 use App\Models\Microsite;
 use App\Models\Payment;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Log;
 
 class PaymentService implements PaymentServiceInterface
 {
@@ -57,6 +58,11 @@ class PaymentService implements PaymentServiceInterface
     }
     public function checkPayment(Payment $payment): bool
     {
+        Log::withContext([
+            'payment_id' => $payment->id,
+            'request_id' => $payment->request_id,
+        ]);
+
         $cacheKey = 'payment_checked_' . $payment->id;
         $isRecentlyChecked = Cache::get($cacheKey);
 
@@ -70,18 +76,22 @@ class PaymentService implements PaymentServiceInterface
             return false;
         }
 
-        $this->updatePayment($payment, $result);
+        (new UpdatePaymentFromP2PResponse())->execute($payment, $result);
+
+        $payment->refresh();
+
+        if ($payment->microsite->type->value === MicrositeType::INVOICE->value) {
+            $this->updateInvoiceStatus($payment);
+        }
 
         Cache::put($cacheKey, true, now()->addMinutes(10));
 
         return true;
     }
 
-    public function updatePayment(Payment $payment, array $data): void
+    public function updateInvoiceStatus(Payment $payment): void
     {
-        (new UpdatePaymentFromP2PResponse())->execute($payment, $data);
-
-        if ($payment->microsite->type === MicrositeType::INVOICE && $payment->invoice) {
+        if ($payment->status->value === PaymentStatus::APPROVED->value) {
             $payment->invoice->update([
                 'status' => InvoiceStatus::PAID->value,
             ]);

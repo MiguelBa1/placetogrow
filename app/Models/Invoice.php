@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Constants\InvoiceStatus;
+use Carbon\Carbon;
 use Database\Factories\InvoiceFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -18,12 +19,14 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
  * @property string email
  * @property string phone
  * @property float amount
- * @property string expiration_date
+ * @property Carbon expiration_date
  * @property InvoiceStatus status
  * @property Microsite microsite
  * @property Payment payment
  * @property int microsite_id
  * @property int id
+ * @property float late_fee
+ * @property float total_amount
  * @method static InvoiceFactory factory($count = null, $state = [])
  */
 class Invoice extends Model
@@ -42,6 +45,8 @@ class Invoice extends Model
         'phone',
         'amount',
         'expiration_date',
+        'late_fee',
+        'total_amount',
     ];
 
     protected $casts = [

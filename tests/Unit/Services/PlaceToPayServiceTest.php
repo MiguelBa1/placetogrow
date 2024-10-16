@@ -6,7 +6,7 @@ use App\Constants\PlaceToPayStatus;
 use App\Models\Customer;
 use App\Models\Payment;
 use App\Models\Subscription;
-use App\Services\PlaceToPayService;
+use App\Services\Payment\PlaceToPayService;
 use Exception;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Http;

@@ -4,6 +4,7 @@ use App\Console\Commands\CheckPaymentsCommand;
 use App\Console\Commands\CheckSubscriptionsCommand;
 use App\Console\Commands\CollectSubscriptionPaymentsCommand;
 use App\Console\Commands\CreateAdminUserCommand;
+use App\Console\Commands\DispatchInvoiceLateFeesCommand;
 use App\Console\Commands\UpdateInvoiceStatusCommand;
 use App\Jobs\NotifyInvoiceDueSoonJob;
 use App\Jobs\NotifySubscriptionExpirationJob;
@@ -46,3 +47,9 @@ Artisan::command('subscriptions:collect-payments', function () {
 Schedule::job((new NotifyUpcomingSubscriptionChargeJob())->onQueue('low'))->daily();
 Schedule::job((new NotifySubscriptionExpirationJob())->onQueue('low'))->daily();
 Schedule::job((new NotifyInvoiceDueSoonJob())->onQueue('low'))->daily();
+
+Artisan::command('dispatch:late-fees', function () {
+    $this->call(DispatchInvoiceLateFeesCommand::class);
+})->describe('Dispatch late fees calculation for pending invoices');
+
+Schedule::command(DispatchInvoiceLateFeesCommand::class)->daily();

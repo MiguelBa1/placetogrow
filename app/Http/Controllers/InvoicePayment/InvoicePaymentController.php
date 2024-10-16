@@ -1,21 +1,24 @@
 <?php
 
-namespace App\Http\Controllers\Payment;
+namespace App\Http\Controllers\InvoicePayment;
 
+use App\Actions\Payment\PrepareInvoicePaymentAction;
+use App\Constants\InvoiceStatus;
 use App\Contracts\PaymentServiceInterface;
-use App\Factories\PaymentDataProviderFactory;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Payment\CreatePaymentRequest;
+use App\Http\Resources\InvoicePayment\PendingInvoiceListResource;
 use App\Http\Resources\MicrositeField\MicrositeFieldDetailResource;
+use App\Models\Invoice;
 use App\Models\Microsite;
 use App\Models\Payment;
-use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Support\Facades\Log;
+use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Validation\ValidationException;
 use Inertia\Inertia;
-use Symfony\Component\HttpFoundation\Response;
+use Inertia\Response;
 
-class PaymentController extends Controller
+class InvoicePaymentController extends Controller
 {
     private PaymentServiceInterface $paymentService;
 
@@ -24,7 +27,7 @@ class PaymentController extends Controller
         $this->paymentService = $paymentService;
     }
 
-    public function show(Microsite $microsite): \Inertia\Response
+    public function show(Microsite $microsite): Response
     {
         $micrositeData = [
             'id' => $microsite->id,
@@ -45,34 +48,30 @@ class PaymentController extends Controller
         ]);
     }
 
-    public function store(CreatePaymentRequest $request, Microsite $microsite): RedirectResponse|Response
+    /**
+     * @throws ValidationException
+     */
+    public function store(CreatePaymentRequest $request, Microsite $microsite, Invoice $invoice): \Symfony\Component\HttpFoundation\Response
     {
-        $paymentDataProvider = (new PaymentDataProviderFactory())->create($microsite->type);
-
-        $paymentData = $paymentDataProvider->getPaymentData($request->validated(), Collection::make($microsite->fields));
+        $paymentData = (new PrepareInvoicePaymentAction())->execute($microsite, $invoice, $request->validated());
 
         $result = $this->paymentService->createPayment($microsite, $paymentData);
 
         if (!$result['success']) {
             return back()->withErrors([
-                    'payment' => __('payment.create_failed'),
-                ]);
+                'payment' => __('payment.create_failed'),
+            ]);
         }
 
         return Inertia::location($result['url']);
     }
 
-    public function return(Payment $payment): \Inertia\Response|RedirectResponse
+    public function return(Payment $payment): Response|RedirectResponse
     {
-        Log::withContext([
-            'payment_id' => $payment->id,
-            'request_id' => $payment->request_id,
-        ]);
-
         $isSuccessful = $this->paymentService->checkPayment($payment);
 
         if (!$isSuccessful) {
-            return redirect()->route('payments.show', $payment->microsite->slug)
+            return redirect()->route('invoice-payments.show', $payment->microsite->slug)
                 ->withErrors([
                     'payment' => __('payment.check_failed'),
                 ]);
@@ -84,4 +83,27 @@ class PaymentController extends Controller
             'micrositeName' => $payment->microsite->name,
         ]);
     }
+
+    public function getPendingInvoices(CreatePaymentRequest $request, Microsite $microsite): JsonResource
+    {
+        $validated = $request->validated();
+
+        $invoices = Invoice::select(
+            'id',
+            'reference',
+            'name',
+            'last_name',
+            'amount',
+            'expiration_date',
+            'status',
+            'microsite_id'
+        )->where('document_number', $validated['document_number'])
+            ->where('reference', $validated['reference'])
+            ->where('microsite_id', $microsite->id)
+            ->where('status', InvoiceStatus::PENDING)
+            ->get();
+
+        return PendingInvoiceListResource::collection($invoices);
+    }
+
 }

@@ -9,6 +9,7 @@ import enMicrosites from './microsites';
 import enPayment from './payments';
 import enUsers from './users';
 import enHome from './home';
+import enInvoicePayments from './invoicePayments';
 import enInvoices from './invoices';
 import enPlans from './plans';
 import enTransactions from "./transactions";
@@ -27,6 +28,7 @@ export default {
     payments: enPayment,
     users: enUsers,
     home: enHome,
+    invoicePayments: enInvoicePayments,
     invoices: enInvoices,
     plans: enPlans,
     transactions: enTransactions,
