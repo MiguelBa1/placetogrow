@@ -7,6 +7,7 @@ use App\Contracts\SubscriptionServiceInterface;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Subscription\CancelSubscriptionRequest;
 use App\Http\Requests\Subscription\SendSubscriptionLinkRequest;
+use App\Http\Resources\Subscription\CustomerResource;
 use App\Http\Resources\Subscription\SubscriptionListResource;
 use App\Mail\ActiveSubscriptionsLinkMail;
 use App\Models\Customer;
@@ -53,7 +54,7 @@ class SubscriptionController extends Controller
 
     public function show(Request $request, string $email, string $documentNumber): Response
     {
-        if (! $request->hasValidSignature()) {
+        if (!$request->hasValidSignature()) {
             abort(403, __('message.invalid_link'));
         }
 
@@ -61,8 +62,13 @@ class SubscriptionController extends Controller
         $customer = Customer::select(
             'id',
             'email',
+            'name',
+            'last_name',
+            'document_type',
             'document_number',
-        )->where('email', $email)
+            'phone',
+        )
+            ->where('email', $email)
             ->where('document_number', $documentNumber)
             ->firstOrFail();
 
@@ -82,14 +88,9 @@ class SubscriptionController extends Controller
             ->orderBy('start_date', 'desc')
             ->get();
 
-        $subscriptionsResource = SubscriptionListResource::collection($subscriptions);
-
         return Inertia::render('Subscriptions/Show', [
-            'subscriptions' => $subscriptionsResource,
-            'customer' => [
-                'email' => $email,
-                'document_number' => $documentNumber,
-            ]
+            'subscriptions' => SubscriptionListResource::collection($subscriptions),
+            'customer' => new CustomerResource($customer),
         ]);
     }
 

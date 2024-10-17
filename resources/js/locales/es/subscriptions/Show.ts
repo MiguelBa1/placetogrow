@@ -1,5 +1,11 @@
 export const esShow = {
-    title: 'Suscripciones de {email}',
+    title: 'Perfil de usuario',
+    personalInformation: 'Información Personal',
+    documentType: 'Tipo de Documento',
+    documentNumber: 'Número de Documento',
+    phone: 'Teléfono',
+    activeSubscriptions: 'Suscripciones Activas',
+    noSubscriptions: 'No hay suscripciones activas',
     table: {
         subscriptionName: 'Suscripción',
         micrositeName: 'Micrositio',
@@ -16,6 +22,5 @@ export const esShow = {
         close: 'Cerrar',
         success: 'La suscripción ha sido cancelada',
         error: 'Ha ocurrido un error al cancelar la suscripción',
-    },
-    noSubscriptions: 'No hay suscripciones activas',
+    }
 }
