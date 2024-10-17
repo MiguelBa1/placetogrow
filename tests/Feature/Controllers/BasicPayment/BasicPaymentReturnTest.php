@@ -34,6 +34,7 @@ class BasicPaymentReturnTest extends TestCase
         $paymentReference = 'test_reference';
 
         $payment = Payment::factory()->create([
+            'microsite_id' => $this->basicMicrosite->id,
             'reference' => $paymentReference,
             'request_id' => 'test_request_id',
             'status' => PaymentStatus::PENDING->value,
@@ -106,6 +107,7 @@ class BasicPaymentReturnTest extends TestCase
 
         $paymentReference = 'test_reference';
         $payment = Payment::factory()->create([
+            'microsite_id' => $this->basicMicrosite->id,
             'reference' => $paymentReference,
             'request_id' => 'test_request_id',
             'status' => PaymentStatus::APPROVED->value,
@@ -126,6 +128,7 @@ class BasicPaymentReturnTest extends TestCase
 
         /** @var Payment $payment */
         $payment = Payment::factory()->create([
+            'microsite_id' => $this->basicMicrosite->id,
             'reference' => $paymentReference,
             'request_id' => 'test_request_id',
             'status' => PaymentStatus::PENDING->value,

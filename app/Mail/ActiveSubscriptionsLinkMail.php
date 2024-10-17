@@ -23,7 +23,7 @@ class ActiveSubscriptionsLinkMail extends Mailable implements ShouldQueue
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: __('subscription.mail.subject'),
+            subject: __('subscription.access_link_mail.subject'),
         );
     }
 

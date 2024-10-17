@@ -4,7 +4,6 @@ import { ref } from 'vue';
 import { Button } from "@/Components";
 import { SubscriptionList, MicrositeInformation, Field, SubscriptionFormModal } from '@/Pages/Payments';
 import { useI18n } from 'vue-i18n';
-import { formatCurrency } from '@/Utils';
 
 const { t } = useI18n();
 const markdown = new MarkdownIt();
@@ -17,10 +16,6 @@ const { subscriptions, microsite } = defineProps<{
 
 const renderMarkdown = (description: string) => {
     return markdown.render(description);
-};
-
-const formattedPrice = (price: number) => {
-    return formatCurrency(price, microsite.payment_currency);
 };
 
 const showModal = ref(false);
@@ -47,7 +42,7 @@ const closeModal = () => {
             <div class="space-y-2">
                 <h3 class="text-xl font-medium">{{ subscription.name }}</h3>
                 <p class="text-2xl font-semibold text-gray-800">
-                    {{ formattedPrice(subscription.price) }} / {{ subscription.billing_frequency }}
+                    {{ subscription.price }} / {{ subscription.billing_frequency }}
                 </p>
                 <p class="font-semibold text-gray-600 my-4">
                     {{ t('payments.show.subscription.duration') }}: {{ subscription.total_duration }}

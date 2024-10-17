@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import dayjs from "dayjs";
 import { Link, usePage } from "@inertiajs/vue3";
 import { DataTable, Pagination } from "@/Components";
 import { TransactionsPaginatedResponse, getTransactionTableColumns, getStatusClass } from "../index";
@@ -30,16 +29,6 @@ const { auth: { permissions } } = usePage().props;
             >
                 {{ row.status.label }}
             </span>
-        </template>
-        <template #cell-amount="{ row }">
-            {{ '$ ' + new Intl.NumberFormat().format(row.amount) }}
-        </template>
-        <template #cell-payment_date="{ row }">
-            {{
-                row.payment_date ?
-                    dayjs(row.payment_date).format('DD/MM/YYYY HH:mm')
-                    : '-'
-            }}
         </template>
         <template #cell-actions="{ row }">
             <div class="flex justify-center">

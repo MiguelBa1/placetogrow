@@ -34,6 +34,10 @@ class Customer extends Model
         'email',
     ];
 
+    protected $casts = [
+        'document_type' => DocumentType::class,
+    ];
+
     public function payments(): HasMany
     {
         return $this->hasMany(Payment::class);
@@ -41,7 +45,7 @@ class Customer extends Model
 
     public function subscriptions(): BelongsToMany
     {
-        return $this->belongsToMany(Plan::class, 'subscription')
+        return $this->belongsToMany(Plan::class, 'subscriptions')
             ->using(Subscription::class)
             ->withTimestamps();
     }

@@ -3,7 +3,7 @@
 
 {{ __('subscription.access_link_mail.message') }}
 
-@component('access_link_mail::button', ['url' => $url])
+@component('mail::button', ['url' => $url])
     {{ __('subscription.access_link_mail.button_text') }}
 @endcomponent
 

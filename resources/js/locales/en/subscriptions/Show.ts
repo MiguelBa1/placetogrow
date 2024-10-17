@@ -1,11 +1,17 @@
 export const enShow = {
-    title: 'Subscriptions of {email}',
+    title: 'User profile',
+    personalInformation: 'Personal Information',
+    documentType: 'Document Type',
+    documentNumber: 'Document Number',
+    phone: 'Phone',
+    activeSubscriptions: 'Active Subscriptions',
+    noSubscriptions: 'No active subscriptions',
     table: {
         subscriptionName: 'Subscription',
+        micrositeName: 'Microsite',
         price: 'Price',
         startDate: 'Start Date',
         endDate: 'End Date',
-        createdAt: 'Created At',
         status: 'Status',
         actions: 'Actions',
     },
@@ -16,6 +22,5 @@ export const enShow = {
         close: 'Close',
         success: 'The subscription has been canceled',
         error: 'The subscription could not be canceled',
-    },
-    noSubscriptions: 'No active subscriptions',
+    }
 }
