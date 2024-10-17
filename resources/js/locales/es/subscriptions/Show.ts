@@ -6,7 +6,6 @@ export const esShow = {
         price: 'Precio',
         startDate: 'Fecha de inicio',
         endDate: 'Fecha de fin',
-        createdAt: 'Fecha de creación',
         status: 'Estado',
         actions: 'Acciones',
     },

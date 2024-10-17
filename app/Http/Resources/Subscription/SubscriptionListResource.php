@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\App;
 /**
  * @mixin Subscription
  */
-class SubscriptionResource extends JsonResource
+class SubscriptionListResource extends JsonResource
 {
 
     public function toArray(Request $request): array
@@ -27,9 +27,9 @@ class SubscriptionResource extends JsonResource
             'id' => $this->id,
             'subscription_name' => $subscriptionName,
             'microsite_name' => $this->plan->microsite->name,
-            'price' => "$ " . number_format($this->plan->price),
-            'start_date' => date('d/m/Y', strtotime($this->start_date)),
-            'end_date' => date('d/m/Y', strtotime($this->end_date)),
+            'price' => "$ " . number_format($this->plan->price) . " " . $this->currency,
+            'start_date' => $this->start_date->format('d/m/Y'),
+            'end_date' => $this->end_date->format('d/m/Y'),
             'status' => [
                 'label' => __("subscription.statuses.{$this->status}"),
                 'value' => $this->status,

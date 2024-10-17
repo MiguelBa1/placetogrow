@@ -7,7 +7,7 @@ use App\Contracts\SubscriptionServiceInterface;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Subscription\CancelSubscriptionRequest;
 use App\Http\Requests\Subscription\SendSubscriptionLinkRequest;
-use App\Http\Resources\Subscription\SubscriptionResource;
+use App\Http\Resources\Subscription\SubscriptionListResource;
 use App\Mail\ActiveSubscriptionsLinkMail;
 use App\Models\Customer;
 use App\Models\Subscription;
@@ -58,16 +58,31 @@ class SubscriptionController extends Controller
         }
 
         /** @var Customer $customer */
-        $customer = Customer::query()->where('email', $email)
+        $customer = Customer::select(
+            'id',
+            'email',
+            'document_number',
+        )->where('email', $email)
             ->where('document_number', $documentNumber)
             ->firstOrFail();
 
-        $subscriptions = Subscription::where('customer_id', $customer->id)
+        $subscriptions = Subscription::select(
+            'id',
+            'plan_id',
+            'start_date',
+            'end_date',
+            'status',
+            'currency',
+        )
+            ->where('customer_id', $customer->id)
             ->where('status', SubscriptionStatus::ACTIVE)
-            ->with('plan.microsite')
+            ->with('plan:id,price,microsite_id')
+            ->with('plan.translations:plan_id,name,locale')
+            ->with('plan.microsite:id,name')
+            ->orderBy('start_date', 'desc')
             ->get();
 
-        $subscriptionsResource = SubscriptionResource::collection($subscriptions);
+        $subscriptionsResource = SubscriptionListResource::collection($subscriptions);
 
         return Inertia::render('Subscriptions/Show', [
             'subscriptions' => $subscriptionsResource,
@@ -80,11 +95,15 @@ class SubscriptionController extends Controller
 
     public function cancel(CancelSubscriptionRequest $request, int $subscriptionId): RedirectResponse
     {
-        $customer = Customer::where('email', $request->get('email'))
+        /** @var Customer $customer */
+        $customer = Customer::select('id')
+            ->where('email', $request->get('email'))
             ->where('document_number', $request->get('document_number'))
             ->firstOrFail();
 
-        $subscription = Subscription::where('id', $subscriptionId)
+        /** @var Subscription $subscription */
+        $subscription = Subscription::select('id', 'token', 'customer_id')
+            ->where('id', $subscriptionId)
             ->where('customer_id', $customer->id)
             ->firstOrFail();
 
