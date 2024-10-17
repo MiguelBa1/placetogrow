@@ -2,9 +2,13 @@
 
 namespace App\Http\Resources\Transaction;
 
+use App\Models\Payment;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
+/**
+ * @mixin Payment
+ */
 class TransactionListResource extends JsonResource
 {
 
@@ -18,8 +22,8 @@ class TransactionListResource extends JsonResource
                 'value' => $this->status->value,
                 'label' => __("payment.statuses.{$this->status->value}")
             ],
-            'amount' => $this->amount,
-            'payment_date' => $this->payment_date,
+            'amount' => "$ " . number_format($this->amount, 2),
+            'payment_date' => $this->payment_date->format('d/m/Y'),
         ];
     }
 }

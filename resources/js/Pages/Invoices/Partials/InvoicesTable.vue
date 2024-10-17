@@ -22,8 +22,5 @@ const invoiceColumns = getInvoiceTableColumns(t);
                 {{ row.status.label }}
             </span>
         </template>
-        <template #cell-amount="{ row }">
-            {{ `$ ${row.amount}` }}
-        </template>
     </DataTable>
 </template>
