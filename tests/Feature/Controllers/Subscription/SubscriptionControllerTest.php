@@ -61,10 +61,10 @@ class SubscriptionControllerTest extends TestCase
             'document_number' => '1234567890',
         ]);
 
-        $subscription = Plan::factory()->create(['microsite_id' => $microsite->id]);
+        $plan = Plan::factory()->create(['microsite_id' => $microsite->id]);
         Subscription::factory()->create([
             'customer_id' => $customer->id,
-            'plan_id' => $subscription->id,
+            'plan_id' => $plan->id,
             'status' => SubscriptionStatus::ACTIVE,
         ]);
 
@@ -80,8 +80,9 @@ class SubscriptionControllerTest extends TestCase
             fn (Assert $page) =>
             $page->component('Subscriptions/Show')
                 ->has('subscriptions')
-                ->where('customer.email', 'test@example.com')
-                ->where('customer.document_number', '1234567890')
+                ->has('customer')
+                ->where('customer.data.email', 'test@example.com')
+                ->where('customer.data.document_number', '1234567890')
         );
     }
 
