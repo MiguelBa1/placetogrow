@@ -21,7 +21,9 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
 
-Route::get('/dashboard', [DashboardController::class, 'index'])->middleware(['auth', 'verified'])->name('dashboard');
+Route::get('/dashboard', [DashboardController::class, 'index'])
+    ->middleware(['auth', 'verified', 'permission:' . Permission::VIEW_DASHBOARD->value])
+    ->name('dashboard');
 
 Route::post('/language', [LanguageController::class, 'update'])->name('language.update');
 
