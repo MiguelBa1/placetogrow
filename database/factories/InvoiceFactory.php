@@ -36,6 +36,7 @@ class InvoiceFactory extends Factory
             'status' => $this->faker->randomElement(InvoiceStatus::cases())->value,
             'amount' => $this->faker->randomFloat(2, 10, 1000),
             'expiration_date' => Carbon::now()->addDays($paymentExpiration),
+            'created_at' => $this->faker->dateTimeBetween('-2 months', 'now'),
         ];
     }
 
