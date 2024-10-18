@@ -5,6 +5,7 @@ export type InvoiceItem = {
     document_number: string;
     amount: number;
     expiration_date: string;
+    status: string;
 }
 
 export type InvoiceList = {

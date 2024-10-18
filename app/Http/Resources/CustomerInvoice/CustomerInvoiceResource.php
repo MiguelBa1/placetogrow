@@ -17,13 +17,10 @@ class CustomerInvoiceResource extends JsonResource
         return [
             'id' => $this->id,
             'reference' => $this->reference,
-            'document_type' => $this->document_type,
             'document_number' => $this->document_number,
             'name' => "{$this->name} {$this->last_name}",
-            'email' => $this->email,
-            'phone' => $this->phone,
-            'amount' => "$ " . number_format($this->amount),
-            'expiration_date' => date('Y-m-d', strtotime($this->expiration_date)),
+            'amount' => "$ " . number_format($this->amount, 2) . " " . $this->microsite->payment_currency->value,
+            'expiration_date' => $this->expiration_date->format('d/m/Y'),
             'status' => [
                 'label' => __("invoices.statuses.{$this->status->value}"),
                 'value' => $this->status->value,

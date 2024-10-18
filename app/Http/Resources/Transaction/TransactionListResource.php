@@ -22,7 +22,7 @@ class TransactionListResource extends JsonResource
                 'value' => $this->status->value,
                 'label' => __("payment.statuses.{$this->status->value}")
             ],
-            'amount' => "$ " . number_format($this->amount, 2),
+            'amount' => "$ " . number_format($this->amount, 2) . " " . $this->currency,
             'payment_date' => $this->payment_date->format('d/m/Y'),
         ];
     }
