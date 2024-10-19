@@ -1,0 +1,20 @@
+# Usa la imagen base de Node.js
+FROM node:18
+
+# Establece el directorio de trabajo
+WORKDIR /var/www
+
+# Copia el package.json y el package-lock.json
+COPY package.json package-lock.json ./
+
+# Instala las dependencias de Node.js
+RUN npm install
+
+# Copia el resto de los archivos del proyecto
+COPY . .
+
+# Expone el puerto 5173 (o el que uses con Vite)
+EXPOSE 5173
+
+# Ejecuta el servidor de desarrollo
+CMD ["npm", "run", "dev"]
