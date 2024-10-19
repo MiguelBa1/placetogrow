@@ -13,8 +13,8 @@ interface InputProps {
     error?: string;
     autoComplete?: 'on' | 'off';
     required?: boolean;
-    min?: number;
-    max?: number;
+    min?: number | string;
+    max?: number | string;
 }
 
 const props = defineProps<InputProps>();
