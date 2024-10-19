@@ -20,14 +20,4 @@ export const esShow = {
             actions: 'Acciones',
         }
     },
-    subscription: {
-        duration: 'Duración',
-        month: 'mes',
-        button: 'Seleccionar Plan',
-        form: {
-            title: 'Suscribirse',
-            subTitle: 'Complete el siguiente formulario para suscribirse a este plan.',
-            submit: 'Suscribirse',
-        }
-    }
 }

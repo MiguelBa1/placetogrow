@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Plan;
 
+use App\Constants\PolicyName;
 use App\Constants\TimeUnit;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Plan\CreatePlanRequest;
@@ -9,6 +10,7 @@ use App\Http\Requests\Plan\UpdatePlanRequest;
 use App\Http\Resources\Plan\PlanListResource;
 use App\Models\Microsite;
 use App\Models\Plan;
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
@@ -16,8 +18,13 @@ use Inertia\Response;
 
 class PlanController extends Controller
 {
+    /**
+     * @throws AuthorizationException
+     */
     public function index(Microsite $microsite): Response
     {
+        $this->authorize(PolicyName::VIEW_ANY->value, Plan::class);
+
         $plans = Plan::withTrashed()
             ->where('microsite_id', $microsite->id)
             ->select(
@@ -42,8 +49,13 @@ class PlanController extends Controller
         ]);
     }
 
+    /**
+     * @throws AuthorizationException
+     */
     public function create(Microsite $microsite): Response
     {
+        $this->authorize(PolicyName::CREATE->value, Plan::class);
+
         $microsite = $microsite->only('id', 'slug');
 
         return Inertia::render('Plans/Create', [
@@ -52,8 +64,13 @@ class PlanController extends Controller
         ]);
     }
 
+    /**
+     * @throws AuthorizationException
+     */
     public function store(CreatePlanRequest $request, Microsite $microsite): RedirectResponse
     {
+        $this->authorize(PolicyName::CREATE->value, Plan::class);
+
         $validated = $request->validated();
 
         DB::transaction(function () use ($microsite, $validated) {
@@ -68,8 +85,13 @@ class PlanController extends Controller
         return redirect()->route('microsites.plans.index', $microsite);
     }
 
+    /**
+     * @throws AuthorizationException
+     */
     public function edit(Microsite $microsite, Plan $plan): Response
     {
+        $this->authorize(PolicyName::UPDATE->value, $plan);
+
         $microsite = $microsite->only('id', 'slug');
 
         $plan = $plan
@@ -83,8 +105,13 @@ class PlanController extends Controller
         ]);
     }
 
+    /**
+     * @throws AuthorizationException
+     */
     public function update(UpdatePlanRequest $request, Microsite $microsite, Plan $plan): RedirectResponse
     {
+        $this->authorize(PolicyName::UPDATE->value, $plan);
+
         $validated = $request->validated();
 
         DB::transaction(function () use ($plan, $validated) {
@@ -102,15 +129,25 @@ class PlanController extends Controller
         return redirect()->route('microsites.plans.index', $microsite);
     }
 
+    /**
+     * @throws AuthorizationException
+     */
     public function destroy(Microsite $microsite, Plan $plan): RedirectResponse
     {
+        $this->authorize(PolicyName::DELETE->value, $plan);
+
         $plan->delete();
 
         return redirect()->route('microsites.plans.index', $microsite);
     }
 
+    /**
+     * @throws AuthorizationException
+     */
     public function restore(Microsite $microsite, Plan $plan): RedirectResponse
     {
+        $this->authorize(PolicyName::RESTORE->value, $plan);
+
         $plan->restore();
 
         return redirect()->route('microsites.plans.index', $microsite);

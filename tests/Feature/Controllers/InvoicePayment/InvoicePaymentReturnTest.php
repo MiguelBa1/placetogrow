@@ -33,8 +33,6 @@ class InvoicePaymentReturnTest extends TestCase
     {
         $this->fakePaymentCheckApproved();
 
-        $this->withoutExceptionHandling();
-
         $paymentReference = 'test_reference';
 
         $pendingInvoice = Invoice::factory()->create([

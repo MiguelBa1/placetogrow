@@ -20,14 +20,4 @@ export const enShow = {
             actions: 'Actions',
         }
     },
-    subscription: {
-        duration: 'Duration',
-        month: 'month',
-        button: 'Select Plan',
-        form: {
-            title: 'Subscribe',
-            subTitle: 'Complete the following form to subscribe to this plan.',
-            submit: 'Subscribe',
-        }
-    }
 }

@@ -34,10 +34,15 @@ class DashboardControllerTest extends TestCase
 
     public function test_dashboard_returns_expected_data(): void
     {
-        $this->withoutExceptionHandling();
         $this->seedTestData();
 
-        $response = $this->actingAs($this->adminUser)->get(route('dashboard'));
+        $startDate = Carbon::now()->subMonth()->toDateString();
+        $endDate = Carbon::now()->toDateString();
+
+        $response = $this->actingAs($this->adminUser)->get(route('dashboard', [
+            'start_date' => $startDate,
+            'end_date' => $endDate,
+        ]));
 
         $response->assertStatus(200);
 
@@ -50,6 +55,8 @@ class DashboardControllerTest extends TestCase
                 ->has('data.subscriptionDistribution')
                 ->has('data.approvedTransactionsByMicrositeType')
                 ->has('lastUpdated')
+                ->where('startDate', $startDate)
+                ->where('endDate', $endDate)
         );
     }
 

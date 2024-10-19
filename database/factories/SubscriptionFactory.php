@@ -51,6 +51,7 @@ class SubscriptionFactory extends Factory
             'price' => $this->faker->randomFloat(2, 0, 1000),
             'billing_frequency' => $this->faker->randomElement($validBillingFrequencies),
             'time_unit' => $this->faker->randomElement(array_column(TimeUnit::cases(), 'value')),
+            'created_at' => $this->faker->dateTimeBetween('-2 months', 'now'),
         ];
     }
 }

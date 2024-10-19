@@ -62,9 +62,14 @@ const handleSubmit = () => {
 
 <template>
     <form @submit.prevent="handleSubmit" class="space-y-4 p-10 bg-white rounded-xl shadow-sm">
-        <div
-            class="grid grid-cols-1 md:grid-cols-2 gap-4"
-        >
+        <h1 class="text-2xl font-bold">
+            {{ t('payments.show.basicMessage.title') }}
+        </h1>
+        <p class="text-gray-600">
+            {{ t('payments.show.basicMessage.description') }}
+        </p>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div
                 v-for="field in fields"
                 :key="field.id"
