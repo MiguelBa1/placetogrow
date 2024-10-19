@@ -51,6 +51,28 @@ Placetogrow is a platform that allows administrators to create and manage micros
 
 **Note:** To use the image manipulation features in the application, the PHP `gd` extension must be enabled. Please ensure that this extension is enabled on your server.
 
+### Running with Docker
+
+To run the application using Docker, follow these steps:
+
+1. Start the Docker containers:
+    ```sh
+    docker-compose up -d --build
+    ```
+
+2. After the containers are up and running, execute the following commands to ensure proper permissions and database setup:
+
+    ```sh
+    docker compose exec app bash
+    chown www-data:www-data /var/www/storage/logs/laravel.log
+    chmod 664 /var/www/storage/logs/laravel.log
+    chown -R www-data:www-data /var/www/storage/framework
+    chmod -R 775 /var/www/storage/framework
+    php artisan migrate:fresh --seed
+    ```
+
+   These commands adjust the permissions for the necessary directories and run the initial database migrations and seeders.
+
 ### Creating an Admin User
 To access the admin panel, you need an admin user. You can create this user in one of the following ways:
 
@@ -71,4 +93,3 @@ The application uses queues for background jobs. You can set the queue driver in
 - `QUEUE_CONNECTION=database` (processes jobs in the background using the database)
 
 If using `database`, run the artisan command `php artisan queue:work` to start processing the jobs.
-
