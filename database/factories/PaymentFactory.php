@@ -29,7 +29,7 @@ class PaymentFactory extends Factory
             'microsite_id' => Microsite::factory(),
             'invoice_id' => null,
             'plan_id' => null,
-            'reference' => Str::uuid()->toString(),
+            'reference' => Str::random(),
             'request_id' => Str::random(),
             'payment_method_name' => $this->faker->word,
             'description' => $this->faker->sentence,

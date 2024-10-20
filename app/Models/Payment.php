@@ -62,7 +62,7 @@ class Payment extends Model
 
     public function microsite(): BelongsTo
     {
-        return $this->belongsTo(Microsite::class);
+        return $this->belongsTo(Microsite::class)->withTrashed();
     }
 
     public function invoice(): BelongsTo
