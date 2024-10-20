@@ -48,7 +48,7 @@ const openCancelSubscriptionModal = (subscription: SubscriptionListItem) => {
         </template>
 
         <div class="justify-between flex gap-4 flex-col xl:flex-row">
-            <div class="w-full space-y-8 px-6 py-4 bg-white shadow-md sm:rounded-lg">
+            <div class="w-full xl:max-w-xs space-y-8 px-6 py-4 bg-white shadow-md sm:rounded-lg">
                 <div class="font-bold text-xl text-gray-800">
                     {{ t('subscriptions.show.personalInformation') }}
                 </div>
@@ -92,7 +92,7 @@ const openCancelSubscriptionModal = (subscription: SubscriptionListItem) => {
                 </div>
             </div>
 
-            <div class="space-y-8 px-6 py-4 bg-white shadow-md sm:rounded-lg">
+            <div class="w-full space-y-8 px-6 py-4 bg-white shadow-md sm:rounded-lg">
                 <div class="font-bold text-xl text-gray-800">
                     {{ t('subscriptions.show.activeSubscriptions') }}
                 </div>
@@ -121,7 +121,7 @@ const openCancelSubscriptionModal = (subscription: SubscriptionListItem) => {
                     </template>
                 </DataTable>
 
-                <div v-else class="flex justify-center items-center h-96">
+                <div v-else class="flex justify-center items-center h-48">
                     <p class="text-gray-500">
                         {{ t('subscriptions.show.noSubscriptions') }}
                     </p>

@@ -7,7 +7,7 @@ export const getStatusClass = (status: SubscriptionStatus) => {
         case SubscriptionStatus.INACTIVE:
             return 'text-red-600';
         case SubscriptionStatus.PENDING:
-            return 'text-yellow-600';
+            return 'text-yellow-500';
         case SubscriptionStatus.CANCELED:
             return 'text-red-600';
         default:
