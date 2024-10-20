@@ -2,10 +2,9 @@
 
 namespace Tests\Feature\Jobs;
 
-use App\Actions\Payment\CreatePaymentAction;
-use App\Actions\Payment\UpdatePaymentFromP2PResponse;
 use App\Constants\PaymentStatus;
 use App\Constants\SubscriptionStatus;
+use App\Constants\TimeUnit;
 use App\Contracts\PlaceToPayServiceInterface;
 use App\Jobs\CollectSubscriptionPaymentJob;
 use App\Models\Microsite;
@@ -38,8 +37,15 @@ class CollectSubscriptionPaymentJobTest extends TestCase
     {
         $this->fakeCollectSubscriptionPaymentSuccess();
 
+        $this->subscription->update([
+            'next_payment_date' => now()->addDay(),
+            'end_date' => now()->addDays(10),
+            'billing_frequency' => 2,
+            'time_unit' => TimeUnit::DAYS,
+        ]);
+
         $job = new CollectSubscriptionPaymentJob($this->subscription->id);
-        $job->handle(app(PlaceToPayServiceInterface::class), app(CreatePaymentAction::class), app(UpdatePaymentFromP2PResponse::class));
+        $job->handle(app(PlaceToPayServiceInterface::class));
 
         Queue::assertNothingPushed();
         $this->assertEquals(SubscriptionStatus::ACTIVE->value, $this->subscription->fresh()->status);
@@ -75,7 +81,7 @@ class CollectSubscriptionPaymentJobTest extends TestCase
 
         $job = new CollectSubscriptionPaymentJob($this->subscription->id);
         $job->withFakeQueueInteractions();
-        $job->handle(app(PlaceToPayServiceInterface::class), app(CreatePaymentAction::class), app(UpdatePaymentFromP2PResponse::class));
+        $job->handle(app(PlaceToPayServiceInterface::class));
 
         $job->assertReleased();
     }
@@ -111,5 +117,29 @@ class CollectSubscriptionPaymentJobTest extends TestCase
         $job = new CollectSubscriptionPaymentJob($this->subscription->id);
 
         $this->assertEquals(5, $job->tries());
+    }
+
+    public function test_collect_subscription_payment_job_deactivates_subscription_when_next_payment_exceeds_end_date(): void
+    {
+        $this->fakeCollectSubscriptionPaymentSuccess();
+
+        $this->subscription->update([
+            'next_payment_date' => now(),
+            'end_date' => now()->addDay(),
+            'billing_frequency' => 5,
+            'time_unit' => TimeUnit::DAYS,
+        ]);
+
+        $job = new CollectSubscriptionPaymentJob($this->subscription->id);
+        $job->handle(app(PlaceToPayServiceInterface::class));
+
+        $this->subscription->refresh();
+
+        $this->assertEquals(SubscriptionStatus::INACTIVE->value, $this->subscription->status);
+        $this->assertDatabaseHas('subscriptions', [
+            'id' => $this->subscription->id,
+            'status' => SubscriptionStatus::INACTIVE->value,
+            'status_message' => 'Subscription has reached its end date',
+        ]);
     }
 }
