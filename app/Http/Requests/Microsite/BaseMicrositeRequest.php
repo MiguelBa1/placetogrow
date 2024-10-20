@@ -21,7 +21,7 @@ abstract class BaseMicrositeRequest extends FormRequest
             'category_id' => ['exists:categories,id'],
             'payment_currency' => [Rule::in(array_column(CurrencyType::cases(), 'value'))],
             'payment_expiration' => [
-                'required_if:type,' . MicrositeType::INVOICE->value . ',' . MicrositeType::SUBSCRIPTION->value,
+                'required_if:type,' . MicrositeType::INVOICE->value,
                 'nullable',
                 'integer',
                 'min:1',

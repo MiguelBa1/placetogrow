@@ -53,11 +53,8 @@ class CollectSubscriptionPaymentJob implements ShouldQueue
         $this->retryBackoff = $settings['retry']['retry_backoff'] ?? 1;
     }
 
-    public function handle(
-        PlaceToPayServiceInterface $placeToPayService,
-        CreatePaymentAction $createPaymentAction,
-        UpdatePaymentFromP2PResponse $updatePaymentFromP2PResponse
-    ): void {
+    public function handle(PlaceToPayServiceInterface $placeToPayService): void
+    {
         /** @var Subscription $subscription */
         $subscription = Subscription::select(
             'id',
@@ -67,6 +64,7 @@ class CollectSubscriptionPaymentJob implements ShouldQueue
             'token',
             'reference',
             'additional_data',
+            'end_date',
             'next_payment_date',
             'billing_frequency',
             'time_unit'
@@ -88,7 +86,7 @@ class CollectSubscriptionPaymentJob implements ShouldQueue
             'additional_data' => $subscription->additional_data,
         ];
 
-        $payment = $createPaymentAction->execute($customer, $subscription->plan->microsite, $paymentData);
+        $payment = (new CreatePaymentAction())->execute($customer, $subscription->plan->microsite, $paymentData);
 
         $result = $placeToPayService->collectSubscriptionPayment($customer, $subscription, $payment);
 
@@ -99,35 +97,43 @@ class CollectSubscriptionPaymentJob implements ShouldQueue
             ]);
 
             $this->loadMicrositeSettings();
-            $backoffInSeconds = $this->getBackoffInSeconds();
+            $backoffInSeconds = $this->retryBackoff * 3600;
 
             $this->release($backoffInSeconds);
             return;
         }
 
-        $updatePaymentFromP2PResponse->execute($payment, $result);
+        (new UpdatePaymentFromP2PResponse())->execute($payment, $result);
+
+        $newNextPaymentDate = $subscription->next_payment_date->add(
+            DateInterval::createFromDateString(
+                "{$subscription->billing_frequency} {$subscription->time_unit->value}"
+            )
+        );
+
+        $newStatus = $newNextPaymentDate > $subscription->end_date
+            ? SubscriptionStatus::INACTIVE->value
+            : SubscriptionStatus::ACTIVE->value;
+
+        $statusMessage = $newStatus === SubscriptionStatus::INACTIVE->value
+            ? 'Subscription has reached its end date'
+            : null;
 
         $subscription->update([
-            'status' => SubscriptionStatus::ACTIVE->value,
-            'next_payment_date' => $subscription
-                ->next_payment_date
-                ->add(
-                    DateInterval::createFromDateString(
-                        "{$subscription->billing_frequency} {$subscription->time_unit->value}"
-                    )
-                ),
+            'status' => $newStatus,
+            'next_payment_date' => $newNextPaymentDate,
+            'status_message' => $statusMessage,
         ]);
 
-        Log::info("Payment successfully collected for subscription: {$subscription->reference}", [
-            'subscription_id' => $subscription->id,
-        ]);
-    }
-
-    protected function getBackoffInSeconds(): int
-    {
-        $this->loadMicrositeSettings();
-
-        return $this->retryBackoff * 3600;
+        if ($newStatus === SubscriptionStatus::INACTIVE->value) {
+            Log::info("Subscription reached end date and has been deactivated: {$subscription->reference}", [
+                'subscription_id' => $subscription->id,
+            ]);
+        } else {
+            Log::info("Payment successfully collected for subscription: {$subscription->reference}", [
+                'subscription_id' => $subscription->id,
+            ]);
+        }
     }
 
     public function failed(?Throwable $exception): void

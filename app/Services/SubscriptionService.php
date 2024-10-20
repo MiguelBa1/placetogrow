@@ -36,7 +36,6 @@ class SubscriptionService implements SubscriptionServiceInterface
 
         if (!$result['success']) {
             $subscription->update([
-                'request_id' => $result['data']['requestId'],
                 'status' => SubscriptionStatus::INACTIVE->value,
                 'status_message' => $result['message'],
             ]);

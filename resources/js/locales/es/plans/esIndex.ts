@@ -1,6 +1,7 @@
 export const esIndex = {
     title: 'Suscripciones de {microsite}',
     create: 'Crear suscripción',
+    no_plans: 'No hay suscripciones',
     table: {
         name: 'Nombre',
         price: 'Precio',
@@ -8,7 +9,7 @@ export const esIndex = {
         billing_frequency: 'Frecuencia de facturación',
         created_at: 'Creado el',
         actions: 'Acciones',
-        no_subscriptions: 'No hay suscripciones',
+        no_plans: 'No hay suscripciones',
     },
     delete: {
         success: 'Suscripción eliminada correctamente',

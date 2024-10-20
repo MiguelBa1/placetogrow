@@ -40,7 +40,7 @@ class MicrositeField extends Model
 
     public function microsite(): BelongsTo
     {
-        return $this->belongsTo(Microsite::class);
+        return $this->belongsTo(Microsite::class)->withTrashed();
     }
 
     public function translations(): HasMany

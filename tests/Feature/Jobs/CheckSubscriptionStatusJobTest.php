@@ -4,10 +4,12 @@ namespace Tests\Feature\Jobs;
 
 use App\Constants\SubscriptionStatus;
 use App\Jobs\CheckSubscriptionStatusJob;
+use App\Jobs\CollectSubscriptionPaymentJob;
 use App\Models\Plan;
 use App\Models\Subscription;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Queue;
 use Tests\TestCase;
 use Tests\Traits\PlaceToPayMockTrait;
 
@@ -17,6 +19,7 @@ class CheckSubscriptionStatusJobTest extends TestCase
 
     public function test_job_processes_subscription_successfully()
     {
+        Queue::fake();
         $this->fakeSubscriptionCheckApproved();
         Cache::spy();
 
@@ -33,8 +36,10 @@ class CheckSubscriptionStatusJobTest extends TestCase
         $job->handle();
 
         Cache::shouldHaveReceived('forget')->once()->with('subscription_checked_' . $subscription->id);
-        $subscription->refresh();
 
+        $subscription->refresh();
         $this->assertEquals(SubscriptionStatus::ACTIVE->value, $subscription->status);
+
+        Queue::assertPushed(CollectSubscriptionPaymentJob::class);
     }
 }

@@ -8,7 +8,7 @@ export const enIndex = {
         billing_frequency: 'Billing frequency',
         created_at: 'Created at',
         actions: 'Actions',
-        no_subscriptions: 'No subscriptions',
+        no_plans: 'No subscriptions',
     },
     delete: {
         success: 'Subscription deleted successfully',
