@@ -31,7 +31,9 @@ class MicrositeService
                 return $query->where('name', 'like', '%' . $searchFilter . '%');
             })->when($categoryFilter, function ($query, $categoryFilter) {
                 return $query->where('category_id', $categoryFilter);
-            })->paginate(10)->onEachSide(1)->withQueryString();
+            })
+            ->orderBy('created_at', 'desc')
+            ->paginate(10)->onEachSide(1)->withQueryString();
 
         return MicrositeListResource::collection($microsites);
     }
@@ -69,6 +71,7 @@ class MicrositeService
             'responsible_name',
             'responsible_document_number',
             'responsible_document_type',
+            'settings',
         ]);
         $micrositeData['logo'] = $microsite->getFirstMediaUrl('logos');
 

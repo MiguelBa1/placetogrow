@@ -3,17 +3,20 @@
 namespace App\Services\Payment;
 
 use App\Actions\Customer\StoreCustomerAction;
+use App\Actions\Payment\CreatePaymentAction;
+use App\Actions\Payment\UpdatePaymentFromP2PResponse;
 use App\Constants\InvoiceStatus;
 use App\Constants\MicrositeType;
 use App\Constants\PaymentStatus;
 use App\Contracts\PaymentServiceInterface;
 use App\Contracts\PlaceToPayServiceInterface;
+use App\Models\Microsite;
 use App\Models\Payment;
-use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Log;
 
 class PaymentService implements PaymentServiceInterface
 {
-
     private PlaceToPayServiceInterface $placeToPayService;
 
     public function __construct(PlaceToPayServiceInterface $placeToPayService)
@@ -21,94 +24,77 @@ class PaymentService implements PaymentServiceInterface
         $this->placeToPayService = $placeToPayService;
     }
 
-    public function createPayment(array $paymentData): array
+    public function createPayment(Microsite $microsite, array $paymentData): array
     {
-        $customerData = (new StoreCustomerAction())->execute($paymentData);
+        $customer = (new StoreCustomerAction())->execute($paymentData);
 
-        /** @var Payment $payment */
-        $payment = $customerData->payments()->create([
-            'microsite_id' => $paymentData['microsite_id'],
-            'invoice_id' => $paymentData['invoice_id'] ?? null,
-            'description' => $paymentData['payment_description'],
-            'reference' => date('ymdHis') . '-' . strtoupper(Str::random(4)),
-            'currency' => $paymentData['currency'],
-            'amount' => $paymentData['amount'],
-            'additional_data' => $paymentData['additional_data'],
-        ]);
+        $payment = (new CreatePaymentAction())->execute($customer, $microsite, $paymentData);
 
-        $result = $this->placeToPayService->createPayment($customerData, $payment);
+        $result = $this->placeToPayService->createPayment($customer, $payment);
 
-        if (!$result->ok()) {
-
+        if (!$result['success']) {
             $payment->update([
                 'status' => PaymentStatus::REJECTED->value,
-                'status_message' => $result->json()['status']['message'],
+                'status_message' => $result['message'],
             ]);
 
             return [
                 'success' => false,
-                'message' => $result->json()['status']['message'],
             ];
         }
 
+        $resultData = $result['data'];
+
         $payment->update([
-            'request_id' => $result->json()['requestId'],
+            'request_id' => $resultData['requestId'],
             'status' => PaymentStatus::PENDING->value,
-            'status_message' => $result->json()['status']['message'],
+            'status_message' => $resultData['status']['message'],
         ]);
 
         return [
-            'success' => $result->ok(),
-            'url' => $result['processUrl'] ?? null,
-            'message' => $result['status']['message'] ?? null,
+            'success' => true,
+            'url' => $resultData['processUrl'],
         ];
     }
-
-    public function checkPayment(Payment $payment): array
+    public function checkPayment(Payment $payment): bool
     {
-        $result = $this->placeToPayService->checkPayment($payment->request_id);
+        Log::withContext([
+            'payment_id' => $payment->id,
+            'request_id' => $payment->request_id,
+        ]);
 
-        if ($result->ok()) {
-            $payment = $this->updatePayment($payment, $result->json());
+        $cacheKey = 'payment_checked_' . $payment->id;
+        $isRecentlyChecked = Cache::get($cacheKey);
 
-            return [
-                'success' => true,
-                'payment' => $payment,
-            ];
-        } else {
-            return [
-                'success' => false,
-                'message' => $result['status']['message'],
-            ];
+        if ($isRecentlyChecked || $payment->status->value !== PaymentStatus::PENDING->value) {
+            return true;
         }
+
+        $result = $this->placeToPayService->checkSession($payment->request_id);
+
+        if (!$result['success']) {
+            return false;
+        }
+
+        (new UpdatePaymentFromP2PResponse())->execute($payment, $result);
+
+        $payment->refresh();
+
+        if ($payment->microsite->type->value === MicrositeType::INVOICE->value) {
+            $this->updateInvoiceStatus($payment);
+        }
+
+        Cache::put($cacheKey, true, now()->addMinutes(10));
+
+        return true;
     }
 
-    public function updatePayment(Payment $payment, array $response): Payment
+    public function updateInvoiceStatus(Payment $payment): void
     {
-        if ($response['status']['status'] === PaymentStatus::APPROVED->value) {
-            $paymentResponse = $response['payment'][0];
-
-            $payment->update([
-                'payment_method_name' => $paymentResponse['paymentMethodName'],
-                'authorization' => $paymentResponse['authorization'],
-                'payment_date' => $paymentResponse['status']['date'],
-                'status_message' => $paymentResponse['status']['message'],
-                'status' => $paymentResponse['status']['status'],
-            ]);
-
-            if ($payment->microsite->type === MicrositeType::INVOICE && $payment->invoice) {
-                $payment->invoice->update([
-                    'status' => InvoiceStatus::PAID->value,
-                ]);
-            }
-
-        } else {
-            $payment->update([
-                'status_message' => $response['status']['message'],
-                'status' => $response['status']['status'],
+        if ($payment->status->value === PaymentStatus::APPROVED->value) {
+            $payment->invoice->update([
+                'status' => InvoiceStatus::PAID->value,
             ]);
         }
-
-        return $payment;
     }
 }

@@ -1,0 +1,111 @@
+{
+    "requestId": 86698,
+    "status": {
+        "status": "REJECTED",
+        "reason": "XN",
+        "message": "Se ha rechazado la petición",
+        "date": "2024-10-03T23:34:18-05:00"
+    },
+    "request": {
+        "locale": "es_CO",
+        "payer": {
+            "document": "269435",
+            "documentType": "CC",
+            "name": "Mercedes Beard",
+            "surname": "Mendoza",
+            "email": "cizexa@mailinator.com",
+            "mobile": "3000415616"
+        },
+        "payment": {
+            "reference": "SUBSCRIPTION_YQEFABW1AD",
+            "description": "Subscription payment 241003233331-RVN0",
+            "amount": {
+                "currency": "USD",
+                "total": 7872
+            },
+            "allowPartial": false,
+            "subscribe": false
+        },
+        "returnUrl": "https://checkout-co.placetopay.dev/home",
+        "ipAddress": "2800:e2:1100:cb8:a2ae:8f8c:2c4c:bd0c",
+        "userAgent": "GuzzleHttp/7"
+    },
+    "payment": [
+        {
+            "amount": {
+                "to": {
+                    "total": 7872,
+                    "currency": "USD"
+                },
+                "from": {
+                    "total": 7872,
+                    "currency": "USD"
+                },
+                "factor": 1
+            },
+            "status": {
+                "date": "2024-10-03T23:34:17-05:00",
+                "reason": "05",
+                "status": "REJECTED",
+                "message": "Rechazada"
+            },
+            "receipt": "449838730980",
+            "refunded": false,
+            "franchise": "PS_VS",
+            "reference": "SUBSCRIPTION_YQEFABW1AD",
+            "issuerName": "BANCO DE GUAYAQUIL, S.A.",
+            "authorization": "000000",
+            "paymentMethod": "visa",
+            "processorFields": [
+                {
+                    "value": "4549106521651",
+                    "keyword": "merchantCode",
+                    "displayOn": "none"
+                },
+                {
+                    "value": "98765432",
+                    "keyword": "terminalNumber",
+                    "displayOn": "none"
+                },
+                {
+                    "value": "C",
+                    "keyword": "cardType",
+                    "displayOn": "none"
+                },
+                {
+                    "value": "411076",
+                    "keyword": "bin",
+                    "displayOn": "none"
+                },
+                {
+                    "value": 1,
+                    "keyword": "installments",
+                    "displayOn": "none"
+                },
+                {
+                    "value": true,
+                    "keyword": "onTest",
+                    "displayOn": "none"
+                },
+                {
+                    "value": "****0040",
+                    "keyword": "lastDigits",
+                    "displayOn": "none"
+                },
+                {
+                    "value": "976bb4417ffb00d9d9a434409002398c",
+                    "keyword": "id",
+                    "displayOn": "none"
+                },
+                {
+                    "value": "05",
+                    "keyword": "b24",
+                    "displayOn": "none"
+                }
+            ],
+            "internalReference": 436689,
+            "paymentMethodName": "Visa"
+        }
+    ],
+    "subscription": null
+}

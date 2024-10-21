@@ -10,23 +10,22 @@ use Spatie\MediaLibrary\MediaCollections\Exceptions\FileIsTooBig;
 
 class UpdateMicrositeAction
 {
-    /**
-     * @throws Exception
-     */
-    public function execute(UpdateMicrositeRequest $request, Microsite $microsite): Microsite
+    public function execute(UpdateMicrositeRequest $request, Microsite $microsite): array
     {
-        $microsite->update($request->except('logo'));
+        try {
+            $microsite->update($request->except('logo'));
 
-        if ($request->hasFile('logo')) {
-            try {
+            if ($request->hasFile('logo')) {
                 $microsite
                     ->addMediaFromRequest('logo')
                     ->toMediaCollection('logos');
-            } catch (FileDoesNotExist | FileIsTooBig $e) {
-                throw new Exception(trans('messages.error.uploading_logo'));
             }
-        }
 
-        return $microsite;
+            return ['success' => true, 'message' => null];
+        } catch (FileDoesNotExist | FileIsTooBig) {
+            return ['success' => false, 'message' => trans('messages.error.uploading_logo')];
+        } catch (Exception) {
+            return ['success' => false, 'message' => trans('messages.error.general')];
+        }
     }
 }

@@ -1,0 +1,1 @@
+import{P as t}from"./PaymentStatus-BztxG7Vj.js";function a(e){switch(e){case t.APPROVED:return"text-green-600";case t.REJECTED:return"text-red-600";case t.PENDING:return"text-yellow-500";default:return""}}export{a as g};

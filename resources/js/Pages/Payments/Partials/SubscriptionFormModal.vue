@@ -6,10 +6,10 @@ import { Field, SubscriptionItem } from '@/Pages/Payments';
 import { useI18n } from 'vue-i18n';
 import { useToast } from "vue-toastification";
 
-const { subscriptionId, micrositeSlug } = defineProps<{
+const { planId, micrositeSlug } = defineProps<{
     isOpen: boolean;
     micrositeSlug: string;
-    subscriptionId: number | null;
+    planId: number | null;
     fields: Field[];
 }>();
 
@@ -51,7 +51,7 @@ const handleSubmit = () => {
 
     router.post(route('subscription-payments.store', {
         microsite: micrositeSlug,
-        subscription: subscriptionId,
+        plan: planId,
     }), formData.value, {
         preserveScroll: true,
         onSuccess: () => {

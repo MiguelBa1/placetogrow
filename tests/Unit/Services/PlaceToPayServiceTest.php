@@ -2,14 +2,12 @@
 
 namespace Tests\Unit\Services;
 
-use App\Constants\CurrencyType;
-use App\Constants\DocumentType;
-use App\Constants\PaymentStatus;
 use App\Constants\PlaceToPayStatus;
 use App\Models\Customer;
-use App\Models\CustomerSubscription;
 use App\Models\Payment;
-use App\Services\PlaceToPayService;
+use App\Models\Subscription;
+use App\Services\Payment\PlaceToPayService;
+use Exception;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Http;
 use Tests\TestCase;
@@ -22,94 +20,156 @@ class PlaceToPayServiceTest extends TestCase
     public function test_can_create_a_payment(): void
     {
         Http::fake([
-            config('payments.placetopay.url') => Http::response(['status' => PlaceToPayStatus::OK->value]),
+            config('placetopay.url') => Http::response([
+                'status' => PlaceToPayStatus::OK->value,
+                'requestId' => '12345',
+                'processUrl' => 'https://example.com/payment'
+            ]),
         ]);
 
-        $customer = Customer::factory()->create([
-            'name' => 'John',
-            'last_name' => 'Doe',
-            'email' => 'john@example.com',
-            'document_type' => DocumentType::CC->value,
-            'document_number' => '1234567890',
-            'phone' => '1234567890',
-        ]);
+        $customer = Customer::factory()->create();
 
-        $payment = Payment::factory()->create([
-            'reference' => 'test_reference',
-            'description' => 'Test Payment',
-            'currency' => CurrencyType::COP->value,
-            'amount' => 100.00,
-        ]);
+        $payment = Payment::factory()->create();
 
         $service = new PlaceToPayService();
 
         $response = $service->createPayment($customer, $payment);
 
-        $this->assertEquals(200, $response->status());
-
-        $this->assertArrayHasKey('status', $response->json());
-        $this->assertEquals(PlaceToPayStatus::OK->value, $response->json()['status']);
+        $this->assertTrue($response['success']);
+        $this->assertArrayHasKey('data', $response);
+        $this->assertArrayHasKey('requestId', $response['data']);
+        $this->assertArrayHasKey('processUrl', $response['data']);
+        $this->assertEquals(PlaceToPayStatus::OK->value, $response['data']['status']);
     }
 
     public function test_can_check_a_payment(): void
     {
         Http::fake([
-            config('payments.placetopay.url') => Http::response(['status' => PaymentStatus::APPROVED->value]),
+            config('placetopay.url') => Http::response(['status' => PlaceToPayStatus::APPROVED->value]),
         ]);
 
         $service = new PlaceToPayService();
 
-        $response = $service->checkPayment('test_session_id');
+        $response = $service->checkSession('test_session_id');
 
-        $this->assertEquals(200, $response->status());
-
-        $this->assertArrayHasKey('status', $response->json());
-        $this->assertEquals(PaymentStatus::APPROVED->value, $response->json()['status']);
+        $this->assertTrue($response['success']);
+        $this->assertArrayHasKey('data', $response);
+        $this->assertEquals(PlaceToPayStatus::APPROVED->value, $response['data']['status']);
     }
 
     public function test_can_create_a_subscription(): void
     {
         Http::fake([
-            config('payments.placetopay.url') => Http::response(['status' => PlaceToPayStatus::OK->value]),
+            config('placetopay.url') => Http::response([
+                'status' => PlaceToPayStatus::OK->value,
+                'requestId' => '12345',
+                'processUrl' => 'https://example.com/subscription'
+            ]),
         ]);
 
-        $customer = Customer::factory()->create([
-            'name' => 'John',
-            'last_name' => 'Doe',
-            'email' => 'test@mail.com',
-            'document_type' => DocumentType::CC->value,
-            'document_number' => '1234567890',
-            'phone' => '1234567890',
-        ]);
+        $customer = Customer::factory()->create();
 
-        $subscription = CustomerSubscription::factory()->create([
-            'reference' => 'test_reference',
-            'description' => 'Test Subscription',
-        ]);
+        $subscription = Subscription::factory()->create();
 
         $service = new PlaceToPayService();
 
         $response = $service->createSubscription($customer, $subscription);
 
-        $this->assertEquals(200, $response->status());
-
-        $this->assertArrayHasKey('status', $response->json());
-        $this->assertEquals(PlaceToPayStatus::OK->value, $response->json()['status']);
+        $this->assertTrue($response['success']);
+        $this->assertArrayHasKey('data', $response);
+        $this->assertArrayHasKey('requestId', $response['data']);
+        $this->assertArrayHasKey('processUrl', $response['data']);
+        $this->assertEquals(PlaceToPayStatus::OK->value, $response['data']['status']);
     }
 
     public function test_can_check_a_subscription(): void
     {
         Http::fake([
-            config('payments.placetopay.url') => Http::response(['status' => PaymentStatus::APPROVED->value]),
+            config('placetopay.url') => Http::response([
+                'status' => PlaceToPayStatus::APPROVED->value
+            ]),
         ]);
 
         $service = new PlaceToPayService();
 
-        $response = $service->checkSubscription('test_session_id');
+        $response = $service->checkSession('test_session_id');
 
-        $this->assertEquals(200, $response->status());
+        $this->assertTrue($response['success']);
+        $this->assertArrayHasKey('data', $response);
+        $this->assertEquals(PlaceToPayStatus::APPROVED->value, $response['data']['status']);
+    }
 
-        $this->assertArrayHasKey('status', $response->json());
-        $this->assertEquals(PaymentStatus::APPROVED->value, $response->json()['status']);
+    public function test_can_cancel_a_subscription(): void
+    {
+        Http::fake([
+            config('placetopay.url') => Http::response([
+                'status' => PlaceToPayStatus::OK->value
+            ]),
+        ]);
+
+        $service = new PlaceToPayService();
+
+        $response = $service->cancelSubscription(encrypt('test_subscription_token'));
+
+        $this->assertTrue($response['success']);
+        $this->assertArrayHasKey('data', $response);
+        $this->assertEquals(PlaceToPayStatus::OK->value, $response['data']['status']);
+    }
+
+    public function test_can_collect_a_subscription(): void
+    {
+        Http::fake([
+            config('placetopay.url') => Http::response([
+                'status' => PlaceToPayStatus::APPROVED->value,
+                'requestId' => '12345',
+                'processUrl' => 'https://example.com/subscription'
+            ]),
+        ]);
+
+        $customer = Customer::factory()->create();
+        $subscription = Subscription::factory()->create();
+        $payment = Payment::factory()->create();
+
+        $service = new PlaceToPayService();
+
+        $response = $service->collectSubscriptionPayment($customer, $subscription, $payment);
+
+        $this->assertTrue($response['success']);
+        $this->assertArrayHasKey('data', $response);
+        $this->assertArrayHasKey('requestId', $response['data']);
+        $this->assertArrayHasKey('processUrl', $response['data']);
+        $this->assertEquals(PlaceToPayStatus::APPROVED->value, $response['data']['status']);
+    }
+
+    public function test_handle_http_request_with_unsuccessful_response()
+    {
+        Http::fake([
+            config('placetopay.url') => Http::response([], 400),
+        ]);
+
+        $service = new PlaceToPayService();
+
+        $response = $service->checkSession('test_session_id');
+
+        $this->assertFalse($response['success']);
+        $this->assertArrayHasKey('message', $response);
+        $this->assertEquals(__('placetopay.request_failed'), $response['message']);
+    }
+
+    public function test_handle_http_request_with_exception()
+    {
+        Http::fake([
+            config('placetopay.url') => Http::throw(function () {
+                return new Exception('Error occurred');
+            }),
+        ]);
+
+        $service = new PlaceToPayService();
+
+        $response = $service->checkSession('test_session_id');
+
+        $this->assertFalse($response['success']);
+        $this->assertArrayHasKey('message', $response);
+        $this->assertEquals(__('placetopay.error_occurred'), $response['message']);
     }
 }

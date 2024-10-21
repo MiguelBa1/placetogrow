@@ -13,8 +13,6 @@ export const enIndex = {
         category: "CATEGORY",
         type: "TYPE",
         responsible_name: "RESPONSIBLE",
-        payment_currency: "PAYMENT CURRENCY",
-        payment_expiration: "PAYMENT EXPIRATION",
         actions: "ACTIONS"
     },
     delete: {

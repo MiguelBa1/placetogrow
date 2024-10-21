@@ -13,4 +13,5 @@ return [
         'name' => 'name',
         'description' => 'description',
     ],
+    'date_range_exceeded' => 'The date range cannot be greater than 1 month.',
 ];

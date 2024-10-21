@@ -12,8 +12,26 @@ enum MicrositeType: string
     {
         return match($this) {
             self::INVOICE => 45,
-            self::SUBSCRIPTION => 30,
-            self::BASIC => null,
+            self::SUBSCRIPTION, self::BASIC => null,
+        };
+    }
+
+    public function defaultSettings(): array
+    {
+        return match($this) {
+            self::INVOICE => [
+                'late_fee' => [
+                    'type' => LateFeeType::FIXED->value,
+                    'value' => 20,
+                ],
+            ],
+            self::SUBSCRIPTION => [
+                'retry' => [
+                    'max_retries' => 3,
+                    'retry_backoff' => 12,
+                ],
+            ],
+            self::BASIC => [],
         };
     }
 

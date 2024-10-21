@@ -7,8 +7,9 @@ use App\Constants\MicrositeType;
 use App\Models\Category;
 use App\Models\Invoice;
 use App\Models\Microsite;
+use App\Models\Payment;
+use App\Models\Plan;
 use App\Models\Subscription;
-use App\Models\SubscriptionTranslation;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Storage;
 
@@ -21,39 +22,67 @@ class CategoryMicrositeSeeder extends Seeder
         $this->attachMicrositeFieldsAction = $attachMicrositeFieldsAction;
     }
 
-    public function run(): void
+    public function run(int $count): void
     {
         $this->cleanDirectories();
 
-        $categories = Category::factory()->count(5)->create();
+        $categories = Category::factory(5)->create();
 
-        $microsites = Microsite::factory()->count(20)
+        $microsites = Microsite::factory($count)
             ->recycle($categories)
             ->create();
 
+        /** @var Microsite $microsite */
         foreach ($microsites as $microsite) {
             $this->attachMicrositeFieldsAction->execute($microsite);
 
             if ($microsite->type->value === MicrositeType::INVOICE->value) {
-                Invoice::factory()->count(3)->create(['microsite_id' => $microsite->id]);
+                Invoice::factory(3)
+                    ->pending()
+                    ->recycle($microsite)
+                    ->create();
+
+                $randomPendingPayments = random_int(1, 3);
+                Payment::factory($randomPendingPayments)
+                    ->withInvoice()
+                    ->recycle($microsite)
+                    ->create();
+
+                $expiredInvoices = Invoice::factory(2)
+                    ->expired()
+                    ->recycle($microsite)
+                    ->create();
+
+                $randomExpiredPayments = random_int(1, 2);
+                Payment::factory($randomExpiredPayments)
+                    ->recycle($microsite)
+                    ->recycle($expiredInvoices)
+                    ->withInvoice()
+                    ->create();
             }
 
             if ($microsite->type->value === MicrositeType::SUBSCRIPTION->value) {
-                $this->createSubscriptionsWithTranslations($microsite);
+                $plans = Plan::factory(2)
+                    ->recycle($microsite)
+                    ->create();
+
+                $randomPlanPayments = random_int(1, 5);
+                Payment::factory($randomPlanPayments)
+                    ->recycle($plans)
+                    ->recycle($microsite)
+                    ->withPlan()
+                    ->create();
+
+                Subscription::factory(2)
+                    ->recycle($plans)
+                    ->create();
             }
-        }
-    }
 
-    private function createSubscriptionsWithTranslations(Microsite $microsite): void
-    {
-        $subscriptions = Subscription::factory()->count(2)->create(['microsite_id' => $microsite->id]);
-
-        foreach ($subscriptions as $subscription) {
-            foreach (['en', 'es'] as $locale) {
-                SubscriptionTranslation::factory()->create([
-                    'subscription_id' => $subscription->id,
-                    'locale' => $locale,
-                ]);
+            if ($microsite->type->value === MicrositeType::BASIC->value) {
+                $randomBasicPayments = random_int(1, 5);
+                Payment::factory($randomBasicPayments)
+                    ->recycle($microsite)
+                    ->create();
             }
         }
     }

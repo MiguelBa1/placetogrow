@@ -3,61 +3,80 @@
 namespace App\Models;
 
 use App\Constants\TimeUnit;
-use Illuminate\Database\Eloquent\Collection;
+use Carbon\Carbon;
+use Database\Factories\SubscriptionFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
-use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Support\Carbon;
+use Illuminate\Database\Eloquent\Relations\Pivot;
 
 /**
  * @property int $id
- * @property int $microsite_id
- * @property string|null $description
- * @property int $price
- * @property int $total_duration
- * @property int $billing_frequency
+ * @property int $customer_id
+ * @property int $plan_id
+ * @property Carbon $start_date
+ * @property Carbon $end_date
+ * @property Carbon $next_payment_date
+ * @property string $status
+ * @property string $reference
+ * @property string $description
+ * @property string $request_id
+ * @property string $status_message
+ * @property string $currency
+ * @property string $token
+ * @property string $subtoken
+ * @property array $additional_data
+ * @property float $price
  * @property TimeUnit $time_unit
- * @property Carbon|null $created_at
- * @property Carbon|null $updated_at
- * @property Carbon|null $deleted_at
- *
- * @property Microsite $microsite
- * @property Collection|SubscriptionTranslation[] $translations
+ * @property int $billing_frequency
+ * @property Plan $plan
+ * @property Customer $customer
+ * @property string $created_at
+ * @property string $updated_at
+ * @method static SubscriptionFactory factory($count = null, $state = [])
  */
-class Subscription extends Model
+class Subscription extends Pivot
 {
-    use HasFactory, SoftDeletes;
+    use HasFactory;
+
+    public $incrementing = true;
+
+    protected $table = 'subscriptions';
 
     protected $fillable = [
-        'microsite_id',
+        'customer_id',
+        'plan_id',
+        'start_date',
+        'end_date',
+        'next_payment_date',
+        'status',
+        'reference',
         'description',
+        'request_id',
+        'status_message',
+        'currency',
+        'token',
+        'subtoken',
+        'additional_data',
         'price',
-        'total_duration',
         'billing_frequency',
         'time_unit',
     ];
 
     protected $casts = [
+        'additional_data' => 'array',
         'time_unit' => TimeUnit::class,
+        'start_date' => 'date',
+        'end_date' => 'date',
+        'next_payment_date' => 'date',
     ];
 
-    public function microsite(): BelongsTo
+    public function plan(): BelongsTo
     {
-        return $this->belongsTo(Microsite::class);
+        return $this->belongsTo(Plan::class);
     }
 
-    public function translations(): HasMany
+    public function customer(): BelongsTo
     {
-        return $this->hasMany(SubscriptionTranslation::class);
-    }
-
-    public function customers(): BelongsToMany
-    {
-        return $this->belongsToMany(Customer::class, 'customer_subscription')
-            ->using(CustomerSubscription::class)
-            ->withTimestamps();
+        return $this->belongsTo(Customer::class);
     }
 }

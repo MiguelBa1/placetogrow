@@ -1,7 +1,9 @@
 <?php
 
+use App\Constants\MicrositeType;
+
 return [
-    'invoice' => 'Factura',
-    'subscription' => 'Suscripción',
-    'basic' => 'Básico'
+    MicrositeType::BASIC->value => 'Básico',
+    MicrositeType::SUBSCRIPTION->value => 'Suscripción',
+    MicrositeType::INVOICE->value => 'Factura'
 ];

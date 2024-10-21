@@ -42,13 +42,24 @@ class CustomerInvoiceController extends Controller
 
     public function show(Request $request): Response
     {
-        if (! $request->hasValidSignature()) {
+        if (!$request->hasValidSignature()) {
             abort(403, __('message.invalid_link'));
         }
 
-        $invoices = Invoice::where('email', $request->get('email'))
+        $invoices = Invoice::select(
+            'id',
+            'reference',
+            'document_number',
+            'name',
+            'last_name',
+            'amount',
+            'expiration_date',
+            'status',
+            'microsite_id'
+        )
+            ->where('email', $request->get('email'))
             ->where('document_number', $request->get('document_number'))
-            ->with(['microsite', 'payment'])
+            ->with(['microsite:id,name,slug,payment_currency'])
             ->get();
 
         $invoicesResource = CustomerInvoiceResource::collection($invoices);

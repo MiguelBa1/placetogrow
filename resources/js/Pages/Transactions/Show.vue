@@ -92,7 +92,7 @@ const goBack = () => {
                                 {{ t('transactions.show.details.amount') }}
                             </dt>
                             <dd class="mb-2">
-                                {{ '$ ' + new Intl.NumberFormat().format(transaction.data.amount) }}
+                                {{ transaction.data.amount }}
                             </dd>
                         </div>
                     </dl>

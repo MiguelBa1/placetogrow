@@ -33,7 +33,8 @@ class HomeService
             })
             ->when($searchFilter, function ($query, $searchFilter) {
                 return $query->where('name', 'like', '%' . $searchFilter . '%');
-            });
+            })
+            ->orderBy('created_at', 'desc');
 
         $microsites = $micrositesQuery->paginate(12)->withQueryString();
 

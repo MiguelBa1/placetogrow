@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Constants\PaymentStatus;
+use Database\Factories\PaymentFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -24,6 +25,7 @@ use Illuminate\Support\Carbon;
  * @property Customer customer
  * @property Microsite microsite
  * @property Invoice invoice
+ * @method static PaymentFactory factory($count = null, $state = [])
  */
 class Payment extends Model
 {
@@ -33,6 +35,7 @@ class Payment extends Model
         'customer_id',
         'microsite_id',
         'invoice_id',
+        'plan_id',
         'reference',
         'description',
         'request_id',
@@ -59,7 +62,7 @@ class Payment extends Model
 
     public function microsite(): BelongsTo
     {
-        return $this->belongsTo(Microsite::class);
+        return $this->belongsTo(Microsite::class)->withTrashed();
     }
 
     public function invoice(): BelongsTo

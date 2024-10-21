@@ -3,16 +3,22 @@
 namespace App\Services;
 
 use App\Actions\Customer\StoreCustomerAction;
+use App\Actions\Subscription\CreateSubscriptionAction;
 use App\Constants\PlaceToPayStatus;
 use App\Constants\SubscriptionStatus;
 use App\Contracts\PlaceToPayServiceInterface;
 use App\Contracts\SubscriptionServiceInterface;
-use App\Models\CustomerSubscription;
-use Illuminate\Support\Str;
+use App\Jobs\CollectSubscriptionPaymentJob;
+use App\Mail\SubscriptionCreatedMail;
+use App\Models\Microsite;
+use App\Models\Plan;
+use App\Models\Subscription;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
 
 class SubscriptionService implements SubscriptionServiceInterface
 {
-
     private PlaceToPayServiceInterface $placeToPayService;
 
     public function __construct(PlaceToPayServiceInterface $placeToPayService)
@@ -20,94 +26,112 @@ class SubscriptionService implements SubscriptionServiceInterface
         $this->placeToPayService = $placeToPayService;
     }
 
-    public function createSubscription(array $subscriptionData): array
+    public function createSubscription(Plan $plan, Microsite $microsite, array $data): array
     {
-        $customerData = (new StoreCustomerAction())->execute($subscriptionData);
+        $customerData = (new StoreCustomerAction())->execute($data);
 
-        $start_date = now();
-        $end_date = now()->add($subscriptionData['total_duration'], $subscriptionData['time_unit']);
+        $subscription = (new CreateSubscriptionAction())->execute($plan, $microsite, $customerData, $data['additional_data']);
 
-        /** @var CustomerSubscription $subscriptionPivot */
-        $subscriptionPivot = CustomerSubscription::create([
-            'customer_id' => $customerData->id,
-            'subscription_id' => $subscriptionData['subscription_id'],
-            'start_date' => $start_date,
-            'end_date' => $end_date,
-            'reference' => date('ymdHis') . '-' . strtoupper(Str::random(4)),
-            'description' => $customerData->name . ' ' . $subscriptionData['subscription_id'],
-            'currency' => $subscriptionData['currency'],
-            'additional_data' => $subscriptionData['additional_data'],
-        ]);
+        $result = $this->placeToPayService->createSubscription($customerData, $subscription);
 
-        $result = $this->placeToPayService->createSubscription($customerData, $subscriptionPivot);
-
-        $dataResponse = $result->json();
-        if (!$result->ok()) {
-            $subscriptionPivot->update([
-                'request_id' => $dataResponse['requestId'],
+        if (!$result['success']) {
+            $subscription->update([
                 'status' => SubscriptionStatus::INACTIVE->value,
-                'status_message' => $dataResponse['status']['message'],
+                'status_message' => $result['message'],
             ]);
 
             return [
                 'success' => false,
-                'message' => $dataResponse['status']['message'],
             ];
         }
 
-        $subscriptionPivot->update([
-            'request_id' => $dataResponse['requestId'],
-            'status_message' => $dataResponse['status']['message'],
+        $resultData = $result['data'];
+
+        $subscription->update([
+            'request_id' => $resultData['requestId'],
+            'status_message' => $resultData['status']['message'],
         ]);
 
         return [
-            'success' => $result->ok(),
-            'url' => $result['processUrl'] ?? null,
-            'message' => $dataResponse['status']['message'] ?? null,
+            'success' => true,
+            'url' => $resultData['processUrl'],
         ];
     }
 
-    public function checkSubscription(CustomerSubscription $customerSubscription): array
+    public function checkSubscription(Subscription $subscription): bool
     {
-        $result = $this->placeToPayService->checkSubscription($customerSubscription->request_id);
-        $dataResponse = $result->json();
+        Log::withContext([
+            'subscription_id' => $subscription->id,
+            'request_id' => $subscription->request_id,
+        ]);
 
-        if ($result->ok()) {
-            $this->updateSubscription($customerSubscription, $dataResponse);
+        $cacheKey = 'subscription_checked_' . $subscription->id;
+        $isRecentlyChecked = Cache::get($cacheKey);
 
-            return [
-                'success' => true,
-                'message' => $dataResponse['status']['message'],
-                'customer_subscription' => $customerSubscription,
-            ];
-        } else {
-            return [
-                'success' => false,
-                'message' => $dataResponse['status']['message'],
-            ];
+        if ($isRecentlyChecked || $subscription->status !== SubscriptionStatus::PENDING->value) {
+            return true;
         }
 
+        $result = $this->placeToPayService->checkSession($subscription->request_id);
+
+        if (!$result['success']) {
+            return false;
+        }
+
+        $this->updateSubscription($subscription, $result['data']);
+
+        Cache::put($cacheKey, true, now()->addMinutes(10));
+
+        return true;
     }
 
-    private function updateSubscription(CustomerSubscription $customerSubscription, array $dataResponse): void
+    private function updateSubscription(Subscription $subscription, array $dataResponse): void
     {
         $subscriptionStatus = $dataResponse['status'];
 
-        if ($subscriptionStatus['status'] === PlaceToPayStatus::APPROVED->value) {
+        $mappedStatus = $this->mapPlaceToPayStatusToSubscriptionStatus(PlaceToPayStatus::from($subscriptionStatus['status']));
+
+        $subscription->update([
+            'status' => $mappedStatus,
+            'status_message' => $subscriptionStatus['message'],
+        ]);
+
+        if ($mappedStatus === SubscriptionStatus::ACTIVE->value) {
             $subscriptionInstrument = $dataResponse['subscription']['instrument'];
 
-            $customerSubscription->update([
-                'status' => SubscriptionStatus::ACTIVE->value,
-                'status_message' => $subscriptionStatus['message'],
-                'token' => $subscriptionInstrument[0]['value'],
-                'subtoken' => $subscriptionInstrument[1]['value'],
+            $subscription->update([
+                'token' => encrypt($subscriptionInstrument[0]['value']),
+                'subtoken' => encrypt($subscriptionInstrument[1]['value']),
             ]);
 
-        } else {
-            $customerSubscription->update([
-                'status' => SubscriptionStatus::INACTIVE->value,
-                'status_message' => $subscriptionStatus['message'],
-            ]);
+            CollectSubscriptionPaymentJob::dispatch($subscription->id);
+
+            Mail::to($subscription->customer->email)
+                ->queue(new SubscriptionCreatedMail($subscription));
         }
+    }
+
+    private function mapPlaceToPayStatusToSubscriptionStatus(PlaceToPayStatus $status): string
+    {
+        return match ($status) {
+            PlaceToPayStatus::APPROVED, PlaceToPayStatus::APPROVED_PARTIAL => SubscriptionStatus::ACTIVE->value,
+            PlaceToPayStatus::PENDING => SubscriptionStatus::PENDING->value,
+            default => SubscriptionStatus::INACTIVE->value,
+        };
+    }
+
+    public function cancelSubscription(Subscription $subscription): bool
+    {
+        $result = $this->placeToPayService->cancelSubscription($subscription->token);
+
+        if (!$result['success']) {
+            return false;
+        }
+
+        $subscription->update([
+            'status' => SubscriptionStatus::CANCELED->value,
+        ]);
+
+        return true;
     }
 }

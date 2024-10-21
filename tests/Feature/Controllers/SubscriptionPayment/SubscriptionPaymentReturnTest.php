@@ -4,10 +4,12 @@ namespace Tests\Feature\Controllers\SubscriptionPayment;
 
 use App\Constants\MicrositeType;
 use App\Constants\SubscriptionStatus;
-use App\Models\CustomerSubscription;
+use App\Mail\SubscriptionCreatedMail;
 use App\Models\Microsite;
+use App\Models\Subscription;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Mail;
 use Mockery;
 use Tests\TestCase;
 use Tests\Traits\CreatesMicrosites;
@@ -28,14 +30,17 @@ class SubscriptionPaymentReturnTest extends TestCase
 
     public function test_return_after_subscription_payment(): void
     {
+        Mail::fake();
+
         $this->fakeSubscriptionCheckApproved();
         Cache::spy();
 
         $subscriptionPaymentReference = 'test_reference';
 
-        $customerSubscription = CustomerSubscription::factory()->create([
+        $subscription = Subscription::factory()->create([
             'reference' => $subscriptionPaymentReference,
             'request_id' => 'test_request_id',
+            'status' => SubscriptionStatus::PENDING->value,
         ]);
 
         $response = $this->get(route('subscription-payments.return', $subscriptionPaymentReference));
@@ -48,9 +53,14 @@ class SubscriptionPaymentReturnTest extends TestCase
                 ->has('customer')
         );
 
+        Mail::assertQueued(SubscriptionCreatedMail::class, function ($mail) use ($subscription) {
+            return $mail->hasTo($subscription->customer->email) &&
+                $mail->subscription->is($subscription);
+        });
+
         Cache::shouldHaveReceived('put')
             ->once()
-            ->with('subscription_status_' . $customerSubscription->id, SubscriptionStatus::ACTIVE->value, Mockery::any());
+            ->with('subscription_checked_' . $subscription->id, true, Mockery::any());
     }
 
     public function test_return_after_subscription_payment_error(): void
@@ -58,9 +68,10 @@ class SubscriptionPaymentReturnTest extends TestCase
         $this->fakeSubscriptionCheckFailed();
 
         $subscriptionPaymentReference = 'test_reference';
-        CustomerSubscription::factory()->create([
+        Subscription::factory()->create([
             'reference' => $subscriptionPaymentReference,
             'request_id' => 'test_request_id',
+            'status' => SubscriptionStatus::PENDING->value,
         ]);
 
         $response = $this->get(route('subscription-payments.return', $subscriptionPaymentReference));
@@ -79,9 +90,10 @@ class SubscriptionPaymentReturnTest extends TestCase
 
         $subscriptionPaymentReference = 'test_reference';
 
-        $customerSubscription = CustomerSubscription::factory()->create([
+        $subscription = Subscription::factory()->create([
             'reference' => $subscriptionPaymentReference,
             'request_id' => 'test_request_id',
+            'status' => SubscriptionStatus::PENDING->value,
         ]);
 
         $response = $this->get(route('subscription-payments.return', $subscriptionPaymentReference));
@@ -96,7 +108,7 @@ class SubscriptionPaymentReturnTest extends TestCase
 
         Cache::shouldHaveReceived('put')
             ->once()
-            ->with('subscription_status_' . $customerSubscription->id, SubscriptionStatus::INACTIVE->value, Mockery::any());
+            ->with('subscription_checked_' . $subscription->id, true, Mockery::any());
     }
 
     public function test_already_active_subscription_payment(): void
@@ -106,7 +118,7 @@ class SubscriptionPaymentReturnTest extends TestCase
 
         $subscriptionPaymentReference = 'test_reference';
 
-        $customerSubscription = CustomerSubscription::factory()->create([
+        $subscription = Subscription::factory()->create([
             'reference' => $subscriptionPaymentReference,
             'request_id' => 'test_request_id',
             'status' => SubscriptionStatus::ACTIVE->value,
@@ -114,27 +126,24 @@ class SubscriptionPaymentReturnTest extends TestCase
 
         $this->get(route('subscription-payments.return', $subscriptionPaymentReference));
 
-        $this->assertDatabaseHas('customer_subscription', [
-            'id' => $customerSubscription->id,
+        $this->assertDatabaseHas('subscriptions', [
+            'id' => $subscription->id,
             'status' => SubscriptionStatus::ACTIVE->value,
         ]);
     }
 
     public function test_return_after_subscription_payment_using_cache(): void
     {
-        $subscriptionPaymentReference = 'test_reference';
-        $cachedStatus = SubscriptionStatus::PENDING->value;
+        $this->fakeSubscriptionCheckPending();
+        Cache::spy();
 
-        $customerSubscription = CustomerSubscription::factory()->create([
+        $subscriptionPaymentReference = 'test_reference';
+
+        $subscription = Subscription::factory()->create([
             'reference' => $subscriptionPaymentReference,
             'request_id' => 'test_request_id',
             'status' => SubscriptionStatus::PENDING->value,
         ]);
-
-        Cache::shouldReceive('get')
-            ->once()
-            ->with('subscription_status_' . $customerSubscription->id)
-            ->andReturn($cachedStatus);
 
         $response = $this->get(route('subscription-payments.return', $subscriptionPaymentReference));
 
@@ -145,6 +154,9 @@ class SubscriptionPaymentReturnTest extends TestCase
                 ->has('subscription')
                 ->has('customer')
         );
-    }
 
+        Cache::shouldHaveReceived('get')
+            ->once()
+            ->with('subscription_checked_' . $subscription->id);
+    }
 }

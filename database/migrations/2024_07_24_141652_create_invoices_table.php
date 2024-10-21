@@ -21,6 +21,8 @@ return new class extends Migration {
             $table->enum('status', array_column(InvoiceStatus::cases(), 'value'))->default(InvoiceStatus::PENDING);
             $table->string('phone', 20);
             $table->decimal('amount', 10);
+            $table->decimal('late_fee', 10)->nullable();
+            $table->decimal('total_amount', 10)->nullable();
             $table->date('expiration_date');
             $table->unique(['microsite_id', 'reference']);
             $table->timestamps();

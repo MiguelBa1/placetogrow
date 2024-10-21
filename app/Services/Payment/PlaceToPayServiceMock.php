@@ -5,52 +5,93 @@ namespace App\Services\Payment;
 use App\Contracts\PlaceToPayServiceInterface;
 use App\Models\Customer;
 use App\Models\Payment;
-use GuzzleHttp\Psr7\Response as GuzzleResponse;
-use Illuminate\Database\Eloquent\Relations\Pivot;
-use Illuminate\Http\Client\Response;
+use App\Models\Subscription;
 
 class PlaceToPayServiceMock implements PlaceToPayServiceInterface
 {
     private string $createPaymentFile = 'created_payment.json';
-
     private string $checkPaymentFile = 'approved_payment.json';
-
     private string $createSubscriptionFile = 'created_subscription.json';
-
     private string $checkSubscriptionFile = 'approved_subscription.json';
+    private string $collectSubscriptionPaymentFile = 'collected_subscription_payment.json';
+    private string $sessionType = 'payment';
 
     private int $statusCode = 200;
 
-    public function createPayment(Customer $customer, Payment $payment): Response
+    public function createPayment(Customer $customer, Payment $payment): array
     {
         $data = json_decode(file_get_contents(app_path("../tests/Stubs/$this->createPaymentFile")), true);
 
-        $guzzleResponse = new GuzzleResponse($this->statusCode, ['Content-Type' => 'application/json'], json_encode($data));
-        return new Response($guzzleResponse);
+        return [
+            'success' => $this->statusCode === 200,
+            'data' => $data,
+            'message' => $this->statusCode === 200 ?
+                'Payment created successfully' :
+                'Failed to create payment',
+        ];
     }
 
-    public function checkPayment(string $sessionId): Response
-    {
-        $data = json_decode(file_get_contents(app_path("../tests/Stubs/$this->checkPaymentFile")), true);
-
-        $guzzleResponse = new GuzzleResponse($this->statusCode, ['Content-Type' => 'application/json'], json_encode($data));
-        return new Response($guzzleResponse);
-    }
-
-    public function createSubscription(Customer $customer, Pivot $subscriptionPivot): Response
+    public function createSubscription(Customer $customer, Subscription $subscription): array
     {
         $data = json_decode(file_get_contents(app_path("../tests/Stubs/$this->createSubscriptionFile")), true);
 
-        $guzzleResponse = new GuzzleResponse($this->statusCode, ['Content-Type' => 'application/json'], json_encode($data));
-        return new Response($guzzleResponse);
+        return [
+            'success' => $this->statusCode === 200,
+            'data' => $data,
+            'message' => $this->statusCode === 200 ?
+                'Subscription created successfully' :
+                'Failed to create subscription',
+        ];
     }
 
-    public function checkSubscription(string $sessionId): Response
+    public function checkSession(string $sessionId): array
     {
-        $data = json_decode(file_get_contents(app_path("../tests/Stubs/$this->checkSubscriptionFile")), true);
+        $file = $this->sessionType === 'subscription' ? $this->checkSubscriptionFile : $this->checkPaymentFile;
+        $data = json_decode(file_get_contents(app_path("../tests/Stubs/$file")), true);
 
-        $guzzleResponse = new GuzzleResponse($this->statusCode, ['Content-Type' => 'application/json'], json_encode($data));
-        return new Response($guzzleResponse);
+        return [
+            'success' => $this->statusCode === 200,
+            'data' => $data,
+            'message' => $this->statusCode === 200 ?
+                ucfirst($this->sessionType) . ' status checked successfully' :
+                'Failed to check ' . $this->sessionType . ' status',
+        ];
+    }
+
+    public function cancelSubscription(string $subscriptionToken): array
+    {
+        $file = file_get_contents(app_path("../tests/Stubs/canceled_subscription.json"));
+        $data = json_decode($file, true);
+
+        return [
+            'success' => $this->statusCode === 200,
+            'data' => $data,
+            'message' => $this->statusCode === 200 ?
+                'Subscription cancelled successfully' :
+                'Failed to cancel subscription',
+        ];
+    }
+
+    public function collectSubscriptionPayment(Customer $customer, Subscription $subscription, Payment $payment): array
+    {
+        $data = json_decode(file_get_contents(app_path("../tests/Stubs/$this->collectSubscriptionPaymentFile")), true);
+
+        return [
+            'success' => $this->statusCode === 200,
+            'data' => $data,
+            'message' => $this->statusCode === 200 ?
+                'Subscription payment collected successfully' :
+                'Failed to collect subscription payment',
+        ];
+    }
+
+    public function setSessionType(string $type): void
+    {
+        if (!in_array($type, ['payment', 'subscription'])) {
+            throw new \InvalidArgumentException("Invalid session type: $type");
+        }
+
+        $this->sessionType = $type;
     }
 
     public function setCreatePaymentInformation(string $file): void
@@ -71,6 +112,11 @@ class PlaceToPayServiceMock implements PlaceToPayServiceInterface
     public function setCheckSubscriptionInformation(string $file): void
     {
         $this->checkSubscriptionFile = $file;
+    }
+
+    public function setCollectSubscriptionPaymentInformation(string $file): void
+    {
+        $this->collectSubscriptionPaymentFile = $file;
     }
 
     public function setStatusCode(int $statusCode): void

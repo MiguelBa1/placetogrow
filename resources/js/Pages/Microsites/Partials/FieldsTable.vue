@@ -59,17 +59,15 @@ const deleteField = (field: MicrositeField) => {
             </template>
             <template #cell-actions="{ row }">
                 <fieldset
-                    :disabled="deleteForm.processing"
+                    :disabled="row.modifiable === false"
                     class="flex justify-center gap-1">
                     <button
-                        :disabled="row.modifiable === false"
                         class="text-blue-600 hover:text-blue-900 disabled:opacity-50 disabled:cursor-not-allowed"
                         @click="editField(row as MicrositeField)"
                     >
                         <PencilSquareIcon class="w-5 h-5" />
                     </button>
                     <button
-                        :disabled="row.modifiable === false"
                         class="text-red-600 hover:text-red-900 disabled:opacity-50 disabled:cursor-not-allowed"
                         @click="deleteField(row as MicrositeField)"
                     >

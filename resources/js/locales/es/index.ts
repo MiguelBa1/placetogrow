@@ -1,15 +1,17 @@
 import { esCommon } from './common';
 import esAuth from './auth';
 import esCustomerInvoices from './customerInvoices';
-import esCustomerSubscriptions from './customerSubscriptions';
+import esDashboard from './dashboard';
+import esSubscriptions from './subscriptions';
 import esProfile from './profile';
 import esRolePermission from './rolePermissions'
 import esMicrosites from './microsites';
 import esPayment from './payments';
 import esUsers from './users';
 import esHome from './home';
+import esInvoicePayments from './invoicePayments';
 import esInvoices from './invoices';
-import esSubscriptions from './subscriptions';
+import esPlans from './plans';
 import esTransactions from './transactions';
 import esLayouts from './layouts';
 import esComponents from './components';
@@ -18,15 +20,17 @@ export default {
     common: esCommon,
     auth: esAuth,
     customerInvoices: esCustomerInvoices,
-    customerSubscriptions: esCustomerSubscriptions,
+    dashboard: esDashboard,
+    subscriptions: esSubscriptions,
     profile: esProfile,
     rolePermissions: esRolePermission,
     microsites: esMicrosites,
     payments: esPayment,
     users: esUsers,
     home: esHome,
+    invoicePayments: esInvoicePayments,
     invoices: esInvoices,
-    subscriptions: esSubscriptions,
+    plans: esPlans,
     transactions: esTransactions,
     layouts: esLayouts,
     components: esComponents,

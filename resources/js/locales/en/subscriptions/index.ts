@@ -1,9 +1,7 @@
-import { enIndex } from './enIndex'
-import { Create } from './Create'
-import { Edit } from './Edit'
+import { enIndex } from './enIndex';
+import { enShow } from './Show';
 
 export default {
     index: enIndex,
-    create: Create,
-    edit: Edit,
+    show: enShow,
 }

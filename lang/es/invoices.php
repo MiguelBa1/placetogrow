@@ -20,4 +20,12 @@ return [
             "failure" => "Fila :row: :errors",
         ],
     ],
+    "due_soon_mail" => [
+        "subject" => "Tu factura :reference está próxima a vencer",
+        "title" => "Factura Próxima a Vencer",
+        "greeting" => "Hola :name,",
+        "body" => "Te informamos que tu factura de :currency :amount con referencia :reference en el micrositio :microsite vencerá el :date.",
+        "button" => "Pagar Factura",
+        "thank_you" => "Gracias por tu atención",
+    ],
 ];

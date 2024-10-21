@@ -33,7 +33,7 @@ enum MicrositeField: string
     {
         return match($this) {
             self::DOCUMENT_TYPE => ['required', 'string', 'max:20', 'in:' . implode(',', DocumentType::toArray())],
-            self::DOCUMENT_NUMBER => ['required', 'string', 'max:20', 'alpha_num'],
+            self::DOCUMENT_NUMBER => ['required', 'string', 'max:20', 'alpha_num', 'min:5'],
             self::NAME, self::LAST_NAME => ['required', 'string', 'max:100'],
             self::EMAIL => ['required', 'email', 'max:100'],
             self::PAYMENT_DESCRIPTION => ['required', 'string', 'max:255'],

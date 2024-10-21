@@ -13,7 +13,11 @@ class DatabaseSeeder extends Seeder
             PermissionSeeder::class,
             DefaultRolesAndPermissionsSeeder::class,
             UserSeeder::class,
-            CategoryMicrositeSeeder::class,
         ]);
+
+        $count = $this->command->ask('How many microsites do you want to create?', 50);
+
+        $this->callWith(CategoryMicrositeSeeder::class, ['count' => $count]);
+
     }
 }

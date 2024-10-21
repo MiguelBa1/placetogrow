@@ -291,4 +291,5 @@ return [
         'total_duration'           => 'duración total',
         'time_unit'                => 'unidad de tiempo',
     ],
+    'date_range_exceeded' => 'El rango de fechas no puede ser mayor a 1 mes.',
 ];

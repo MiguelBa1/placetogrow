@@ -1,21 +1,11 @@
 export const enIndex = {
-    title: 'Subscriptions of {microsite}',
-    create: 'Create subscription',
-    table: {
-        name: 'Name',
-        price: 'Price',
-        total_duration: 'Total duration',
-        billing_frequency: 'Billing frequency',
-        created_at: 'Created at',
-        actions: 'Actions',
-        no_subscriptions: 'No subscriptions',
-    },
-    delete: {
-        success: 'Subscription deleted successfully',
-        error: 'Error deleting subscription',
-    },
-    restore: {
-        success: 'Subscription restored successfully',
-        error: 'Error restoring subscription',
-    }
+    title: 'My subscriptions',
+    accessSubscriptions: 'Access your subscriptions',
+    enterDetails: 'Enter your document number and email to access your subscriptions.',
+    documentNumberLabel: 'Document number',
+    emailLabel: 'Email',
+    sendLinkButton: 'Send link',
+    afterSend: 'After sending the link, you will receive an email with a link to access your subscriptions.',
+    linkSent: 'Email sent successfully',
+    linkError: 'Error sending email',
 }
