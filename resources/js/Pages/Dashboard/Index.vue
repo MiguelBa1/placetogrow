@@ -12,6 +12,7 @@ import {
 import { useI18n } from 'vue-i18n';
 import { ref } from 'vue';
 import { InputField, Button } from '@/Components';
+import { useToast } from "vue-toastification";
 
 const {
     data,
@@ -24,6 +25,8 @@ const {
     startDate: string;
     endDate: string;
 }>();
+
+const toast = useToast();
 
 const { t } = useI18n();
 
@@ -39,6 +42,11 @@ const handleDateFilter = () => {
             data: {
                 start_date: startDate.value,
                 end_date: endDate.value,
+            },
+            onError: (error) => {
+                for (const value of Object.values(error)) {
+                    toast.error(value);
+                }
             },
         });
     }
@@ -82,6 +90,7 @@ const handleDateFilter = () => {
                         id="start_date"
                         type="date"
                         label="Fecha de Inicio"
+                        :max="today"
                         v-model="startDate"
                     />
 
