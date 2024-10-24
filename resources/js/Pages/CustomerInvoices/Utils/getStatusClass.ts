@@ -7,7 +7,7 @@ export const getStatusClass = (status: InvoiceStatus) => {
         case InvoiceStatus.EXPIRED:
             return 'text-red-600';
         case InvoiceStatus.PENDING:
-            return 'text-yellow-600';
+            return 'text-yellow-500';
         default:
             return '';
     }

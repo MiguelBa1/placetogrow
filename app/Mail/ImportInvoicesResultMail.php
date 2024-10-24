@@ -33,9 +33,4 @@ class ImportInvoicesResultMail extends Mailable implements ShouldQueue
             markdown: 'emails.invoices.import_result',
         );
     }
-
-    public function attachments(): array
-    {
-        return [];
-    }
 }

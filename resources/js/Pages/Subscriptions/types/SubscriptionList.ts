@@ -1,12 +1,12 @@
 export type SubscriptionListItem = {
     id: number;
-    name: string;
-    price: string;
-    total_duration: number;
-    billing_frequency: number;
-    time_unit: string;
-    created_at: string;
-    deleted_at: string | null;
+    subscription_name: string;
+    microsite_name: string;
+    price: number;
+    start_date: string;
+    end_date: string;
+    status: string;
+    actions: string;
 }
 
 export type SubscriptionsList = {

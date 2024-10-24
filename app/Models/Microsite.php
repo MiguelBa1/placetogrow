@@ -25,11 +25,12 @@ use Spatie\Sluggable\SlugOptions;
  * @property string responsible_name
  * @property string responsible_document_number
  * @property string responsible_document_type
+ * @property array settings
  * @property Category category
  * @property MicrositeField[] fields
  * @property Invoice[] invoices
  * @property Payment[] payments
- * @property Subscription[] subscriptions
+ * @property Plan[] $plans
  */
 class Microsite extends Model implements HasMedia
 {
@@ -44,11 +45,13 @@ class Microsite extends Model implements HasMedia
         'responsible_name',
         'responsible_document_number',
         'responsible_document_type',
+        'settings',
     ];
 
     protected $casts = [
         'payment_currency' => CurrencyType::class,
         'type' => MicrositeType::class,
+        'settings' => 'array',
     ];
 
     public function category(): BelongsTo
@@ -90,8 +93,8 @@ class Microsite extends Model implements HasMedia
         return 'slug';
     }
 
-    public function subscriptions(): HasMany
+    public function plans(): HasMany
     {
-        return $this->hasMany(Subscription::class);
+        return $this->hasMany(Plan::class)->withTrashed();
     }
 }

@@ -13,8 +13,6 @@ export const esIndex = {
         category: "CATEGORÍA",
         type: "TIPO",
         responsible_name: "RESPONSABLE",
-        payment_currency: "MONEDA DE PAGO",
-        payment_expiration: "TIEMPO DE PAGO",
         actions: "ACCIONES",
     },
     delete: {

@@ -2,117 +2,120 @@
 
 namespace App\Http\Controllers\Subscription;
 
-use App\Constants\TimeUnit;
+use App\Constants\SubscriptionStatus;
+use App\Contracts\SubscriptionServiceInterface;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Subscription\CreateSubscriptionRequest;
-use App\Http\Requests\Subscription\UpdateSubscriptionRequest;
+use App\Http\Requests\Subscription\CancelSubscriptionRequest;
+use App\Http\Requests\Subscription\SendSubscriptionLinkRequest;
+use App\Http\Resources\Subscription\CustomerResource;
 use App\Http\Resources\Subscription\SubscriptionListResource;
-use App\Models\Microsite;
+use App\Mail\ActiveSubscriptionsLinkMail;
+use App\Models\Customer;
 use App\Models\Subscription;
+use App\Services\SubscriptionService;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Support\Facades\DB;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\URL;
 use Inertia\Inertia;
 use Inertia\Response;
 
 class SubscriptionController extends Controller
 {
-    public function index(Microsite $microsite): Response
+    private SubscriptionServiceInterface $subscriptionService;
+
+    public function __construct(SubscriptionService $subscriptionService)
     {
-        $subscriptions = Subscription::withTrashed()
-            ->where('microsite_id', $microsite->id)
-            ->select(
-                'id',
-                'price',
-                'total_duration',
-                'billing_frequency',
-                'time_unit',
-                'created_at',
-                'deleted_at',
-            )
-            ->with('translations:subscription_id,locale,name')
+        $this->subscriptionService = $subscriptionService;
+    }
+
+    public function index(): Response
+    {
+        return Inertia::render('Subscriptions/Index');
+    }
+
+    public function sendLink(SendSubscriptionLinkRequest $request): RedirectResponse
+    {
+        $customer = $request->customer;
+
+        $url = URL::temporarySignedRoute(
+            'subscriptions.show',
+            now()->addMinutes(60),
+            [
+                'email' => $customer->email,
+                'document_number' => $customer->document_number,
+            ]
+        );
+
+        Mail::to($customer->email)->send(new ActiveSubscriptionsLinkMail($url));
+
+        return redirect()->back();
+    }
+
+    public function show(Request $request, string $email, string $documentNumber): Response
+    {
+        if (!$request->hasValidSignature()) {
+            abort(403, __('message.invalid_link'));
+        }
+
+        /** @var Customer $customer */
+        $customer = Customer::select(
+            'id',
+            'email',
+            'name',
+            'last_name',
+            'document_type',
+            'document_number',
+            'phone',
+        )
+            ->where('email', $email)
+            ->where('document_number', $documentNumber)
+            ->firstOrFail();
+
+        $subscriptions = Subscription::select(
+            'id',
+            'plan_id',
+            'start_date',
+            'end_date',
+            'status',
+            'currency',
+        )
+            ->where('customer_id', $customer->id)
+            ->where('status', SubscriptionStatus::ACTIVE)
+            ->with('plan:id,price,microsite_id')
+            ->with('plan.translations:plan_id,name,locale')
+            ->with('plan.microsite:id,name')
+            ->orderBy('start_date', 'desc')
             ->get();
 
-        $microsite = $microsite->only('id', 'slug', 'name');
-
-        $subscriptions = SubscriptionListResource::collection($subscriptions);
-
-        return Inertia::render('Subscriptions/Index', [
-            'microsite' => $microsite,
-            'subscriptions' => $subscriptions,
+        return Inertia::render('Subscriptions/Show', [
+            'subscriptions' => SubscriptionListResource::collection($subscriptions),
+            'customer' => new CustomerResource($customer),
         ]);
     }
 
-    public function create(Microsite $microsite): Response
+    public function cancel(CancelSubscriptionRequest $request, int $subscriptionId): RedirectResponse
     {
-        $microsite = $microsite->only('id', 'slug');
+        /** @var Customer $customer */
+        $customer = Customer::select('id')
+            ->where('email', $request->get('email'))
+            ->where('document_number', $request->get('document_number'))
+            ->firstOrFail();
 
-        return Inertia::render('Subscriptions/Create', [
-            'microsite' => $microsite,
-            'timeUnits' => TimeUnit::toSelectArray(),
-        ]);
-    }
+        /** @var Subscription $subscription */
+        $subscription = Subscription::select('id', 'token', 'customer_id')
+            ->where('id', $subscriptionId)
+            ->where('customer_id', $customer->id)
+            ->firstOrFail();
 
-    public function store(CreateSubscriptionRequest $request, Microsite $microsite): RedirectResponse
-    {
-        $validated = $request->validated();
+        $isCancelled = $this->subscriptionService->cancelSubscription($subscription);
 
-        DB::transaction(function () use ($microsite, $validated) {
-            /** @var Subscription $subscription */
-            $subscription = $microsite->subscriptions()->create($validated);
+        if (!$isCancelled) {
+            return back()->withErrors([
+                'cancel' => __('subscription_payment.cancel_failed'),
+            ]);
+        }
 
-            foreach ($validated['translations'] as $translation) {
-                $subscription->translations()->create($translation);
-            }
-        });
-
-        return redirect()->route('microsites.subscriptions.index', $microsite);
-    }
-
-    public function edit(Microsite $microsite, Subscription $subscription): Response
-    {
-        $microsite = $microsite->only('id', 'slug');
-
-        $subscription = $subscription
-            ->load('translations:subscription_id,locale,name,description')
-            ->only('id', 'price', 'total_duration', 'billing_frequency', 'time_unit', 'translations');
-
-        return Inertia::render('Subscriptions/Edit', [
-            'microsite' => $microsite,
-            'subscription' => $subscription,
-            'timeUnits' => TimeUnit::toSelectArray(),
-        ]);
-    }
-
-    public function update(UpdateSubscriptionRequest $request, Microsite $microsite, Subscription $subscription): RedirectResponse
-    {
-        $validated = $request->validated();
-
-        DB::transaction(function () use ($subscription, $validated) {
-            $subscription->update($validated);
-
-            foreach ($validated['translations'] as $translationData) {
-                $subscription->translations()
-                    ->updateOrCreate(
-                        ['locale' => $translationData['locale']],
-                        $translationData
-                    );
-            }
-        });
-
-        return redirect()->route('microsites.subscriptions.index', $microsite);
-    }
-
-    public function destroy(Microsite $microsite, Subscription $subscription): RedirectResponse
-    {
-        $subscription->delete();
-
-        return redirect()->route('microsites.subscriptions.index', $microsite);
-    }
-
-    public function restore(Microsite $microsite, Subscription $subscription): RedirectResponse
-    {
-        $subscription->restore();
-
-        return redirect()->route('microsites.subscriptions.index', $microsite);
+        return back();
     }
 }

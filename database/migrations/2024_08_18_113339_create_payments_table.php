@@ -7,9 +7,7 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration {
-    /**
-     * Run the migrations.
-     */
+
     public function up(): void
     {
         Schema::create('payments', function (Blueprint $table) {
@@ -17,7 +15,7 @@ return new class extends Migration {
             $table->foreignId('customer_id')->constrained('customers')->onDelete('cascade');
             $table->foreignId('microsite_id')->constrained('microsites')->onDelete('cascade');
             $table->foreignId('invoice_id')->nullable()->constrained('invoices')->onDelete('cascade');
-            $table->foreignId('subscription_id')->nullable()->constrained('subscriptions')->onDelete('cascade');
+            $table->foreignId('plan_id')->nullable()->constrained('plans')->onDelete('cascade');
             $table->string('reference', 50)->unique();
             $table->string('description', 255);
             $table->enum('currency', array_column(CurrencyType::cases(), 'value'));
@@ -33,9 +31,6 @@ return new class extends Migration {
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
         Schema::dropIfExists('payments');

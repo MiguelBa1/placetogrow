@@ -6,15 +6,17 @@ use App\Actions\Microsite\DestroyMicrositeAction;
 use App\Actions\Microsite\RestoreMicrositeAction;
 use App\Actions\Microsite\StoreMicrositeAction;
 use App\Actions\Microsite\UpdateMicrositeAction;
+use App\Actions\Microsite\UpdateMicrositeSettingsAction;
+use App\Constants\LateFeeType;
 use App\Constants\PolicyName;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Microsite\CreateMicrositeRequest;
 use App\Http\Requests\Microsite\FilterMicrositesRequest;
 use App\Http\Requests\Microsite\UpdateMicrositeRequest;
+use App\Http\Requests\Microsite\UpdateMicrositeSettingsRequest;
 use App\Http\Resources\MicrositeField\MicrositeFieldListResource;
 use App\Models\Microsite;
 use App\Services\MicrositeService;
-use Exception;
 use Illuminate\Auth\Access\AuthorizationException;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -22,19 +24,26 @@ use Symfony\Component\HttpFoundation\Response as HttpFoundationResponse;
 
 class MicrositeController extends Controller
 {
+    private MicrositeService $micrositeService;
+
+    public function __construct(MicrositeService $micrositeService)
+    {
+        $this->micrositeService = $micrositeService;
+    }
+
     /**
      * @throws AuthorizationException
      */
-    public function index(FilterMicrositesRequest $request, MicrositeService $micrositeService): Response
+    public function index(FilterMicrositesRequest $request): Response
     {
         $this->authorize(PolicyName::VIEW_ANY->value, Microsite::class);
 
         $searchFilter = $request->input('search');
         $categoryFilter = $request->input('category');
 
-        $microsites = $micrositeService->getAllMicrosites($searchFilter, $categoryFilter);
+        $microsites = $this->micrositeService->getAllMicrosites($searchFilter, $categoryFilter);
 
-        $categories = $micrositeService->getFormData()['categories'];
+        $categories = $this->micrositeService->getFormData()['categories'];
 
         return Inertia::render('Microsites/Index', [
             'microsites' => fn () => $microsites,
@@ -53,7 +62,7 @@ class MicrositeController extends Controller
     {
         $this->authorize(PolicyName::VIEW->value, $microsite);
 
-        $micrositeData = (new micrositeService)->getMicrositeData($microsite);
+        $micrositeData = $this->micrositeService->getMicrositeData($microsite);
         $fields = MicrositeFieldListResource::collection($microsite->fields()->orderBy('created_at', 'desc')->get());
 
         return Inertia::render('Microsites/Show', [
@@ -69,7 +78,7 @@ class MicrositeController extends Controller
     {
         $this->authorize(PolicyName::CREATE->value, Microsite::class);
 
-        $formData = (new micrositeService)->getFormData();
+        $formData = $this->micrositeService->getFormData();
 
         return Inertia::render('Microsites/Create', $formData);
     }
@@ -93,11 +102,12 @@ class MicrositeController extends Controller
     {
         $this->authorize(PolicyName::UPDATE->value, $microsite);
 
-        $formData = (new micrositeService)->getFormData();
-        $micrositeData = (new micrositeService)->getEditData($microsite);
+        $formData = $this->micrositeService->getFormData();
+        $micrositeData = $this->micrositeService->getEditData($microsite);
 
         return Inertia::render('Microsites/Edit', array_merge($formData, [
             'microsite' => $micrositeData,
+            'lateFeeTypes' => LateFeeType::toSelectArray(),
         ]));
     }
 
@@ -108,13 +118,33 @@ class MicrositeController extends Controller
     {
         $this->authorize(PolicyName::UPDATE->value, $microsite);
 
-        try {
-            $updateMicrositeAction->execute($request, $microsite);
-        } catch (Exception $e) {
-            return back()->withErrors(['logo' => $e->getMessage()]);
+        $result = $updateMicrositeAction->execute($request, $microsite);
+
+        if (!$result['success']) {
+            return back()->withErrors([
+                'message' => $result['message']
+            ]);
         }
 
-        return redirect()->route('microsites.edit', $microsite);
+        return back();
+    }
+
+    /**
+     * @throws AuthorizationException
+     */
+    public function updateSettings(UpdateMicrositeSettingsRequest $request, Microsite $microsite, UpdateMicrositeSettingsAction $updateMicrositeSettingsAction): HttpFoundationResponse
+    {
+        $this->authorize(PolicyName::UPDATE->value, $microsite);
+
+        $settings = $request->validated('settings');
+
+        $result = $updateMicrositeSettingsAction->execute($settings, $microsite);
+
+        if (!$result['success']) {
+            return back()->withErrors($result['message']);
+        }
+
+        return back();
     }
 
     /**

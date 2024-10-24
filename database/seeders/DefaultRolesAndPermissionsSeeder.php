@@ -20,6 +20,13 @@ class DefaultRolesAndPermissionsSeeder extends Seeder
                 Permission::DELETE_MICROSITE,
                 Permission::RESTORE_MICROSITE,
 
+                Permission::VIEW_ANY_PLAN,
+                Permission::VIEW_PLAN,
+                Permission::CREATE_PLAN,
+                Permission::UPDATE_PLAN,
+                Permission::DELETE_PLAN,
+                Permission::RESTORE_PLAN,
+
                 Permission::VIEW_ANY_USER,
                 Permission::UPDATE_USER_ROLE,
 

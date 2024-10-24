@@ -1,65 +1,83 @@
 <script setup lang="ts">
-import { Head, router } from '@inertiajs/vue3';
-import { MainLayout } from "@/Layouts";
-import { SubscriptionsList, SubscriptionsTable } from "@/Pages/Subscriptions";
-import { useI18n } from "vue-i18n";
-import { Button } from "@/Components";
+import { Head, useForm } from '@inertiajs/vue3';
+import { MainLayout } from '@/Layouts';
+import { Button, InputField } from '@/Components';
+import { useI18n } from 'vue-i18n';
+import { useToast } from 'vue-toastification';
 
 const { t } = useI18n();
+const toast = useToast();
 
-defineProps<{
-    microsite: { id: string; slug: string; name: string };
-    subscriptions: SubscriptionsList;
-}>();
+const form = useForm({
+    document_number: '',
+    email: '',
+})
 
-const goBack = () => {
-    history.back();
-};
-
+const submit = () => {
+    form.post(route('subscriptions.send-link'), {
+        preserveScroll: true,
+        onSuccess: () => {
+            toast.success(t('subscriptions.index.linkSent'));
+            form.reset();
+        },
+        onError: (error) => {
+            const toastMessage = error.invalid ?? t('subscriptions.index.linkError');
+            toast.error(toastMessage);
+        },
+    });
+}
 </script>
 
 <template>
     <Head>
-        <title>Subscriptions</title>
+        <title>
+            {{ t('subscriptions.index.title') }}
+        </title>
     </Head>
 
     <MainLayout>
-        <template #header>
-            <div class="flex justify-between items-center">
-                <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-                    {{ t('subscriptions.index.title', { microsite: microsite.name }) }}
-                </h2>
-
-                <div class="space-x-2">
-                    <Button
-                        variant="primary"
-                        @click="router.visit(route('microsites.subscriptions.create', { microsite }))"
-                    >
-                        {{ t('subscriptions.index.create') }}
-                    </Button>
-                    <Button
-                        variant="secondary"
-                        color="gray"
-                        @click="goBack"
-                    >
-                        {{ t('common.back') }}
-                    </Button>
-                </div>
-            </div>
-        </template>
-
-        <SubscriptionsTable
-            v-if="subscriptions.data.length > 0"
-            :subscriptions="subscriptions"
-            :microsite="microsite"
-        />
-        <div
-            v-else
-            class="flex items-center justify-center h-96"
+        <form @submit.prevent="submit"
+              class="space-y-4 w-full mx-auto sm:max-w-md px-6 py-4 bg-white shadow-md overflow-hidden sm:rounded-lg"
         >
-            <p class="text-gray-500 text-lg">
-                {{ t('subscriptions.index.table.no_subscriptions') }}
+            <div class="space-y-2">
+                <h1 class="font-semibold text-xl text-gray-800">
+                    {{ t('subscriptions.index.accessSubscriptions') }}
+                </h1>
+                <p class="text-sm text-gray-600">
+                    {{ t('subscriptions.index.enterDetails') }}
+                </p>
+            </div>
+            <InputField
+                id="document_number"
+                type="text"
+                :label="t('subscriptions.index.documentNumberLabel')"
+                v-model="form.document_number"
+                required
+                :errors="form.errors?.document_number"
+            />
+            <InputField
+                id="email"
+                type="email"
+                :label="t('subscriptions.index.emailLabel')"
+                v-model="form.email"
+                required
+                :errors="form.errors?.email"
+            />
+            <div class="w-full">
+                <Button
+                    type="submit"
+                    variant="primary"
+                    color="blue"
+                    class="w-full"
+                    :disabled="form.processing"
+                >
+                    {{ t('subscriptions.index.sendLinkButton') }}
+                </Button>
+            </div>
+            <p class="text-sm text-gray-600">
+                {{ t('subscriptions.index.afterSend') }}
             </p>
-        </div>
+        </form>
     </MainLayout>
+
 </template>

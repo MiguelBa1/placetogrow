@@ -3,17 +3,18 @@
 namespace App\Contracts;
 
 use App\Models\Customer;
-use App\Models\CustomerSubscription;
 use App\Models\Payment;
-use Illuminate\Http\Client\Response;
+use App\Models\Subscription;
 
 interface PlaceToPayServiceInterface
 {
-    public function createPayment(Customer $customer, Payment $payment): Response;
+    public function createPayment(Customer $customer, Payment $payment): array;
 
-    public function checkPayment(string $sessionId): Response;
+    public function createSubscription(Customer $customer, Subscription $subscription): array;
 
-    public function createSubscription(Customer $customer, CustomerSubscription $subscriptionPivot): Response;
+    public function cancelSubscription(string $subscriptionToken): array;
 
-    public function checkSubscription(string $sessionId): Response;
+    public function checkSession(string $sessionId): array;
+
+    public function collectSubscriptionPayment(Customer $customer, Subscription $subscription, Payment $payment): array;
 }

@@ -1,21 +1,11 @@
 export const esIndex = {
-    title: 'Suscripciones de {microsite}',
-    create: 'Crear suscripción',
-    table: {
-        name: 'Nombre',
-        price: 'Precio',
-        total_duration: 'Duración total',
-        billing_frequency: 'Frecuencia de facturación',
-        created_at: 'Creado el',
-        actions: 'Acciones',
-        no_subscriptions: 'No hay suscripciones',
-    },
-    delete: {
-        success: 'Suscripción eliminada correctamente',
-        error: 'Error al eliminar la suscripción',
-    },
-    restore: {
-        success: 'Suscripción restaurada correctamente',
-        error: 'Error al restaurar la suscripción',
-    }
+    title: 'Mis suscripciones',
+    accessSubscriptions: 'Accede a tus suscripciones',
+    enterDetails: 'Ingresa tu número de documento y correo electrónico para acceder a tus suscripciones.',
+    documentNumberLabel: 'Número de documento',
+    emailLabel: 'Correo electrónico',
+    sendLinkButton: 'Enviar enlace',
+    afterSend: 'Luego de enviar el enlace, recibirás un correo electrónico con un enlace para acceder a tus suscripciones.',
+    linkSent: 'Email enviado correctamente',
+    linkError: 'Error al enviar el email',
 }

@@ -12,21 +12,28 @@ use Illuminate\Support\Facades\App;
  */
 class SubscriptionListResource extends JsonResource
 {
+
     public function toArray(Request $request): array
     {
-        $currentLocale = App::getLocale();
+        $locale = App::getLocale();
 
-        $translation = $this->translations->firstWhere('locale', $currentLocale);
+        $subscriptionTranslation = $this->plan->translations
+            ->where('locale', $locale)
+            ->first();
+
+        $subscriptionName = $subscriptionTranslation?->name ?? $this->plan->id;
 
         return [
             'id' => $this->id,
-            'name' => $translation ? $translation->name : null,
-            'price' => "$ " . number_format($this->price),
-            'total_duration' => $this->total_duration . ' ' . trans_choice('time_units.' . $this->time_unit->value, $this->total_duration),
-            'billing_frequency' => $this->billing_frequency . ' ' . trans_choice('time_units.' . $this->time_unit->value, $this->billing_frequency),
-            'time_unit' => __('time_units.' . $this->time_unit->value),
-            'created_at' => $this->created_at->format('d/m/Y H:i'),
-            'deleted_at' => $this->deleted_at,
+            'subscription_name' => $subscriptionName,
+            'microsite_name' => $this->plan->microsite->name,
+            'price' => "$ " . number_format($this->plan->price) . " " . $this->currency,
+            'start_date' => $this->start_date->format('d/m/Y'),
+            'end_date' => $this->end_date->format('d/m/Y'),
+            'status' => [
+                'label' => __("subscription.statuses.{$this->status}"),
+                'value' => $this->status,
+            ],
         ];
     }
 }

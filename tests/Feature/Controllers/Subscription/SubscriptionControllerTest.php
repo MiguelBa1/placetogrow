@@ -2,163 +2,130 @@
 
 namespace Tests\Feature\Controllers\Subscription;
 
-use App\Constants\MicrositeType;
-use App\Constants\Role;
-use App\Constants\TimeUnit;
+use App\Constants\SubscriptionStatus;
+use App\Mail\ActiveSubscriptionsLinkMail;
+use App\Models\Customer;
 use App\Models\Microsite;
+use App\Models\Plan;
 use App\Models\Subscription;
-use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\URL;
+use Inertia\Testing\AssertableInertia as Assert;
 use Tests\TestCase;
-use Tests\Traits\SeedsRolesAndPermissions;
+use Tests\Traits\PlaceToPayMockTrait;
 
 class SubscriptionControllerTest extends TestCase
 {
-    use RefreshDatabase, SeedsRolesAndPermissions;
+    use RefreshDatabase, PlaceToPayMockTrait;
 
-    private Microsite $microsite;
-
-    private Microsite $subscriptionMicrosite;
-
-    protected function setUp(): void
+    public function test_displays_the_subscription_index_page()
     {
-        parent::setUp();
-
-        $this->seedRolesAndPermissions();
-
-        $adminUser = User::factory()->create()->assignRole(Role::ADMIN);
-
-        $this->microsite = Microsite::factory()->create(['type' => MicrositeType::SUBSCRIPTION]);
-
-        $this->actingAs($adminUser);
-    }
-
-    public function test_admin_can_view_subscriptions_index()
-    {
-
-        Subscription::factory()->count(3)->create(['microsite_id' => $this->microsite->id]);
-
-        $response = $this->get(route('microsites.subscriptions.index', $this->microsite));
+        $response = $this->get(route('subscriptions.index'));
 
         $response->assertOk();
-        $response->assertInertia(fn ($page) => $page
-            ->component('Subscriptions/Index')
-            ->has('subscriptions.data', 3));
+        $response->assertInertia(
+            fn (Assert $page) =>
+            $page->component('Subscriptions/Index')
+        );
     }
 
-    public function test_admin_can_view_create_subscription_page()
+    public function test_sends_the_subscription_link_via_email()
     {
-        $response = $this->get(route('microsites.subscriptions.create', $this->microsite));
+        Mail::fake();
 
-        $response->assertOk();
-        $response->assertInertia(fn ($page) => $page
-            ->component('Subscriptions/Create')
-            ->has('microsite')
-            ->has('timeUnits'));
-    }
-
-    public function test_admin_can_view_edit_subscription_page()
-    {
-        $subscription = Subscription::factory()->create(['microsite_id' => $this->microsite->id]);
-
-        $response = $this->get(route('microsites.subscriptions.edit', [$this->microsite, $subscription]));
-
-        $response->assertOk();
-        $response->assertInertia(fn ($page) => $page
-            ->component('Subscriptions/Edit')
-            ->has('subscription')
-            ->has('microsite')
-            ->has('timeUnits'));
-    }
-
-    public function test_admin_can_create_subscription()
-    {
-
-        $response = $this->post(route('microsites.subscriptions.store', $this->microsite), [
-            'price' => 1500,
-            'total_duration' => 12,
-            'billing_frequency' => 1,
-            'time_unit' => TimeUnit::MONTHS->value,
-            'translations' => [
-                ['locale' => 'en', 'name' => 'Basic Plan', 'description' => 'Basic plan description'],
-                ['locale' => 'es', 'name' => 'Plan Básico', 'description' => 'Descripción del plan básico'],
-            ],
+        $customer = Customer::factory()->create([
+            'email' => 'test@example.com',
+            'document_number' => '1234567890',
         ]);
 
-        $response->assertRedirect(route('microsites.subscriptions.index', $this->microsite));
+        $requestData = [
+            'email' => $customer->email,
+            'document_number' => $customer->document_number,
+        ];
 
+        $response = $this->post(route('subscriptions.send-link'), $requestData);
+
+        $response->assertRedirect();
+
+        Mail::assertQueued(ActiveSubscriptionsLinkMail::class, function ($mail) use ($requestData) {
+            return $mail->hasTo($requestData['email']);
+        });
+    }
+
+    public function test_displays_subscriptions_with_a_valid_signed_url()
+    {
+        $microsite = Microsite::factory()->create();
+        $customer = Customer::factory()->create([
+            'email' => 'test@example.com',
+            'document_number' => '1234567890',
+        ]);
+
+        $plan = Plan::factory()->create(['microsite_id' => $microsite->id]);
+        Subscription::factory()->create([
+            'customer_id' => $customer->id,
+            'plan_id' => $plan->id,
+            'status' => SubscriptionStatus::ACTIVE,
+        ]);
+
+        $url = URL::temporarySignedRoute('subscriptions.show', now()->addMinutes(60), [
+            'email' => 'test@example.com',
+            'document_number' => '1234567890',
+        ]);
+
+        $response = $this->get($url);
+
+        $response->assertOk();
+        $response->assertInertia(
+            fn (Assert $page) =>
+            $page->component('Subscriptions/Show')
+                ->has('subscriptions')
+                ->has('customer')
+                ->where('customer.data.email', 'test@example.com')
+                ->where('customer.data.document_number', '1234567890')
+        );
+    }
+
+    public function test_aborts_if_the_link_is_invalid_or_expired()
+    {
+        $url = route('subscriptions.show', [
+            'email' => 'test@example.com',
+            'document_number' => '1234567890',
+        ]);
+
+        $response = $this->get($url);
+
+        $response->assertForbidden();
+        $response->assertSee(__('message.invalid_link'));
+    }
+
+    public function test_cancel_a_subscription_successfully()
+    {
+        $this->fakeSubscriptionCancellationSuccess();
+
+        $customer = Customer::factory()->create([
+            'email' => 'test@example.com',
+            'document_number' => '1234567890',
+        ]);
+
+        $subscription = Plan::factory()->create();
+        $customerSubscription = Subscription::factory()->create([
+            'customer_id' => $customer->id,
+            'plan_id' => $subscription->id,
+            'status' => SubscriptionStatus::ACTIVE,
+        ]);
+
+        $requestData = [
+            'email' => $customer->email,
+            'document_number' => $customer->document_number,
+        ];
+
+        $response = $this->post(route('subscriptions.cancel', $customerSubscription->id), $requestData);
+
+        $response->assertRedirect();
         $this->assertDatabaseHas('subscriptions', [
-            'microsite_id' => $this->microsite->id,
-            'price' => 1500,
-            'total_duration' => 12,
+            'id' => $customerSubscription->id,
+            'status' => SubscriptionStatus::CANCELED,
         ]);
-        $this->assertDatabaseHas('subscription_translations', [
-            'locale' => 'en',
-            'name' => 'Basic Plan',
-        ]);
-        $this->assertDatabaseHas('subscription_translations', [
-            'locale' => 'es',
-            'name' => 'Plan Básico',
-        ]);
-    }
-
-    public function test_admin_can_update_subscription()
-    {
-        $subscription = Subscription::factory()->create(['microsite_id' => $this->microsite->id]);
-
-        $response = $this->put(route('microsites.subscriptions.update', [$this->microsite, $subscription]), [
-            'price' => 2000,
-            'total_duration' => 6,
-            'billing_frequency' => 2,
-            'time_unit' => TimeUnit::MONTHS->value,
-            'translations' => [
-                ['locale' => 'en', 'name' => 'Updated Plan', 'description' => 'Updated plan description'],
-                ['locale' => 'es', 'name' => 'Plan Actualizado', 'description' => 'Descripción del plan actualizado'],
-            ],
-        ]);
-
-        $response->assertRedirect(route('microsites.subscriptions.index', $this->microsite));
-        $this->assertDatabaseHas('subscriptions', [
-            'id' => $subscription->id,
-            'price' => 2000,
-            'total_duration' => 6,
-        ]);
-        $this->assertDatabaseHas('subscription_translations', [
-            'subscription_id' => $subscription->id,
-            'locale' => 'en',
-            'name' => 'Updated Plan',
-        ]);
-        $this->assertDatabaseHas('subscription_translations', [
-            'subscription_id' => $subscription->id,
-            'locale' => 'es',
-            'name' => 'Plan Actualizado',
-        ]);
-    }
-
-    public function test_admin_can_delete_subscription()
-    {
-        $subscription = Subscription::factory()->create(['microsite_id' => $this->microsite->id]);
-
-        $response = $this->delete(route('microsites.subscriptions.destroy', [$this->microsite, $subscription]));
-
-        $response->assertRedirect(route('microsites.subscriptions.index', $this->microsite));
-
-        // This model implements soft deletes
-
-        $this->assertSoftDeleted('subscriptions', ['id' => $subscription->id]);
-    }
-
-    public function test_admin_can_restore_subscription()
-    {
-        $subscription = Subscription::factory()->create([
-            'microsite_id' => $this->microsite->id,
-            'deleted_at' => now(),
-        ]);
-
-        $response = $this->put(route('microsites.subscriptions.restore', [$this->microsite, $subscription]));
-
-        $response->assertRedirect(route('microsites.subscriptions.index', $this->microsite));
-
-        $this->assertDatabaseHas('subscriptions', ['id' => $subscription->id]);
     }
 }

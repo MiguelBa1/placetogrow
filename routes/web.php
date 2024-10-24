@@ -1,13 +1,15 @@
 <?php
 
 use App\Constants\Permission;
+use App\Http\Controllers\BasicPayment\BasicPaymentController;
 use App\Http\Controllers\CustomerInvoice\CustomerInvoiceController;
-use App\Http\Controllers\CustomerSubscription\CustomerSubscriptionController;
+use App\Http\Controllers\Dashboard\DashboardController;
 use App\Http\Controllers\Home\HomeController;
 use App\Http\Controllers\Invoice\InvoiceController;
+use App\Http\Controllers\InvoicePayment\InvoicePaymentController;
 use App\Http\Controllers\Microsite\MicrositeController;
 use App\Http\Controllers\MicrositeField\MicrositeFieldController;
-use App\Http\Controllers\Payment\PaymentController;
+use App\Http\Controllers\Plan\PlanController;
 use App\Http\Controllers\Profile\ProfileController;
 use App\Http\Controllers\RolePermission\RolePermissionController;
 use App\Http\Controllers\Subscription\SubscriptionController;
@@ -16,13 +18,12 @@ use App\Http\Controllers\Support\LanguageController;
 use App\Http\Controllers\Transaction\TransactionController;
 use App\Http\Controllers\User\UserController;
 use Illuminate\Support\Facades\Route;
-use Inertia\Inertia;
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
 
-Route::get('/dashboard', function () {
-    return Inertia::render('Dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+Route::get('/dashboard', [DashboardController::class, 'index'])
+    ->middleware(['auth', 'verified', 'permission:' . Permission::VIEW_DASHBOARD->value])
+    ->name('dashboard');
 
 Route::post('/language', [LanguageController::class, 'update'])->name('language.update');
 
@@ -54,6 +55,7 @@ Route::prefix('microsites')->name('microsites.')->group(function () {
             Route::get('/', [MicrositeController::class, 'show'])->name('show');
             Route::get('/edit', [MicrositeController::class, 'edit'])->name('edit');
             Route::post('/', [MicrositeController::class, 'update'])->name('update');
+            Route::post('/settings', [MicrositeController::class, 'updateSettings'])->name('update.settings');
             Route::delete('/', [MicrositeController::class, 'destroy'])->name('destroy');
             Route::put('/restore', [MicrositeController::class, 'restore'])->name('restore');
 
@@ -71,15 +73,15 @@ Route::prefix('microsites')->name('microsites.')->group(function () {
                 Route::get('/download-template', [InvoiceController::class, 'downloadTemplate'])->name('download-template');
             });
 
-            Route::prefix('subscriptions')->name('subscriptions.')->group(function () {
-                Route::get('/', [SubscriptionController::class, 'index'])->name('index');
-                Route::get('/create', [SubscriptionController::class, 'create'])->name('create');
-                Route::post('/', [SubscriptionController::class, 'store'])->name('store');
-                Route::prefix('{subscription}')->group(function () {
-                    Route::get('/edit', [SubscriptionController::class, 'edit'])->name('edit');
-                    Route::put('/', [SubscriptionController::class, 'update'])->name('update');
-                    Route::delete('/', [SubscriptionController::class, 'destroy'])->name('destroy');
-                    Route::put('/restore', [SubscriptionController::class, 'restore'])->name('restore')->withTrashed();
+            Route::prefix('plans')->name('plans.')->group(function () {
+                Route::get('/', [PlanController::class, 'index'])->name('index');
+                Route::get('/create', [PlanController::class, 'create'])->name('create');
+                Route::post('/', [PlanController::class, 'store'])->name('store');
+                Route::prefix('{plan}')->group(function () {
+                    Route::get('/edit', [PlanController::class, 'edit'])->name('edit');
+                    Route::put('/', [PlanController::class, 'update'])->name('update');
+                    Route::delete('/', [PlanController::class, 'destroy'])->name('destroy');
+                    Route::put('/restore', [PlanController::class, 'restore'])->name('restore')->withTrashed();
                 });
             });
         });
@@ -95,20 +97,29 @@ Route::prefix('users')->name('users.')->middleware(['auth'])->group(function () 
     });
 });
 
-Route::prefix('payments')->name('payments.')->group(function () {
+Route::prefix('basic-payments')->name('basic-payments.')->group(function () {
     Route::prefix('{microsite}')->group(function () {
-        Route::get('/', [PaymentController::class, 'show'])->name('show');
-        Route::post('/payment', [PaymentController::class, 'store'])->name('store');
+        Route::get('/', [BasicPaymentController::class, 'show'])->name('show');
+        Route::post('/payment', [BasicPaymentController::class, 'store'])->name('store');
     });
-    Route::get('/return/{payment}', [PaymentController::class, 'return'])->name('return');
+    Route::get('/return/{payment}', [BasicPaymentController::class, 'return'])->name('return');
 });
 
 Route::prefix('subscription-payments')->name('subscription-payments.')->group(function () {
     Route::prefix('{microsite}')->group(function () {
         Route::get('/', [SubscriptionPaymentController::class, 'show'])->name('show');
-        Route::post('{subscription}/payment', [SubscriptionPaymentController::class, 'store'])->name('store');
+        Route::post('{plan}/payment', [SubscriptionPaymentController::class, 'store'])->name('store');
     });
-    Route::get('/return/{customerSubscription:reference}', [SubscriptionPaymentController::class, 'return'])->name('return');
+    Route::get('/return/{subscription:reference}', [SubscriptionPaymentController::class, 'return'])->name('return');
+});
+
+Route::prefix('invoice-payments')->name('invoice-payments.')->group(function () {
+    Route::prefix('{microsite}')->group(function () {
+        Route::get('/', [InvoicePaymentController::class, 'show'])->name('show');
+        Route::post('/payment/{invoice}', [InvoicePaymentController::class, 'store'])->name('store');
+        Route::get('/pending-invoices', [InvoicePaymentController::class, 'getPendingInvoices'])->name('pending-invoices');
+    });
+    Route::get('/return/{payment}', [InvoicePaymentController::class, 'return'])->name('return');
 });
 
 Route::prefix('invoices')->name('invoices.')->group(function () {
@@ -118,10 +129,10 @@ Route::prefix('invoices')->name('invoices.')->group(function () {
 });
 
 Route::prefix('subscriptions')->name('subscriptions.')->group(function () {
-    Route::get('/', [CustomerSubscriptionController::class, 'index'])->name('index');
-    Route::post('/send-link', [CustomerSubscriptionController::class, 'sendLink'])->name('send-link');
-    Route::get('/{email}/{document_number}', [CustomerSubscriptionController::class, 'show'])->name('show');
-    Route::post('/cancel/{subscriptionId}', [CustomerSubscriptionController::class, 'cancel'])->name('cancel');
+    Route::get('/', [SubscriptionController::class, 'index'])->name('index');
+    Route::post('/send-link', [SubscriptionController::class, 'sendLink'])->name('send-link');
+    Route::get('/{email}/{document_number}', [SubscriptionController::class, 'show'])->name('show');
+    Route::post('/cancel/{subscriptionId}', [SubscriptionController::class, 'cancel'])->name('cancel');
 });
 
 Route::prefix('transactions')->name('transactions.')->group(function () {

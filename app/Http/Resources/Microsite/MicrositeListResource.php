@@ -24,8 +24,6 @@ class MicrositeListResource extends JsonResource
                 'value' => $this->type->value,
                 'label' => __("microsite_types.{$this->type->value}")
             ],
-            'payment_currency' => __("currency_types.{$this->payment_currency->value}"),
-            'payment_expiration' => __("payment_expirations.{$this->type->value}", ['days' => $this->payment_expiration]),
             'slug' => $this->slug,
             'responsible_name' => $this->responsible_name,
             'deleted_at' => $this->deleted_at,

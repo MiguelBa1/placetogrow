@@ -9,26 +9,11 @@ use Illuminate\Console\Command;
 
 class UpdateInvoiceStatusCommand extends Command
 {
-    /**
-     * The name and signature of the console command.
-     *
-     * @var string
-     */
     protected $signature = 'invoice:update-status';
 
-    /**
-     * The console command description.
-     *
-     * @var string
-     */
     protected $description = 'Update invoice status based on expiration date';
 
-    /**
-     * Execute the console command.
-     *
-     * @return int
-     */
-    public function handle()
+    public function handle(): int
     {
         $now = Carbon::now();
 
